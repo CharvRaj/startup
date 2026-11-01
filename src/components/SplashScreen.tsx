@@ -8,12 +8,12 @@ export function SplashScreen() {
     const alreadyShown = sessionStorage.getItem('splash_shown');
     if (alreadyShown) { setPhase('done'); return; }
 
-    const t1 = setTimeout(() => setPhase('show'), 200);
-    const t2 = setTimeout(() => setPhase('exit'), 2800);
+    const t1 = setTimeout(() => setPhase('show'), 100);
+    const t2 = setTimeout(() => setPhase('exit'), 1100);
     const t3 = setTimeout(() => {
       setPhase('done');
       sessionStorage.setItem('splash_shown', '1');
-    }, 3600);
+    }, 1600);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
 

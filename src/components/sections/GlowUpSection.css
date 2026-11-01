@@ -5,7 +5,7 @@
   --acc: #E5427A;
   --vh: 1vh;
   position: relative;
-  height: 520vh;
+  height: 400vh;
   background: var(--bg);
   color: var(--ink);
   font-family: 'DM Sans', system-ui, sans-serif;
@@ -34,6 +34,7 @@
   height: 100vh;
   height: 100svh;
   overflow: hidden;
+  contain: layout paint;
 }
 
 .glowup-story .bg-canvas {
@@ -41,6 +42,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
+  contain: strict;
 }
 
 .glowup-story a,
@@ -400,14 +402,8 @@
 }
 
 @media(pointer: fine) {
-  .glowup-inside .glowup-cur {
-    display: grid;
-  }
-  .glowup-inside .glowup-dot {
-    display: block;
-  }
-  .glowup-inside .glowup-story,
-  .glowup-inside .glowup-story * {
+  .glowup-story.glowup-cursor-hidden,
+  .glowup-story.glowup-cursor-hidden * {
     cursor: none;
   }
 }

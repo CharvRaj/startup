@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import './GlowUpSection.css';
 
@@ -28,9 +28,6 @@ export const GlowUpSection: React.FC = () => {
   const curRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
 
-  const [activeChapter, setActiveChapter] = useState(0);
-  const [isInside, setIsInside] = useState(false);
-
   const doneRef = useRef(false);
   const sliderValRef = useRef(0);
 
@@ -40,7 +37,7 @@ export const GlowUpSection: React.FC = () => {
     const x0 = r.right - 20;
     const y0 = r.top + r.height / 2;
 
-    for (let i = 0; i < 22; i++) {
+    for (let i = 0; i < 18; i++) {
       const s = document.createElement('span');
       s.className = 'glowup-spark';
       s.textContent = i % 2 ? '✦' : '❀';
@@ -49,17 +46,17 @@ export const GlowUpSection: React.FC = () => {
       document.body.appendChild(s);
 
       const a = Math.random() * Math.PI * 2;
-      const d = 80 + Math.random() * 180;
+      const d = 70 + Math.random() * 150;
       const anim = s.animate(
         [
           { transform: 'translate(0,0) scale(1)', opacity: 1 },
           {
-            transform: `translate(${Math.cos(a) * d}px, ${Math.sin(a) * d - 60}px) scale(.2) rotate(240deg)`,
+            transform: `translate(${Math.cos(a) * d}px, ${Math.sin(a) * d - 50}px) scale(.2) rotate(240deg)`,
             opacity: 0,
           },
         ],
         {
-          duration: 1100 + Math.random() * 600,
+          duration: 900 + Math.random() * 500,
           easing: 'cubic-bezier(.2,.8,.3,1)',
         }
       );
@@ -102,7 +99,7 @@ export const GlowUpSection: React.FC = () => {
     const dt = dotRef.current;
     if (!story || !bg || !pcv) return;
 
-    const bx = bg.getContext('2d');
+    const bx = bg.getContext('2d', { alpha: false });
     const px = pcv.getContext('2d');
     if (!bx || !px) return;
 
@@ -118,14 +115,15 @@ export const GlowUpSection: React.FC = () => {
     let H = 0;
     let PW = 0;
     let PH = 0;
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    // Cap DPR to 1.25 to prevent memory explosion on Retina/4K displays
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
 
     function size() {
       if (!bg || !pcv || !story) return;
       W = window.innerWidth;
       H = window.innerHeight;
-      bg.width = W * dpr;
-      bg.height = H * dpr;
+      bg.width = Math.round(W * dpr);
+      bg.height = Math.round(H * dpr);
       bx?.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       story.style.setProperty('--vh', H / 100 + 'px');
@@ -137,7 +135,7 @@ export const GlowUpSection: React.FC = () => {
     }
 
     size();
-    window.addEventListener('resize', size);
+    window.addEventListener('resize', size, { passive: true });
 
     /* Split H1 into letter spans */
     const h1List = story.querySelectorAll('h1');
@@ -182,6 +180,8 @@ export const GlowUpSection: React.FC = () => {
     let cy = -100;
     let rx = -100;
     let ry = -100;
+    let isVisible = true;
+    let isInside = false;
 
     function readScroll() {
       if (!story) return;
@@ -193,6 +193,16 @@ export const GlowUpSection: React.FC = () => {
     window.addEventListener('scroll', readScroll, { passive: true });
     readScroll();
     cur = target;
+
+    // Use IntersectionObserver to completely halt rendering loop when section is scrolled out of view
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        isVisible = entry.isIntersecting;
+      },
+      { rootMargin: '100px 0px 100px 0px' }
+    );
+    observer.observe(story);
 
     const onPointerMove = (e: PointerEvent) => {
       if (e.pointerType === 'touch') return;
@@ -208,13 +218,18 @@ export const GlowUpSection: React.FC = () => {
           e.clientX <= rect.right &&
           e.clientY >= rect.top &&
           e.clientY <= rect.bottom;
-        setIsInside(inside);
+        if (inside !== isInside) {
+          isInside = inside;
+          if (cu) cu.style.display = inside ? 'grid' : 'none';
+          if (dt) dt.style.display = inside ? 'block' : 'none';
+          story.classList.toggle('glowup-cursor-hidden', inside);
+        }
       }
     };
     window.addEventListener('pointermove', onPointerMove, { passive: true });
 
     const onPointerOver = (e: MouseEvent) => {
-      if (!cu) return;
+      if (!cu || !isInside) return;
       const targetEl = (e.target as Element)?.closest?.('[data-cur],#rv,.rail button,.pillb');
       if (targetEl) {
         cu.classList.add('big');
@@ -224,13 +239,21 @@ export const GlowUpSection: React.FC = () => {
         cu.textContent = '';
       }
     };
-    document.addEventListener('pointerover', onPointerOver);
+    document.addEventListener('pointerover', onPointerOver, { passive: true });
 
     let animId = 0;
+    let lastFrameTime = 0;
+    const FRAME_MIN_MS = 1000 / 60; // Max 60 FPS cap to avoid burning GPU on 120Hz/144Hz
+
     function frame(ts: number) {
       animId = requestAnimationFrame(frame);
-      const t = ts / 1000;
 
+      // Skip frame if not visible on screen or if throttled
+      if (!isVisible) return;
+      if (ts - lastFrameTime < FRAME_MIN_MS) return;
+      lastFrameTime = ts;
+
+      const t = ts / 1000;
       const s = window.scrollY;
       sv += (s - lastS - sv) * 0.15;
       lastS = s;
@@ -247,12 +270,12 @@ export const GlowUpSection: React.FC = () => {
       if (!calm && !isDone) rev += (0.3 + 0.7 * v - rev) * 0.06;
       else rev += (1 - rev) * 0.08;
 
-      amp += ((calm ? 0 : Math.min(34, Math.abs(vel) * 1.3 + Math.abs(sv) * 1.2 + (isDone ? 0 : 3))) - amp) * 0.1;
+      amp += ((calm ? 0 : Math.min(30, Math.abs(vel) * 1.2 + Math.abs(sv) * 1.1 + (isDone ? 0 : 3))) - amp) * 0.1;
 
       const c = Math.min(CH - 1, Math.floor(cur * CH * 1.0 + 0.001));
       if (c !== idx) {
         idx = c;
-        setActiveChapter(c);
+        // Direct DOM update instead of React state re-render
         chs.forEach((e, i) => e.classList.toggle('on', i === c));
         rails.forEach((e, i) => e.classList.toggle('on', i === c));
         story?.style.setProperty('--acc', PAL[c][1]);
@@ -262,36 +285,40 @@ export const GlowUpSection: React.FC = () => {
       if (!story || !bx) return;
       const computed = getComputedStyle(story);
       const ink = computed.getPropertyValue('--ink-rgb').trim() || '74,18,54';
+      const bgClr = computed.getPropertyValue('--bg').trim() || '#FFF1E6';
 
-      bx.clearRect(0, 0, W, H);
+      bx.fillStyle = bgClr;
+      bx.fillRect(0, 0, W, H);
+
       bx.lineWidth = 1;
-      bx.strokeStyle = 'rgba(' + ink + ',.16)';
-      const N = Math.round(H / 22);
+      bx.strokeStyle = 'rgba(' + ink + ',.14)';
+      const N = Math.round(H / 28); // 28px step instead of 22px
       const px0 = mx * W;
       const py0 = my * H;
 
       for (let i = 0; i < N; i++) {
         bx.beginPath();
         const by = ((i + 0.5) * H) / N;
-        for (let x = 0; x <= W + 16; x += 16) {
+        // Step 24px instead of 16px: 33% fewer math calls and lineTos
+        for (let x = 0; x <= W + 24; x += 24) {
           let y =
             by +
             Math.sin(x * 0.004 + t * 0.5 + i * 0.22) * 16 +
             Math.sin(x * 0.011 - t * 0.35 + i * 0.5) * 7 +
-            cur * 40 * Math.sin(i * 0.3 + x * 0.003);
+            cur * 36 * Math.sin(i * 0.3 + x * 0.003);
           const dx = x - px0;
           const dy = by - py0;
           const g = Math.exp(-(dx * dx + dy * dy) / 52000);
-          y += g * (dy > 0 ? 1 : -1) * 26;
+          y += g * (dy > 0 ? 1 : -1) * 24;
           if (x === 0) bx.moveTo(x, y);
           else bx.lineTo(x, y);
         }
         bx.stroke();
       }
 
-      bx.fillStyle = 'rgba(' + ink + ',.55)';
-      for (let gx = 70; gx < W; gx += 170) {
-        for (let gy = 60; gy < H; gy += 140) {
+      bx.fillStyle = 'rgba(' + ink + ',.45)';
+      for (let gx = 80; gx < W; gx += 200) {
+        for (let gy = 70; gy < H; gy += 160) {
           bx.fillRect(gx, gy, 2, 2);
         }
       }
@@ -303,8 +330,8 @@ export const GlowUpSection: React.FC = () => {
         ox.clearRect(0, 0, PW, PH);
         ox.fillStyle = `rgb(${col.map(Math.round).join(',')})`;
         ox.beginPath();
-        for (let a = 0; a <= 48; a++) {
-          const an = (a / 48) * Math.PI * 2;
+        for (let a = 0; a <= 40; a++) {
+          const an = (a / 40) * Math.PI * 2;
           const r = 0.43 * PW * (1 + 0.07 * Math.sin(an * 3 + t * 0.8) + 0.05 * Math.sin(an * 5 - t * 0.6));
           const X = PW * 0.5 + Math.cos(an) * r;
           const Y = PH * 0.5 + Math.sin(an) * r * 1.02;
@@ -318,32 +345,38 @@ export const GlowUpSection: React.FC = () => {
         ox.drawImage(img, (PW - iw) / 2, PH - ih, iw, ih);
 
         px.clearRect(0, 0, PW, PH);
-        const band = Math.max(3, Math.round(PH / (70 + (idx % 2) * 30)));
-        const nBands = Math.ceil(PH / band);
-        const sx = Math.sign(vel) || 1;
-        const f = 0.28 + 0.72 * Math.min(1, rev);
 
-        for (let b = 0; b < nBands; b++) {
-          const y0 = b * band;
-          const sh = (noise(b, t) * amp * 0.9 + Math.sin(b * 0.3 + t * 2) * (calm ? 0 : 2.2)) * sx;
-          px.drawImage(off, 0, y0, PW, band * f, sh * dpr, y0, PW, band * f);
+        // When completely still (no velocity or scroll), draw directly without band slicing
+        if (amp < 0.2 && Math.abs(vel) < 0.2 && isDone) {
+          px.drawImage(off, 0, 0, PW, PH);
+        } else {
+          const band = Math.max(4, Math.round(PH / (60 + (idx % 2) * 24)));
+          const nBands = Math.ceil(PH / band);
+          const sx = Math.sign(vel) || 1;
+          const f = 0.28 + 0.72 * Math.min(1, rev);
+
+          for (let b = 0; b < nBands; b++) {
+            const y0 = b * band;
+            const sh = (noise(b, t) * amp * 0.85 + Math.sin(b * 0.3 + t * 2) * (calm ? 0 : 2)) * sx;
+            px.drawImage(off, 0, y0, PW, band * f, sh * dpr, y0, PW, band * f);
+          }
         }
 
         pcv.style.transform =
           (window.innerWidth > 820 ? '' : 'translateX(50%) ') +
           'translate(' +
-          (mx - 0.5) * -22 +
+          (mx - 0.5) * -20 +
           'px,' +
-          (my - 0.5) * -12 +
+          (my - 0.5) * -10 +
           'px) rotate(' +
-          (mx - 0.5) * 2.2 +
+          (mx - 0.5) * 2 +
           'deg)';
       }
 
       /* Custom cursor */
-      if (cu && dt) {
-        rx += (cx - rx) * 0.16;
-        ry += (cy - ry) * 0.16;
+      if (cu && dt && isInside) {
+        rx += (cx - rx) * 0.18;
+        ry += (cy - ry) * 0.18;
         cu.style.transform = `translate(${rx}px, ${ry}px)`;
         dt.style.transform = `translate(${cx}px, ${cy}px)`;
       }
@@ -356,6 +389,7 @@ export const GlowUpSection: React.FC = () => {
 
     return () => {
       cancelAnimationFrame(animId);
+      observer.disconnect();
       window.removeEventListener('resize', size);
       window.removeEventListener('scroll', readScroll);
       window.removeEventListener('pointermove', onPointerMove);
@@ -364,7 +398,7 @@ export const GlowUpSection: React.FC = () => {
   }, []);
 
   return (
-    <div className={isInside ? 'glowup-inside' : ''}>
+    <div>
       <main
         className="story glowup-story"
         id="story"
@@ -401,7 +435,7 @@ export const GlowUpSection: React.FC = () => {
               <button
                 key={num}
                 type="button"
-                className={activeChapter === num ? 'on' : ''}
+                className={num === 0 ? 'on' : ''}
                 onClick={() => handleRailClick(num)}
               >
                 0{num + 1}
@@ -483,4 +517,3 @@ export const GlowUpSection: React.FC = () => {
 };
 
 export default GlowUpSection;
-
