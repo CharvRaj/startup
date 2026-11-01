@@ -186,9 +186,11 @@ export const GlowUpSection: React.FC = () => {
 
     function readScroll() {
       if (!story) return;
+      const headerOffset = window.innerWidth <= 820 ? 60 : 62;
       const t = story.offsetHeight - window.innerHeight;
       if (t <= 0) return;
-      target = Math.min(1, Math.max(0, -story.getBoundingClientRect().top / t));
+      const progress = (headerOffset - story.getBoundingClientRect().top) / t;
+      target = Math.min(1, Math.max(0, progress));
     }
 
     window.addEventListener('scroll', readScroll, { passive: true });
