@@ -1193,7 +1193,12 @@ export function Admin() {
   const startScanner = async () => {
     try {
       setScanError(''); setScanResult(null); setScanning(true);
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      } catch {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      }
       streamRef.current = stream;
       if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play(); }
     } catch { setScanError('Camera access denied. Please allow camera permissions.'); setScanning(false); }

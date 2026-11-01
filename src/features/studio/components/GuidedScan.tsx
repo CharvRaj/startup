@@ -46,10 +46,18 @@ export function GuidedScan({ onUseFront }: { onUseFront: (b: ImageBitmap) => voi
   const freeFrame = (f: Frame) => { f.bitmap.close(); URL.revokeObjectURL(f.thumb); };
 
   const begin = async () => {
-    setErr(null); setModelBusy(true);
-    try { await getFaceLandmarker(); } catch { setErr('The face-detection model couldn’t be loaded. Check that the model files are installed (see README).'); setModelBusy(false); return; }
-    setModelBusy(false);
-    if (await start('user')) { setPhase('scan'); setStep(0); }
+    setErr(null);
+    setModelBusy(true);
+    setPhase('scan');
+    setStep(0);
+    try {
+      await getFaceLandmarker();
+    } catch {
+      setErr('The face-detection model could not be loaded from local storage. You can still capture or upload photos.');
+    } finally {
+      setModelBusy(false);
+    }
+    await start('user');
   };
 
   /* live quality loop (~8 fps) */
@@ -156,8 +164,23 @@ export function GuidedScan({ onUseFront }: { onUseFront: (b: ImageBitmap) => voi
       {phase === 'scan' && (
         <div className="space-y-3">
           <div className="text-center"><Badge variant="secondary">Step {step + 1} of {STEPS.length}</Badge><h2 className="mt-2 font-display text-2xl">{STEPS[step].title}</h2><p className="text-sm text-muted-foreground">{STEPS[step].hint}</p></div>
-          <div className={`relative mx-auto aspect-[3/4] max-w-sm overflow-hidden rounded-2xl bg-black ${cam.status === 'active' ? '' : 'hidden'}`}>
-            <video ref={videoRef} playsInline muted className="h-full w-full -scale-x-100 object-cover" />
+          <div className="relative mx-auto aspect-[3/4] max-w-sm overflow-hidden rounded-2xl bg-black">
+            <video ref={videoRef} playsInline muted autoPlay className="h-full w-full -scale-x-100 object-cover" />
+            {cam.status === 'requesting' && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/80 text-white text-sm">
+                <Loader2 className="h-7 w-7 animate-spin text-[#C83E68]" />
+                <p>Opening camera…</p>
+              </div>
+            )}
+            {cam.status === 'denied' && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 bg-black/90 text-white text-center text-sm">
+                <AlertTriangle className="h-8 w-8 text-amber-400" />
+                <p>Camera access was blocked. Allow camera permissions in your browser address bar.</p>
+                <Button size="sm" variant="outline" onClick={() => start('user')} className="text-white border-white/30">
+                  <RotateCcw className="mr-1 h-3 w-3" /> Retry Camera
+                </Button>
+              </div>
+            )}
             <svg viewBox="0 0 100 133" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden><ellipse cx="50" cy="62" rx="27" ry="37" fill="none" strokeWidth="1.2" strokeDasharray="3 2" stroke={live?.ok ? '#4ade80' : '#ffffffcc'} /></svg>
           </div>
           <ul aria-live="polite" className="mx-auto max-w-sm space-y-1 text-center text-sm">
@@ -167,6 +190,7 @@ export function GuidedScan({ onUseFront }: { onUseFront: (b: ImageBitmap) => voi
           </ul>
           <div className="flex flex-wrap justify-center gap-3">
             {cam.status === 'active' && <Button size="lg" onClick={capture} disabled={!live?.ok}><Camera className="mr-2 h-4 w-4" />Capture</Button>}
+            {cam.status !== 'active' && <Button onClick={() => start('user')}><Camera className="mr-2 h-4 w-4" />Start Camera</Button>}
             <Button variant="outline" onClick={() => fileRef.current?.click()}><Upload className="mr-2 h-4 w-4" />Upload photo for this view</Button>
             <Button variant="ghost" onClick={discard}>Cancel</Button>
           </div>

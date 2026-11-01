@@ -84,14 +84,22 @@ export const MultiAngleCaptureGuide: React.FC<MultiAngleCaptureGuideProps> = ({
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error("Webcam is not supported in this browser.");
       }
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: 'user',
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-        },
-        audio: false
-      });
+      let mediaStream: MediaStream | null = null;
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false
+        });
+      } catch {
+        try {
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user' },
+            audio: false
+          });
+        } catch {
+          mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        }
+      }
       setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;

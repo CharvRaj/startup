@@ -15,7 +15,11 @@ let faceMode: 'IMAGE' | 'VIDEO' = 'IMAGE';
 
 async function fileset() {
   const { FilesetResolver } = await import('@mediapipe/tasks-vision');
-  return FilesetResolver.forVisionTasks(`${BASE}/wasm`);
+  try {
+    return await FilesetResolver.forVisionTasks(`${BASE}/wasm`);
+  } catch {
+    return await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm');
+  }
 }
 
 export function getFaceLandmarker(): Promise<FaceLandmarker> {
@@ -23,11 +27,34 @@ export function getFaceLandmarker(): Promise<FaceLandmarker> {
     faceP = (async () => {
       const { FaceLandmarker } = await import('@mediapipe/tasks-vision');
       const fs = await fileset();
-      const make = (delegate: 'GPU' | 'CPU') => FaceLandmarker.createFromOptions(fs, {
-        baseOptions: { modelAssetPath: FACE_MODEL, delegate }, runningMode: 'IMAGE', numFaces: 1,
+      const cdnModel = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+      const make = (modelPath: string, delegate: 'GPU' | 'CPU') => FaceLandmarker.createFromOptions(fs, {
+        baseOptions: { modelAssetPath: modelPath, delegate }, runningMode: 'IMAGE', numFaces: 1,
         outputFaceBlendshapes: false, outputFacialTransformationMatrixes: false,
       });
-      try { const l = await make('GPU'); faceMode = 'IMAGE'; return l; } catch { const l = await make('CPU'); faceMode = 'IMAGE'; return l; }
+
+      try {
+        const l = await make(FACE_MODEL, 'GPU');
+        faceMode = 'IMAGE';
+        return l;
+      } catch {
+        try {
+          const l = await make(FACE_MODEL, 'CPU');
+          faceMode = 'IMAGE';
+          return l;
+        } catch {
+          // CDN fallback if local asset is unavailable or corrupt
+          try {
+            const l = await make(cdnModel, 'GPU');
+            faceMode = 'IMAGE';
+            return l;
+          } catch {
+            const l = await make(cdnModel, 'CPU');
+            faceMode = 'IMAGE';
+            return l;
+          }
+        }
+      }
     })();
     faceP.catch(() => { faceP = null; });
   }

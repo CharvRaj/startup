@@ -37,14 +37,22 @@ export const CameraCaptureModal: React.FC<CameraCaptureModalProps> = ({
         throw new Error("Camera API is not supported in this browser environment.");
       }
 
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: 'user',
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-        },
-        audio: false
-      });
+      let mediaStream: MediaStream | null = null;
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false
+        });
+      } catch {
+        try {
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user' },
+            audio: false
+          });
+        } catch {
+          mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        }
+      }
 
       setStream(mediaStream);
       if (videoRef.current) {
