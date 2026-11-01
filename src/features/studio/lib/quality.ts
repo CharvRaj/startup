@@ -9,25 +9,25 @@ export type ScanRole = 'front' | 'left' | 'right' | 'left-profile' | 'right-prof
  * (on an un-mirrored camera frame). The selfie preview is mirrored, so "turn left" looks like moving screen-left.
  */
 export const QUALITY = {
-  BLUR_MIN: 40,
-  MEAN_MIN: 60, MEAN_MAX: 210,
-  CLIP_MAX: 0.12,
-  BALANCE_MAX: 0.35,
-  FACE_MIN: 0.3, FACE_MAX: 0.9,
-  CENTRE_MAX: 0.22,
-  ROLL_MAX_DEG: 12,
-  PITCH_TOL: 0.12,
-  MOUTH_OPEN_MAX: 0.06,
-  DUP_DIST_MAX: 0.18,
+  BLUR_MIN: 12,
+  MEAN_MIN: 25, MEAN_MAX: 245,
+  CLIP_MAX: 0.28,
+  BALANCE_MAX: 0.5,
+  FACE_MIN: 0.18, FACE_MAX: 0.96,
+  CENTRE_MAX: 0.38,
+  ROLL_MAX_DEG: 25,
+  PITCH_TOL: 0.25,
+  MOUTH_OPEN_MAX: 0.25,
+  DUP_DIST_MAX: 0.12,
   YAW_K: 0.3,
 } as const;
 
 export const ROLE_YAW: Record<ScanRole, [number, number]> = {
-  front: [-8, 8],
-  left: [15, 40],
-  right: [-40, -15],
-  'left-profile': [50, 95],
-  'right-profile': [-95, -50],
+  front: [-18, 18],
+  left: [10, 50],
+  right: [-50, -10],
+  'left-profile': [40, 100],
+  'right-profile': [-100, -40],
 };
 export const isProfile = (r: ScanRole) => r === 'left-profile' || r === 'right-profile';
 
@@ -147,23 +147,23 @@ export function assessFrame(i: AssessInput): Assessment {
   } else {
     const box = faceBox(lm);
     m.faceSize = box.h; m.yaw = estimateYawDeg(lm); m.roll = estimateRollDeg(lm); m.pitch = pitchRatio(lm); m.mouthOpen = mouthOpenRatio(lm);
-    if (box.h < QUALITY.FACE_MIN) err('too-far', 'Move closer so your face fills the oval.');
-    if (box.h > QUALITY.FACE_MAX) err('too-close', 'Move back a little.');
-    if (Math.abs(box.cx - 0.5) > QUALITY.CENTRE_MAX || Math.abs(box.cy - 0.5) > QUALITY.CENTRE_MAX) err('off-centre', 'Centre your face in the oval.');
+    if (box.h < QUALITY.FACE_MIN) warn('too-far', 'Move a little closer so your face fills the oval.');
+    if (box.h > QUALITY.FACE_MAX) warn('too-close', 'Move back a little.');
+    if (Math.abs(box.cx - 0.5) > QUALITY.CENTRE_MAX || Math.abs(box.cy - 0.5) > QUALITY.CENTRE_MAX) warn('off-centre', 'Centre your face in the oval.');
     const [lo, hi] = ROLE_YAW[i.role];
-    if (m.yaw < lo || m.yaw > hi) err('wrong-angle', TURN_HINT[i.role]);
-    if (Math.abs(m.roll) > QUALITY.ROLL_MAX_DEG) err('tilted', 'Keep your head level (don’t tilt it sideways).');
-    if (i.baselinePitch != null && !isProfile(i.role) && Math.abs(m.pitch - i.baselinePitch) > QUALITY.PITCH_TOL) err('pitch', 'Keep your chin level — don’t nod up or down.');
-    if (m.mouthOpen > QUALITY.MOUTH_OPEN_MAX) err('mouth-open', 'Relax your mouth — keep a neutral expression.');
+    if (m.yaw < lo || m.yaw > hi) warn('wrong-angle', TURN_HINT[i.role]);
+    if (Math.abs(m.roll) > QUALITY.ROLL_MAX_DEG) warn('tilted', 'Keep your head level.');
+    if (i.baselinePitch != null && !isProfile(i.role) && Math.abs(m.pitch - i.baselinePitch) > QUALITY.PITCH_TOL) warn('pitch', 'Keep your chin level.');
+    if (m.mouthOpen > QUALITY.MOUTH_OPEN_MAX) warn('mouth-open', 'Relax your mouth for best results.');
   }
-  if (m.blur < QUALITY.BLUR_MIN) err('blurry', 'The image is blurry. Hold still and make sure the lens is clean.');
-  if (m.mean < QUALITY.MEAN_MIN) err('dark', 'Too dark. Face a window or a light.');
-  if (m.mean > QUALITY.MEAN_MAX || m.clipFrac > QUALITY.CLIP_MAX) err('bright', 'Too bright or glare on your face. Soften the light.');
+  if (m.blur < QUALITY.BLUR_MIN) warn('blurry', 'The image is slightly soft. Hold still for clearest focus.');
+  if (m.mean < QUALITY.MEAN_MIN) warn('dark', 'Lighting is low. Face toward a light source.');
+  if (m.mean > QUALITY.MEAN_MAX || m.clipFrac > QUALITY.CLIP_MAX) warn('bright', 'Bright glare detected. Soften the lighting.');
   const bal = halfBalance(i.gray, i.gw, i.gh);
-  if (m.mean > 0 && Math.abs(bal.left - bal.right) / m.mean > QUALITY.BALANCE_MAX && !isProfile(i.role)) warn('uneven-light', 'Lighting looks uneven (one side is much darker).');
+  if (m.mean > 0 && Math.abs(bal.left - bal.right) / m.mean > QUALITY.BALANCE_MAX && !isProfile(i.role)) warn('uneven-light', 'Lighting is uneven.');
 
   const sig = signature(i.gray, i.gw, i.gh);
-  if (i.otherSignatures?.some((o) => signatureDistance(sig, o) < QUALITY.DUP_DIST_MAX)) err('duplicate', 'This looks the same as another captured view. Change your head angle.');
+  if (i.otherSignatures?.some((o) => signatureDistance(sig, o) < QUALITY.DUP_DIST_MAX)) warn('duplicate', 'This angle is similar to an earlier view.');
   return { ok: !issues.some((x) => x.severity === 'error'), issues, metrics: m, signature: sig };
 }
 

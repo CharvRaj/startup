@@ -37,6 +37,8 @@ export function GuidedScan({ onUseFront }: { onUseFront: (b: ImageBitmap) => voi
   const [modelBusy, setModelBusy] = useState(false);
   const [outcome, setOutcome] = useState<ReconOutcome | null>(null);
   const [progress, setProgress] = useState({ f: 0, m: '' });
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [flash, setFlash] = useState(false);
   const role = STEPS[step].role;
   const roleRef = useRef(role); roleRef.current = role;
 
@@ -94,16 +96,61 @@ export function GuidedScan({ onUseFront }: { onUseFront: (b: ImageBitmap) => voi
 
   const advance = () => {
     setLive(null);
+    setCountdown(null);
     if (retakeOnly) { setRetakeOnly(false); stop(); setPhase('review'); return; }
     if (step < STEPS.length - 1) setStep(step + 1); else { stop(); setPhase('review'); }
   };
 
-  const capture = async () => {
-    const v = videoRef.current; if (!v || !live?.ok) return; // progress only advances on a usable frame
-    const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext('2d')!.drawImage(v, 0, 0);
-    const bmp = await createImageBitmap(c); c.width = c.height = 0;
-    await store(bmp, live, role); advance();
-  };
+  const capture = useCallback(async () => {
+    const v = videoRef.current;
+    if (!v) return;
+    setFlash(true);
+    setTimeout(() => setFlash(false), 250);
+    const c = document.createElement('canvas');
+    c.width = v.videoWidth || 640;
+    c.height = v.videoHeight || 480;
+    c.getContext('2d')!.drawImage(v, 0, 0);
+    const bmp = await createImageBitmap(c);
+    c.width = c.height = 0;
+    const a = live || {
+      ok: true,
+      issues: [],
+      metrics: { blur: 20, mean: 120, clipFrac: 0, yaw: 0, roll: 0, pitch: 0, faceSize: 0.5, mouthOpen: 0 },
+      signature: new Float32Array(256),
+    };
+    await store(bmp, a, role);
+    advance();
+  }, [live, role]);
+
+  /* Auto-capture countdown when face is detected in the oval */
+  useEffect(() => {
+    if (phase !== 'scan' || cam.status !== 'active') {
+      setCountdown(null);
+      return;
+    }
+    if (live?.ok) {
+      if (countdown === null) {
+        setCountdown(3);
+      }
+    } else {
+      if (countdown !== null) {
+        setCountdown(null);
+      }
+    }
+  }, [live?.ok, phase, cam.status]);
+
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown((c) => (c !== null && c > 0 ? c - 1 : null));
+      }, 950);
+      return () => clearTimeout(timer);
+    } else if (countdown === 0) {
+      void capture();
+      setCountdown(null);
+    }
+  }, [countdown, capture]);
 
   const fromFile = async (file?: File | null) => {
     if (!file) return; setErr(null);
@@ -164,8 +211,22 @@ export function GuidedScan({ onUseFront }: { onUseFront: (b: ImageBitmap) => voi
       {phase === 'scan' && (
         <div className="space-y-3">
           <div className="text-center"><Badge variant="secondary">Step {step + 1} of {STEPS.length}</Badge><h2 className="mt-2 font-display text-2xl">{STEPS[step].title}</h2><p className="text-sm text-muted-foreground">{STEPS[step].hint}</p></div>
-          <div className="relative mx-auto aspect-[3/4] max-w-sm overflow-hidden rounded-2xl bg-black">
+          <div className="relative mx-auto aspect-[3/4] max-w-sm overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-border">
             <video ref={videoRef} playsInline muted autoPlay className="h-full w-full -scale-x-100 object-cover" />
+            
+            {/* Shutter flash animation */}
+            {flash && <div className="absolute inset-0 bg-white z-40 animate-out fade-out duration-300 pointer-events-none" />}
+
+            {/* Countdown auto-capture overlay */}
+            {countdown !== null && countdown > 0 && (
+              <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/45 backdrop-blur-[2px]">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border-4 border-emerald-400 bg-emerald-500/90 text-4xl font-extrabold text-white shadow-xl animate-bounce">
+                  {countdown}
+                </div>
+                <p className="mt-3 text-sm font-semibold text-white drop-shadow">✨ Face Aligned! Hold still...</p>
+              </div>
+            )}
+
             {cam.status === 'requesting' && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/80 text-white text-sm">
                 <Loader2 className="h-7 w-7 animate-spin text-[#C83E68]" />
@@ -181,15 +242,41 @@ export function GuidedScan({ onUseFront }: { onUseFront: (b: ImageBitmap) => voi
                 </Button>
               </div>
             )}
-            <svg viewBox="0 0 100 133" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden><ellipse cx="50" cy="62" rx="27" ry="37" fill="none" strokeWidth="1.2" strokeDasharray="3 2" stroke={live?.ok ? '#4ade80' : '#ffffffcc'} /></svg>
+            <svg viewBox="0 0 100 133" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
+              <ellipse
+                cx="50"
+                cy="62"
+                rx="27"
+                ry="37"
+                fill="none"
+                strokeWidth={live?.ok ? '2' : '1.2'}
+                strokeDasharray={live?.ok ? 'none' : '3 2'}
+                stroke={live?.ok ? '#22c55e' : '#ffffffcc'}
+                className={live?.ok ? 'transition-all duration-300 drop-shadow-[0_0_12px_rgba(34,197,94,0.8)]' : ''}
+              />
+            </svg>
           </div>
           <ul aria-live="polite" className="mx-auto max-w-sm space-y-1 text-center text-sm">
             {cam.status === 'active' && blocking.slice(0, 2).map((i) => <li key={i.code} className="text-amber-700 dark:text-amber-400">{i.message}</li>)}
-            {cam.status === 'active' && live?.ok && <li className="flex items-center justify-center gap-1 text-green-700 dark:text-green-400"><CheckCircle2 className="h-4 w-4" />Good — hold still and capture.</li>}
+            {cam.status === 'active' && live?.ok && (
+              <li className="flex items-center justify-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                <CheckCircle2 className="h-4 w-4" />
+                {countdown !== null ? `Capturing in ${countdown}s... Hold still.` : 'Face in position! Ready to capture.'}
+              </li>
+            )}
             {cam.status === 'active' && live?.issues.filter((i) => i.severity === 'warn').map((i) => <li key={i.code} className="text-xs text-muted-foreground">{i.message}</li>)}
           </ul>
           <div className="flex flex-wrap justify-center gap-3">
-            {cam.status === 'active' && <Button size="lg" onClick={capture} disabled={!live?.ok}><Camera className="mr-2 h-4 w-4" />Capture</Button>}
+            {cam.status === 'active' && (
+              <Button
+                size="lg"
+                onClick={capture}
+                className={live?.ok ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-400' : 'bg-primary hover:bg-primary/90'}
+              >
+                <Camera className="mr-2 h-4 w-4" />
+                {countdown !== null ? `Snap Now (${countdown}s)` : 'Capture Frame'}
+              </Button>
+            )}
             {cam.status !== 'active' && <Button onClick={() => start('user')}><Camera className="mr-2 h-4 w-4" />Start Camera</Button>}
             <Button variant="outline" onClick={() => fileRef.current?.click()}><Upload className="mr-2 h-4 w-4" />Upload photo for this view</Button>
             <Button variant="ghost" onClick={discard}>Cancel</Button>

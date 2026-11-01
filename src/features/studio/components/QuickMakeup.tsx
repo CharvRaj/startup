@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AlertTriangle, Camera, Download, Eye, Loader2, Redo2, RotateCcw, Trash2, Undo2, Upload } from 'lucide-react';
+import { AlertTriangle, Camera, Download, Eye, Loader2, Redo2, RotateCcw, Sparkles, Trash2, Undo2, Upload, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useCamera } from '../hooks/useCamera';
@@ -19,6 +19,12 @@ const SIZES: { id: string; label: string; v: number | 'original' }[] = [
 ];
 const MODEL_ERR = 'The face-detection model couldn’t be loaded. Check your connection and that the model files are installed (see README), then retry.';
 
+const DEMO_MODELS = [
+  { id: 'ananya', name: 'Ananya', tone: 'Warm Honey', src: '/images/model.png' },
+  { id: 'tara', name: 'Tara', tone: 'Royal Bridal', src: '/images/category-bridal.jpg' },
+  { id: 'diya', name: 'Diya', tone: 'Festive Radiance', src: '/images/diwali-campaign-master.jpg' },
+];
+
 export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: ImageBitmap | null; onDiscarded?: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -35,6 +41,7 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
   const [hairState, setHairState] = useState<'idle' | 'loading' | 'ready' | 'failed'>('idle');
   const [sizeId, setSizeId] = useState('share');
   const [exporting, setExporting] = useState(false);
+  const [flash, setFlash] = useState(false);
 
   const look = useLookStore((s) => s.look);
   const showOriginal = useLookStore((s) => s.showOriginal);
@@ -84,6 +91,22 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
     await adopt(r.bitmap);
   };
 
+  /* ----- load preloaded sample demo model ----- */
+  const loadDemoModel = async (src: string) => {
+    setError(null);
+    setStatus('loading-model');
+    try {
+      const res = await fetch(src);
+      if (!res.ok) throw new Error('Fetch failed');
+      const blob = await res.blob();
+      const bmp = await createImageBitmap(blob);
+      await adopt(bmp);
+    } catch {
+      setError('Could not load sample portrait. Please upload a photo or use your camera.');
+      setStatus('idle');
+    }
+  };
+
   /* ----- hair (lazy, photo only) ----- */
   useEffect(() => {
     if (source !== 'photo' || !look.hair.enabled || hairRef.current || hairState === 'loading' || hairState === 'failed' || !bitmapRef.current) return;
@@ -128,6 +151,8 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
 
   const capture = async () => {
     const v = videoRef.current; if (!v) return;
+    setFlash(true);
+    setTimeout(() => setFlash(false), 260);
     const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight;
     const x = c.getContext('2d')!; x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(v, 0, 0); // mirrored, as the user saw it
     const bmp = await createImageBitmap(c); c.width = c.height = 0; await adopt(bmp);
@@ -158,57 +183,162 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
   const busy = status === 'loading-model' || status === 'detecting';
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-      <div className="space-y-3">
-        <div className="relative overflow-hidden rounded-2xl border border-border bg-muted">
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_460px] items-start">
+      {/* Left: Interactive Canvas & Action Toolbar (Sticky on Desktop) */}
+      <div className="space-y-3 lg:sticky lg:top-28">
+        <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-muted/60 shadow-lg">
           <video ref={videoRef} className="hidden" playsInline muted aria-hidden />
-          <canvas ref={canvasRef} role="img" aria-label="Makeup preview" className={`mx-auto block max-h-[70vh] w-auto max-w-full ${source === 'none' ? 'hidden' : ''} ${source === 'live' ? '-scale-x-100' : ''}`} />
+          <canvas
+            ref={canvasRef}
+            role="img"
+            aria-label="Makeup preview"
+            className={`mx-auto block max-h-[65vh] w-auto max-w-full rounded-2xl ${source === 'none' ? 'hidden' : ''} ${source === 'live' ? '-scale-x-100' : ''}`}
+          />
+
+          {/* Flash Shutter Animation */}
+          {flash && <div className="absolute inset-0 bg-white z-40 animate-out fade-out duration-300 pointer-events-none" />}
+
           {source === 'none' && (
-            <div className="flex min-h-[320px] flex-col items-center justify-center gap-4 p-8 text-center">
-              <p className="font-display text-2xl">Try makeup on your photo</p>
-              <p className="max-w-sm text-sm text-muted-foreground">Upload a clear, front-facing photo or use your camera. Everything stays on your device.</p>
+            <div className="flex min-h-[380px] flex-col items-center justify-center gap-6 p-6 sm:p-8 text-center bg-card/60 backdrop-blur-sm">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-rose-500/20 to-purple-500/20 border border-amber-500/30 flex items-center justify-center text-primary shadow-sm">
+                <Sparkles className="w-7 h-7 text-[#C83E68]" />
+              </div>
+
+              <div className="max-w-md">
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
+                  Try Luxury Makeup on Your Face
+                </h2>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  Upload a photo, turn on your camera, or instantly test on one of our Indian demo models below.
+                </p>
+              </div>
+
+              {/* Main Upload / Camera Action Buttons */}
               <div className="flex flex-wrap justify-center gap-3">
-                <Button onClick={() => fileRef.current?.click()}><Upload className="mr-2 h-4 w-4" />Upload photo</Button>
-                <Button variant="outline" onClick={goLive}><Camera className="mr-2 h-4 w-4" />Use camera</Button>
+                <Button size="lg" onClick={() => fileRef.current?.click()} className="shadow-md">
+                  <Upload className="mr-2 h-4 w-4" />Upload Photo
+                </Button>
+                <Button size="lg" variant="outline" onClick={goLive} className="border-primary/30 hover:border-primary">
+                  <Camera className="mr-2 h-4 w-4" />Use Live Camera
+                </Button>
+              </div>
+
+              {/* 1-Tap Demo Models Section */}
+              <div className="w-full max-w-sm pt-4 border-t border-border/60">
+                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                  Or Try Instantly on Demo Models
+                </div>
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                  {DEMO_MODELS.map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => loadDemoModel(m.src)}
+                      className="group flex flex-col items-center p-2 rounded-2xl border border-border/70 bg-card/80 hover:border-primary/50 hover:shadow-md transition-all text-center"
+                    >
+                      <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-amber-500/30 group-hover:scale-105 group-hover:border-primary transition-all shadow-sm">
+                        <img src={m.src} alt={m.name} className="w-full h-full object-cover" />
+                      </div>
+                      <span className="font-bold text-xs text-foreground mt-2">{m.name}</span>
+                      <span className="text-[9.5px] text-muted-foreground">{m.tone}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}
-          {busy && <div role="status" className="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm"><Loader2 className="h-4 w-4 animate-spin" />{status === 'loading-model' ? 'Loading face model…' : 'Finding your face…'}</div>}
+
+          {busy && (
+            <div role="status" className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-xs text-sm">
+              <Loader2 className="h-8 w-8 animate-spin text-[#C83E68]" />
+              <p className="font-medium text-foreground">{status === 'loading-model' ? 'Loading AI face model…' : 'Detecting facial contours…'}</p>
+            </div>
+          )}
         </div>
         <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" aria-label="Upload a photo" onChange={(e) => onFile(e.target.files?.[0])} />
 
         <div aria-live="polite" className="space-y-2">
-          {error && <Alert variant="destructive"><AlertTriangle className="h-4 w-4" /><AlertTitle>Something went wrong</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>}
-          {cam.message && source === 'none' && <Alert><AlertTriangle className="h-4 w-4" /><AlertTitle>Camera unavailable</AlertTitle><AlertDescription>{cam.message}</AlertDescription></Alert>}
-          {status === 'no-face' && <Alert><AlertTriangle className="h-4 w-4" /><AlertTitle>No face detected</AlertTitle><AlertDescription>Try a well-lit, front-facing photo with your whole face visible. Makeup can’t be placed without a detected face.</AlertDescription></Alert>}
-          {hairState === 'failed' && <Alert><AlertDescription>Hair colour isn’t available for this photo (the hair model couldn’t run or found no hair).</AlertDescription></Alert>}
+          {error && <Alert variant="destructive"><AlertTriangle className="h-4 w-4" /><AlertTitle>Notice</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>}
+          {cam.message && source === 'none' && <Alert><AlertTriangle className="h-4 w-4" /><AlertTitle>Camera</AlertTitle><AlertDescription>{cam.message}</AlertDescription></Alert>}
+          {status === 'no-face' && <Alert><AlertTriangle className="h-4 w-4" /><AlertTitle>No face detected</AlertTitle><AlertDescription>Please choose a well-lit photo where your face is clearly visible.</AlertDescription></Alert>}
+          {hairState === 'failed' && <Alert><AlertDescription>Hair color preview isn’t available for this angle.</AlertDescription></Alert>}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {source === 'live' && <Button onClick={capture} disabled={cam.status !== 'active' || busy}><Camera className="mr-2 h-4 w-4" />Capture frame</Button>}
-          {source !== 'none' && <Button variant="outline" onClick={() => fileRef.current?.click()}><Upload className="mr-2 h-4 w-4" />New photo</Button>}
-          <Button variant="outline" size="icon" aria-label="Undo" onClick={undo} disabled={!canUndo}><Undo2 className="h-4 w-4" /></Button>
-          <Button variant="outline" size="icon" aria-label="Redo" onClick={redo} disabled={!canRedo}><Redo2 className="h-4 w-4" /></Button>
-          <Button variant="outline" onClick={reset}><RotateCcw className="mr-2 h-4 w-4" />Reset look</Button>
-          <Button variant="outline" disabled={source === 'none'} aria-label="Hold to compare with original"
-            onPointerDown={() => setShowOriginal(true)} onPointerUp={() => setShowOriginal(false)} onPointerLeave={() => setShowOriginal(false)} onPointerCancel={() => setShowOriginal(false)}
-            onKeyDown={(e) => (e.key === ' ' || e.key === 'Enter') && setShowOriginal(true)} onKeyUp={() => setShowOriginal(false)} onBlur={() => setShowOriginal(false)}>
-            <Eye className="mr-2 h-4 w-4" />Hold: original
+        {/* Quick Toolbar (Undo, Redo, Compare, New Photo) */}
+        <div className="flex flex-wrap items-center gap-2 p-2 rounded-2xl bg-card border border-border/70 shadow-xs">
+          {source === 'live' && (
+            <Button onClick={capture} disabled={cam.status !== 'active' || busy} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Camera className="mr-2 h-4 w-4" />Capture Photo
+            </Button>
+          )}
+          {source !== 'none' && (
+            <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
+              <Upload className="mr-1.5 h-3.5 w-3.5" />New Photo
+            </Button>
+          )}
+          <Button variant="outline" size="icon" className="h-8 w-8" aria-label="Undo" onClick={undo} disabled={!canUndo}>
+            <Undo2 className="h-3.5 w-3.5" />
           </Button>
-          {source !== 'none' && <Button variant="ghost" onClick={discard}><Trash2 className="mr-2 h-4 w-4" />Discard session</Button>}
+          <Button variant="outline" size="icon" className="h-8 w-8" aria-label="Redo" onClick={redo} disabled={!canRedo}>
+            <Redo2 className="h-3.5 w-3.5" />
+          </Button>
+          <Button variant="outline" size="sm" onClick={reset}>
+            <RotateCcw className="mr-1.5 h-3.5 w-3.5" />Reset
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={source === 'none'}
+            aria-label="Hold to compare with original"
+            onPointerDown={() => setShowOriginal(true)}
+            onPointerUp={() => setShowOriginal(false)}
+            onPointerLeave={() => setShowOriginal(false)}
+            onPointerCancel={() => setShowOriginal(false)}
+            onKeyDown={(e) => (e.key === ' ' || e.key === 'Enter') && setShowOriginal(true)}
+            onKeyUp={() => setShowOriginal(false)}
+            onBlur={() => setShowOriginal(false)}
+          >
+            <Eye className="mr-1.5 h-3.5 w-3.5" />Hold: Original
+          </Button>
+          {source !== 'none' && (
+            <Button variant="ghost" size="icon" className="h-8 w-8 ml-auto text-muted-foreground hover:text-destructive" onClick={discard} title="Discard session">
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-card p-3">
-          <label className="text-sm" htmlFor="export-size">PNG size</label>
-          <select id="export-size" value={sizeId} onChange={(e) => setSizeId(e.target.value)} className="rounded-md border border-input bg-background px-2 py-1.5 text-sm">{SIZES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select>
-          {exportInfo && <span className="text-xs text-muted-foreground">{exportInfo.w}×{exportInfo.h}{exportInfo.upscaled ? ' (upscaled)' : ''}{exportInfo.capped ? ' (limited for device memory)' : ''}</span>}
-          <Button className="ml-auto" onClick={download} disabled={source !== 'photo' || exporting || busy} title={source === 'live' ? 'Capture a frame first' : undefined}>
-            {exporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}Download PNG
+        {/* Export / Download Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 bg-card p-3 shadow-xs">
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-semibold text-muted-foreground" htmlFor="export-size">Quality:</label>
+            <select
+              id="export-size"
+              value={sizeId}
+              onChange={(e) => setSizeId(e.target.value)}
+              className="rounded-lg border border-input bg-background px-2.5 py-1 text-xs"
+            >
+              {SIZES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+            </select>
+          </div>
+          <Button
+            size="sm"
+            onClick={download}
+            disabled={source !== 'photo' || exporting || busy}
+            className="bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-700 hover:to-rose-700 text-white shadow-sm"
+          >
+            {exporting ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Download className="mr-1.5 h-3.5 w-3.5" />}
+            Save Portrait
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">Quick Makeup: a 2D, landmark-aligned preview of one photo. It can’t rotate your head in 3D, and colours depend on your screen and the photo’s lighting.</p>
       </div>
-      <aside aria-label="Makeup controls"><MakeupPanels faceReady={faceReady} hairDisabledReason={source === 'live' ? 'Hair colour works on photos only. Capture a frame first.' : undefined} /></aside>
+
+      {/* Right: Luxury Makeup Products & Shade Boutique */}
+      <aside aria-label="Makeup controls" className="w-full">
+        <MakeupPanels
+          faceReady={faceReady}
+          hairDisabledReason={source === 'live' ? 'Hair colour works on photos only. Capture a frame first.' : undefined}
+        />
+      </aside>
     </div>
   );
 }
