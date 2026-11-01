@@ -160,6 +160,7 @@ export const GlowUpSection: React.FC = () => {
 
     const chs = Array.from(story.querySelectorAll('.ch')) as HTMLElement[];
     const rails = Array.from(story.querySelectorAll('.rail button')) as HTMLElement[];
+    const mobileDots = Array.from(story.querySelectorAll('.mobile-dot')) as HTMLElement[];
 
     /* State variables */
     let target = 0;
@@ -239,7 +240,7 @@ export const GlowUpSection: React.FC = () => {
         cu.textContent = '';
       }
     };
-    document.addEventListener('pointerover', onPointerOver, { passive: true });
+    document.addEventListener('pointerover', onPointerOver);
 
     let animId = 0;
     let lastFrameTime = 0;
@@ -278,6 +279,7 @@ export const GlowUpSection: React.FC = () => {
         // Direct DOM update instead of React state re-render
         chs.forEach((e, i) => e.classList.toggle('on', i === c));
         rails.forEach((e, i) => e.classList.toggle('on', i === c));
+        mobileDots.forEach((e, i) => e.classList.toggle('on', i === c));
         story?.style.setProperty('--acc', PAL[c][1]);
       }
 
@@ -292,14 +294,13 @@ export const GlowUpSection: React.FC = () => {
 
       bx.lineWidth = 1;
       bx.strokeStyle = 'rgba(' + ink + ',.14)';
-      const N = Math.round(H / 28); // 28px step instead of 22px
+      const N = Math.round(H / 28);
       const px0 = mx * W;
       const py0 = my * H;
 
       for (let i = 0; i < N; i++) {
         bx.beginPath();
         const by = ((i + 0.5) * H) / N;
-        // Step 24px instead of 16px: 33% fewer math calls and lineTos
         for (let x = 0; x <= W + 24; x += 24) {
           let y =
             by +
@@ -386,6 +387,7 @@ export const GlowUpSection: React.FC = () => {
     story.style.setProperty('--acc', PAL[0][1]);
     chs[0]?.classList.add('on');
     rails[0]?.classList.add('on');
+    mobileDots[0]?.classList.add('on');
 
     return () => {
       cancelAnimationFrame(animId);
@@ -429,7 +431,7 @@ export const GlowUpSection: React.FC = () => {
             </a>
           </div>
 
-          {/* Side rail navigation */}
+          {/* Desktop side rail navigation */}
           <nav className="rail" id="rail" aria-label="Sections">
             {[0, 1, 2, 3].map((num) => (
               <button
@@ -442,6 +444,19 @@ export const GlowUpSection: React.FC = () => {
               </button>
             ))}
           </nav>
+
+          {/* Mobile chapter navigation dots */}
+          <div className="mobile-dots" aria-label="Chapters">
+            {[0, 1, 2, 3].map((num) => (
+              <button
+                key={num}
+                type="button"
+                className={`mobile-dot ${num === 0 ? 'on' : ''}`}
+                aria-label={`Chapter 0${num + 1}`}
+                onClick={() => handleRailClick(num)}
+              />
+            ))}
+          </div>
 
           {/* Portrait canvas */}
           <canvas
@@ -501,6 +516,7 @@ export const GlowUpSection: React.FC = () => {
               defaultValue="0"
               aria-label="Drag to reveal the portrait"
               onChange={handleSliderInput}
+              onInput={handleSliderInput}
             />
           </label>
 

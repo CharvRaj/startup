@@ -50,7 +50,7 @@
   color: inherit;
 }
 
-/* HUD */
+/* HUD Header elements */
 .glowup-story .logo {
   position: absolute;
   z-index: 6;
@@ -101,6 +101,7 @@
   font: 600 14px 'DM Sans', sans-serif;
   cursor: pointer;
   text-decoration: none;
+  white-space: nowrap;
   transition: background .3s, color .3s, border-color .3s;
 }
 
@@ -123,6 +124,7 @@
   color: var(--bg);
 }
 
+/* Desktop rail */
 .glowup-story .rail {
   position: absolute;
   z-index: 6;
@@ -164,6 +166,10 @@
   background: var(--acc);
 }
 
+.glowup-story .mobile-dots {
+  display: none;
+}
+
 .glowup-story .foot {
   position: absolute;
   z-index: 6;
@@ -174,7 +180,7 @@
   opacity: .7;
 }
 
-/* portrait */
+/* Portrait Canvas */
 .glowup-story .pcv {
   position: absolute;
   z-index: 3;
@@ -185,7 +191,7 @@
   will-change: transform;
 }
 
-/* copy + headline */
+/* Copy & Headline */
 .glowup-story .copy {
   position: absolute;
   z-index: 5;
@@ -207,7 +213,7 @@
 }
 
 .glowup-story .info {
-  max-width: 30ch;
+  max-width: 32ch;
   margin-bottom: 18px;
   opacity: 0;
   transform: translateY(16px);
@@ -280,7 +286,7 @@
   transform: translateY(-112%) rotate(-8deg);
 }
 
-/* drag to reveal */
+/* Drag to Reveal Slider */
 .glowup-story .drag {
   position: absolute;
   z-index: 6;
@@ -307,6 +313,7 @@
   background: none;
   cursor: grab;
   --v: 0%;
+  touch-action: pan-y;
 }
 
 .glowup-story #rv:active {
@@ -363,7 +370,7 @@
   50% { transform: translateX(6px); }
 }
 
-/* cursor */
+/* Custom Cursor */
 .glowup-cur, .glowup-dot {
   position: fixed;
   left: 0;
@@ -416,37 +423,280 @@
   color: var(--acc, #E5427A);
 }
 
-/* phone */
+/* ============================================================
+   RESPONSIVE DESIGN BREAKPOINTS: LARGE, MIDDLE & SMALL MOBILES
+   ============================================================ */
+
+/* 1. Large Mobile & Small Tablets / Foldables (max-width: 820px) */
 @media(max-width: 820px) {
+  .glowup-story .logo {
+    left: max(18px, 3vw);
+    top: max(16px, 2.5vh);
+  }
+  .glowup-story .logo i {
+    width: 38px;
+    height: 38px;
+    font-size: 17px;
+  }
+  .glowup-story .logo span {
+    font-size: 13px;
+    letter-spacing: 0.03em;
+  }
+  .glowup-story .top {
+    right: max(18px, 3vw);
+    top: max(16px, 2.5vh);
+    gap: 10px;
+  }
+  .glowup-story .pillb {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  .glowup-story .mobile-dots {
+    position: absolute;
+    z-index: 6;
+    right: max(18px, 3vw);
+    top: max(68px, 8vh);
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    background: rgba(var(--ink-rgb), 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 5px 9px;
+    border-radius: 20px;
+    border: 1px solid rgba(var(--ink-rgb), 0.12);
+  }
+  .glowup-story .mobile-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(var(--ink-rgb), 0.35);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: width 0.3s, background 0.3s;
+  }
+  .glowup-story .mobile-dot.on {
+    width: 18px;
+    border-radius: 10px;
+    background: var(--acc);
+  }
   .glowup-story .pcv {
     right: 50%;
     transform: translateX(50%);
-    width: min(88vw, calc(var(--vh) * 44));
+    width: min(80vw, calc(var(--vh) * 40), 340px);
     bottom: auto;
-    top: calc(var(--vh) * 11);
+    top: calc(var(--vh) * 9);
   }
   .glowup-story .copy {
-    bottom: max(96px, 13vh);
-    width: calc(100% - 48px);
+    bottom: max(92px, 13vh);
+    left: max(18px, 3vw);
+    width: calc(100% - 36px);
   }
   .glowup-story h1 {
-    font-size: clamp(64px, 24vw, 130px);
+    font-size: clamp(52px, 17vw, 100px);
+    line-height: .93;
   }
   .glowup-story .info {
     max-width: 34ch;
+    margin-bottom: 14px;
   }
   .glowup-story .info p {
     font-size: 14px;
     line-height: 1.5;
   }
-  .glowup-story .rail, .glowup-story .foot {
+  .glowup-story .rail,
+  .glowup-story .foot {
     display: none;
   }
   .glowup-story .drag {
-    width: calc(100% - 48px);
+    left: max(18px, 3vw);
+    bottom: max(22px, 3vh);
+    width: calc(100% - 36px);
+    max-width: 440px;
+  }
+}
+
+/* 2. Middle Mobile Devices (max-width: 480px, e.g. iPhone 13/14/15, Galaxy S23/S24, Pixel 7/8) */
+@media(max-width: 480px) {
+  .glowup-story .logo {
+    left: 14px;
+    top: 14px;
+    gap: 8px;
+  }
+  .glowup-story .logo i {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
   }
   .glowup-story .logo span {
-    display: none;
+    display: none; /* Keep top bar clean on middle mobile */
+  }
+  .glowup-story .top {
+    right: 14px;
+    top: 14px;
+    gap: 8px;
+  }
+  .glowup-story .pillb {
+    padding: 7px 13px;
+    font-size: 12px;
+  }
+  .glowup-story .mobile-dots {
+    right: 14px;
+    top: 60px;
+    padding: 4px 8px;
+    gap: 5px;
+  }
+  .glowup-story .mobile-dot {
+    width: 5px;
+    height: 5px;
+  }
+  .glowup-story .mobile-dot.on {
+    width: 14px;
+  }
+  .glowup-story .pcv {
+    top: calc(var(--vh) * 7.5);
+    width: min(84vw, calc(var(--vh) * 36), 290px);
+  }
+  .glowup-story .copy {
+    left: 14px;
+    bottom: max(82px, 11.5vh);
+    width: calc(100% - 28px);
+  }
+  .glowup-story h1 {
+    font-size: clamp(44px, 14.5vw, 72px);
+    line-height: .92;
+  }
+  .glowup-story .info {
+    max-width: 30ch;
+    margin-bottom: 10px;
+  }
+  .glowup-story .info b {
+    font-size: 11px;
+    letter-spacing: .12em;
+    margin-bottom: 6px;
+  }
+  .glowup-story .info b::before {
+    width: 24px;
+  }
+  .glowup-story .info p {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .glowup-story .drag {
+    left: 14px;
+    bottom: max(18px, 2.4vh);
+    width: calc(100% - 28px);
+    gap: 10px;
+  }
+  .glowup-story .drag span {
+    font-size: 11px;
+    letter-spacing: .08em;
+  }
+  .glowup-story #rv {
+    height: 30px;
+  }
+  .glowup-story #rv::-webkit-slider-thumb {
+    width: 26px;
+    height: 26px;
+    margin-top: -12px;
+  }
+  .glowup-story #rv::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* 3. Small Mobile Devices (max-width: 360px, e.g. iPhone SE, compact Androids, Galaxy Fold cover) */
+@media(max-width: 360px) {
+  .glowup-story .logo {
+    left: 10px;
+    top: 12px;
+  }
+  .glowup-story .logo i {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+  .glowup-story .top {
+    right: 10px;
+    top: 12px;
+    gap: 6px;
+  }
+  .glowup-story .pillb {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .glowup-story .mobile-dots {
+    right: 10px;
+    top: 52px;
+    padding: 3px 6px;
+    gap: 4px;
+  }
+  .glowup-story .pcv {
+    top: calc(var(--vh) * 6.5);
+    width: min(80vw, calc(var(--vh) * 32), 240px);
+  }
+  .glowup-story .copy {
+    left: 10px;
+    bottom: max(72px, 10vh);
+    width: calc(100% - 20px);
+  }
+  .glowup-story h1 {
+    font-size: clamp(38px, 13vw, 54px);
+  }
+  .glowup-story .info {
+    margin-bottom: 8px;
+  }
+  .glowup-story .info b {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+  .glowup-story .info b::before {
+    width: 18px;
+  }
+  .glowup-story .info p {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .glowup-story .drag {
+    left: 10px;
+    bottom: max(14px, 1.8vh);
+    width: calc(100% - 20px);
+    gap: 8px;
+  }
+  .glowup-story .drag span {
+    font-size: 10px;
+    letter-spacing: .06em;
+  }
+  .glowup-story #rv::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+    margin-top: -11px;
+  }
+}
+
+/* 4. Short Viewports / Mobile Landscape Height Support (max-height: 680px) */
+@media(max-height: 680px) and (max-width: 820px) {
+  .glowup-story .pcv {
+    top: calc(var(--vh) * 6);
+    width: min(65vw, calc(var(--vh) * 34), 230px);
+  }
+  .glowup-story .copy {
+    bottom: max(68px, 9vh);
+  }
+  .glowup-story h1 {
+    font-size: clamp(36px, 12vw, 56px);
+  }
+  .glowup-story .info {
+    margin-bottom: 6px;
+  }
+  .glowup-story .info p {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .glowup-story .drag {
+    bottom: max(12px, 1.6vh);
   }
 }
 
@@ -460,4 +710,3 @@
     transition: none;
   }
 }
-
