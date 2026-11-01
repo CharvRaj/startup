@@ -19,7 +19,7 @@ function noise(i: number, t: number) {
 }
 
 export const GlowUpSection: React.FC = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const storyRef = useRef<HTMLElement>(null);
   const bgCanvasRef = useRef<HTMLCanvasElement>(null);
   const pcvCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -30,6 +30,7 @@ export const GlowUpSection: React.FC = () => {
 
   const doneRef = useRef(false);
   const sliderValRef = useRef(0);
+  const goToStepRef = useRef<(step: number) => void>(() => {});
 
   const burst = useCallback(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !rvRef.current) return;
@@ -81,16 +82,7 @@ export const GlowUpSection: React.FC = () => {
   };
 
   const handleRailClick = (idx: number) => {
-    const story = storyRef.current;
-    if (!story) return;
-    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const headerOffset = window.innerWidth <= 820 ? 60 : 62;
-    const storyTop = story.getBoundingClientRect().top + window.scrollY;
-    const travel = story.offsetHeight - window.innerHeight;
-    window.scrollTo({
-      top: storyTop - headerOffset + (idx / (CH - 1)) * travel * 0.95,
-      behavior: calm ? 'auto' : 'smooth',
-    });
+    goToStepRef.current(idx);
   };
 
   useEffect(() => {
@@ -117,7 +109,6 @@ export const GlowUpSection: React.FC = () => {
     let H = 0;
     let PW = 0;
     let PH = 0;
-    // Cap DPR to 1.25 to prevent memory explosion on Retina/4K displays
     const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
 
     function size() {
@@ -177,6 +168,7 @@ export const GlowUpSection: React.FC = () => {
     let lastS = window.scrollY;
     let rev = calm ? 1 : 0.05;
     let idx = 0;
+    let currentStep = 0;
     const col = hexToRgb(PAL[0][0]);
 
     let cx = -100;
@@ -185,6 +177,27 @@ export const GlowUpSection: React.FC = () => {
     let ry = -100;
     let isVisible = true;
     let isInside = false;
+    let isStepLocked = false;
+    let lockTimeout: any = null;
+
+    /* Step navigation function */
+    function goToStep(nextStep: number) {
+      if (!story) return;
+      const clamped = Math.min(CH - 1, Math.max(0, nextStep));
+      currentStep = clamped;
+
+      const headerOffset = window.innerWidth <= 820 ? 60 : 62;
+      const storyTop = story.getBoundingClientRect().top + window.scrollY;
+      const travel = story.offsetHeight - window.innerHeight;
+      const targetScroll = storyTop - headerOffset + (clamped / (CH - 1)) * travel;
+
+      target = clamped / (CH - 1);
+      window.scrollTo({
+        top: targetScroll,
+        behavior: 'smooth',
+      });
+    }
+    goToStepRef.current = goToStep;
 
     function readScroll() {
       if (!story) return;
@@ -192,14 +205,102 @@ export const GlowUpSection: React.FC = () => {
       const t = story.offsetHeight - window.innerHeight;
       if (t <= 0) return;
       const progress = (headerOffset - story.getBoundingClientRect().top) / t;
-      target = Math.min(1, Math.max(0, progress));
+      const clamped = Math.min(1, Math.max(0, progress));
+      target = clamped;
+
+      if (!isStepLocked) {
+        currentStep = Math.min(CH - 1, Math.max(0, Math.round(clamped * (CH - 1))));
+      }
     }
 
     window.addEventListener('scroll', readScroll, { passive: true });
     readScroll();
     cur = target;
 
-    // Use IntersectionObserver to completely halt rendering loop when section is scrolled out of view
+    /* Step-by-Step Wheel Interceptor */
+    const onWheel = (e: WheelEvent) => {
+      if (!story) return;
+      const headerOffset = window.innerWidth <= 820 ? 60 : 62;
+      const rect = story.getBoundingClientRect();
+
+      // Check if section is currently locked in viewport
+      const isPinned = rect.top <= headerOffset + 8 && rect.bottom >= window.innerHeight - 20;
+      if (!isPinned) return;
+
+      if (e.deltaY > 15) {
+        // Scrolling DOWN
+        if (currentStep < CH - 1) {
+          e.preventDefault();
+          if (isStepLocked) return;
+          isStepLocked = true;
+          goToStep(currentStep + 1);
+          clearTimeout(lockTimeout);
+          lockTimeout = setTimeout(() => { isStepLocked = false; }, 650);
+        }
+        // If on the last step (Skin), allow standard scroll downward to the next section
+      } else if (e.deltaY < -15) {
+        // Scrolling UP
+        if (currentStep > 0) {
+          e.preventDefault();
+          if (isStepLocked) return;
+          isStepLocked = true;
+          goToStep(currentStep - 1);
+          clearTimeout(lockTimeout);
+          lockTimeout = setTimeout(() => { isStepLocked = false; }, 650);
+        }
+        // If on the first step (Welcome), allow standard scroll upward to the top
+      }
+    };
+    window.addEventListener('wheel', onWheel, { passive: false });
+
+    /* Step-by-Step Touch Swipe Interceptor (Mobile) */
+    let touchStartY = 0;
+    let touchStartX = 0;
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!story) return;
+      const headerOffset = window.innerWidth <= 820 ? 60 : 62;
+      const rect = story.getBoundingClientRect();
+      const isPinned = rect.top <= headerOffset + 15 && rect.bottom >= window.innerHeight - 30;
+      if (!isPinned) return;
+
+      const endY = e.changedTouches[0].clientY;
+      const endX = e.changedTouches[0].clientX;
+      const diffY = touchStartY - endY;
+      const diffX = touchStartX - endX;
+
+      // Vertical swipe intent
+      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 30) {
+        if (diffY > 0) {
+          // Swipe up -> advance 1 step
+          if (currentStep < CH - 1) {
+            if (isStepLocked) return;
+            isStepLocked = true;
+            goToStep(currentStep + 1);
+            clearTimeout(lockTimeout);
+            lockTimeout = setTimeout(() => { isStepLocked = false; }, 600);
+          }
+        } else {
+          // Swipe down -> previous 1 step
+          if (currentStep > 0) {
+            if (isStepLocked) return;
+            isStepLocked = true;
+            goToStep(currentStep - 1);
+            clearTimeout(lockTimeout);
+            lockTimeout = setTimeout(() => { isStepLocked = false; }, 600);
+          }
+        }
+      }
+    };
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchend', onTouchEnd, { passive: true });
+
+    // Use IntersectionObserver to halt rendering loop when section is scrolled out of view
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
@@ -235,7 +336,7 @@ export const GlowUpSection: React.FC = () => {
 
     const onPointerOver = (e: MouseEvent) => {
       if (!cu || !isInside) return;
-      const targetEl = (e.target as Element)?.closest?.('[data-cur],#rv,.rail button,.pillb');
+      const targetEl = (e.target as Element)?.closest?.('[data-cur],#rv,.rail button,.mobile-dot');
       if (targetEl) {
         cu.classList.add('big');
         cu.textContent = targetEl.id === 'rv' ? 'DRAG' : (targetEl as HTMLElement).dataset.cur || '';
@@ -248,7 +349,7 @@ export const GlowUpSection: React.FC = () => {
 
     let animId = 0;
     let lastFrameTime = 0;
-    const FRAME_MIN_MS = 1000 / 60; // Max 60 FPS cap to avoid burning GPU on 120Hz/144Hz
+    const FRAME_MIN_MS = 1000 / 60; // Max 60 FPS cap
 
     function frame(ts: number) {
       animId = requestAnimationFrame(frame);
@@ -263,7 +364,8 @@ export const GlowUpSection: React.FC = () => {
       sv += (s - lastS - sv) * 0.15;
       lastS = s;
 
-      cur += (target - cur) * (calm ? 1 : 0.2);
+      // Snappy, fluid interpolation
+      cur += (target - cur) * (calm ? 1 : 0.18);
 
       const pmx = mx;
       mx += (tmx - mx) * 0.08;
@@ -275,12 +377,12 @@ export const GlowUpSection: React.FC = () => {
       if (!calm && !isDone) rev += (0.3 + 0.7 * v - rev) * 0.06;
       else rev += (1 - rev) * 0.08;
 
-      amp += ((calm ? 0 : Math.min(30, Math.abs(vel) * 1.2 + Math.abs(sv) * 1.1 + (isDone ? 0 : 3))) - amp) * 0.1;
+      amp += ((calm ? 0 : Math.min(28, Math.abs(vel) * 1.2 + Math.abs(sv) * 1.1 + (isDone ? 0 : 3))) - amp) * 0.1;
 
-      const c = Math.min(CH - 1, Math.floor(cur * CH * 1.0 + 0.001));
+      // Clean round to step index
+      const c = Math.min(CH - 1, Math.max(0, Math.round(cur * (CH - 1))));
       if (c !== idx) {
         idx = c;
-        // Direct DOM update instead of React state re-render
         chs.forEach((e, i) => e.classList.toggle('on', i === c));
         rails.forEach((e, i) => e.classList.toggle('on', i === c));
         mobileDots.forEach((e, i) => e.classList.toggle('on', i === c));
@@ -396,8 +498,12 @@ export const GlowUpSection: React.FC = () => {
     return () => {
       cancelAnimationFrame(animId);
       observer.disconnect();
+      clearTimeout(lockTimeout);
       window.removeEventListener('resize', size);
       window.removeEventListener('scroll', readScroll);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchend', onTouchEnd);
       window.removeEventListener('pointermove', onPointerMove);
       document.removeEventListener('pointerover', onPointerOver);
     };
