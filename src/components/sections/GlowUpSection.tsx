@@ -84,9 +84,11 @@ export const GlowUpSection: React.FC = () => {
     const story = storyRef.current;
     if (!story) return;
     const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const t = story.getBoundingClientRect().top + window.scrollY;
+    const headerOffset = window.innerWidth <= 820 ? 60 : 62;
+    const storyTop = story.getBoundingClientRect().top + window.scrollY;
+    const travel = story.offsetHeight - window.innerHeight;
     window.scrollTo({
-      top: t + ((idx + 0.5) / CH) * (story.offsetHeight - window.innerHeight) * 0.98,
+      top: storyTop - headerOffset + (idx / (CH - 1)) * travel * 0.95,
       behavior: calm ? 'auto' : 'smooth',
     });
   };
@@ -261,7 +263,7 @@ export const GlowUpSection: React.FC = () => {
       sv += (s - lastS - sv) * 0.15;
       lastS = s;
 
-      cur += (target - cur) * (calm ? 1 : 0.08);
+      cur += (target - cur) * (calm ? 1 : 0.2);
 
       const pmx = mx;
       mx += (tmx - mx) * 0.08;
@@ -411,27 +413,6 @@ export const GlowUpSection: React.FC = () => {
       >
         <div className="stage" id="stage">
           <canvas className="bg-canvas" id="bg" ref={bgCanvasRef} aria-hidden="true" />
-
-          {/* HUD: Brand Logo & Top Actions */}
-          <a className="logo" href="#">
-            <i>🪷</i>
-            <span>BLINDGLOW</span>
-          </a>
-
-          <div className="top">
-            <button
-              className="pillb"
-              id="th"
-              type="button"
-              aria-pressed={theme === 'dark'}
-              onClick={toggleTheme}
-            >
-              {theme === 'dark' ? 'Day mode' : 'Night mode'}
-            </button>
-            <a className="pillb fill" href="#booking" data-cur="Book">
-              Book now
-            </a>
-          </div>
 
           {/* Desktop side rail navigation */}
           <nav className="rail" id="rail" aria-label="Sections">
