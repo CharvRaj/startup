@@ -24,6 +24,9 @@ import {
   ShieldCheck,
   AlertTriangle,
   Layers,
+  Zap,
+  CheckCircle2,
+  Lock,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -51,26 +54,26 @@ export function UserTicketDetailsModal({
     switch (status) {
       case 'open':
         return (
-          <Badge className="bg-amber-100 text-amber-800 border-amber-300 text-xs">
-            ⏳ Open / In Queue
+          <Badge className="bg-amber-100 text-amber-800 border-amber-300 text-xs flex items-center gap-1">
+            <Clock className="w-3 h-3" /> Open / In Queue
           </Badge>
         );
       case 'in_progress':
         return (
-          <Badge className="bg-blue-100 text-blue-800 border-blue-300 text-xs">
-            ⚡ In Progress with Resolver
+          <Badge className="bg-blue-100 text-blue-800 border-blue-300 text-xs flex items-center gap-1">
+            <Zap className="w-3 h-3" /> In Progress with Resolver
           </Badge>
         );
       case 'resolved':
         return (
-          <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-xs">
-            ✅ Resolved
+          <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-xs flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" /> Resolved
           </Badge>
         );
       case 'closed':
         return (
-          <Badge className="bg-gray-100 text-gray-800 border-gray-300 text-xs">
-            🔒 Closed
+          <Badge className="bg-gray-100 text-gray-800 border-gray-300 text-xs flex items-center gap-1">
+            <Lock className="w-3 h-3" /> Closed
           </Badge>
         );
     }
@@ -97,7 +100,7 @@ export function UserTicketDetailsModal({
       });
 
       setReplyText('');
-      toast({ title: '✅ Message sent to Resolver' });
+      toast({ title: 'Message sent to Resolver' });
       if (onTicketUpdated) onTicketUpdated(updated);
     } catch (err: any) {
       toast({ title: 'Error sending message', description: err.message, variant: 'destructive' });
@@ -113,7 +116,7 @@ export function UserTicketDetailsModal({
         'resolved',
         'Marked as resolved by customer'
       );
-      toast({ title: '🎉 Ticket marked as resolved. Thank you!' });
+      toast({ title: 'Ticket marked as resolved. Thank you!' });
       if (onTicketUpdated) onTicketUpdated(updated);
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
@@ -210,8 +213,9 @@ export function UserTicketDetailsModal({
                 className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
               >
                 <div className="flex items-center gap-1.5 mb-1 text-[11px] text-muted-foreground">
-                  <span className="font-semibold text-foreground">
-                    {isUser ? 'You' : `✨ ${msg.sender_name} (Resolver)`}
+                  <span className="font-semibold text-foreground flex items-center gap-1">
+                    {!isUser && <Sparkles className="w-3 h-3 text-primary" />}
+                    {isUser ? 'You' : `${msg.sender_name} (Resolver)`}
                   </span>
                   <span>•</span>
                   <span>

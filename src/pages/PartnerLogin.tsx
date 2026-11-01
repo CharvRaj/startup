@@ -35,11 +35,11 @@ export function PartnerLogin() {
       if (loginType === 'member') {
         sessionStorage.setItem('member_session', data.id);
         navigate(`/member-dashboard?id=${data.id}`);
-        toast({ title: '✅ Welcome back!', description: `Hello, ${data.full_name}` });
+        toast({ title: 'Welcome back!', description: `Hello, ${data.full_name}` });
       } else {
         sessionStorage.setItem('associate_session', data.id);
         navigate(`/associate-dashboard?id=${data.id}`);
-        toast({ title: '✅ Welcome back!', description: `Hello, ${data.owner_name}` });
+        toast({ title: 'Welcome back!', description: `Hello, ${data.owner_name}` });
       }
     } catch (error: any) {
       toast({ title: 'Login Failed', description: error.message, variant: 'destructive' });

@@ -95,7 +95,7 @@ export function FloatingAssistant() {
       setMessages(prev => [...prev, { role: 'assistant', content: data.response, timestamp: new Date() }]);
       fetchTodos();
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: "I'm having trouble connecting right now. Try asking me about our services, bookings, or beauty tips! 💄", timestamp: new Date() }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: "I'm having trouble connecting right now. Try asking me about our services, bookings, or beauty tips!", timestamp: new Date() }]);
     } finally { setLoading(false); }
   };
 
@@ -129,8 +129,8 @@ export function FloatingAssistant() {
           )}
           <span className="absolute inset-0 rounded-2xl animate-ping opacity-30"
             style={{ background: 'linear-gradient(135deg, #7c3aed, #be185d)' }} />
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-900/90 text-white text-xs px-3 py-1.5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-xl backdrop-blur-sm">
-            Sia AI Assistant ✨
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-900/90 text-white text-xs px-3 py-1.5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-xl backdrop-blur-sm flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-pink-400" /> Sia AI Assistant
           </div>
         </button>
       )}
@@ -254,7 +254,7 @@ export function FloatingAssistant() {
                       style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.3), rgba(190,24,93,0.3))', border: '1px solid rgba(255,255,255,0.1)' }}>
                       <Sparkles className="w-8 h-8 text-white" />
                     </div>
-                    <h4 className="font-bold text-white text-base mb-1">Hi {user.username}! 👋</h4>
+                    <h4 className="font-bold text-white text-base mb-1">Hi {user.username}!</h4>
                     <p className="text-white/50 text-xs leading-relaxed px-4 mb-4">
                       I'm Sia, your AI beauty assistant. Ask me anything about our services, bookings, beauty tips, or orders!
                     </p>

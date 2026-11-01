@@ -1,8 +1,9 @@
+import { StylistTrainingAcademy } from '@/components/training/StylistTrainingAcademy';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  Sparkles, Star, Package, TrendingUp, Bell, User, LogOut, Power, MapPin,
-  CheckCircle, Clock, MessageSquare, Activity, Award, Loader2,
+  Sparkles, Star, Package, UserCheck, Radio, TrendingUp, Bell, User, LogOut, Power, MapPin,
+  CheckCircle, Clock, MessageSquare, Activity, Award, Loader2, GraduationCap,
   BarChart3, Calendar, Phone, Eye, EyeOff, Megaphone, Wallet, AlertTriangle, Key, Lock,
   ChevronLeft, ChevronRight
 } from 'lucide-react';
@@ -32,7 +33,7 @@ export function MemberDashboard() {
   const [profile, setProfile] = useState<MemberProfile | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'analytics' | 'profile' | 'support' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'training' | 'analytics' | 'profile' | 'support' | 'settings'>('overview');
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(false);
   const [locationSharing, setLocationSharing] = useState(false);
@@ -129,7 +130,7 @@ export function MemberDashboard() {
     setIsOnline(newStatus);
     await supabase.from('stylist_requests').update({ is_active: newStatus }).eq('id', profile.id);
     await supabase.from('attendance_logs').insert({ stylist_id: profile.id, action: newStatus ? 'online' : 'offline' });
-    toast({ title: newStatus ? '🟢 You are now Online' : '⭕ You are now Offline' });
+    toast({ title: newStatus ? 'You are now Online' : 'You are now Offline' });
     if (!newStatus && locationSharing) stopLocationSharing();
   };
 
@@ -157,14 +158,14 @@ export function MemberDashboard() {
         }
       });
     }, 30000);
-    toast({ title: '📍 Location sharing started', description: 'Your location updates every 30 seconds. Customers can see you on the map.' });
+    toast({ title: 'Location sharing started', description: 'Your location updates every 30 seconds. Customers can see you on the map.' });
   };
 
   const stopLocationSharing = () => {
     if (locationInterval.current) clearInterval(locationInterval.current);
     locationInterval.current = null;
     setLocationSharing(false);
-    toast({ title: '📍 Location sharing stopped' });
+    toast({ title: 'Location sharing stopped' });
   };
 
   const submitSOS = async () => {
@@ -175,10 +176,10 @@ export function MemberDashboard() {
         latitude: pos.coords.latitude, longitude: pos.coords.longitude,
         message: 'SOS from stylist dashboard', status: 'active'
       });
-      toast({ title: '🆘 SOS Sent to Admin!', description: 'Admin has been notified with your location.', variant: 'destructive' });
+      toast({ title: 'SOS Sent to Admin!', description: 'Admin has been notified with your location.', variant: 'destructive' });
     }, () => {
       supabase.from('sos_requests').insert({ requester_type: 'stylist', requester_id: profile.id, message: 'SOS - location unavailable', status: 'active' });
-      toast({ title: '🆘 SOS Sent!', description: 'Admin has been notified.', variant: 'destructive' });
+      toast({ title: 'SOS Sent!', description: 'Admin has been notified.', variant: 'destructive' });
     });
   };
 
@@ -191,7 +192,7 @@ export function MemberDashboard() {
     if (session) {
       const { error } = await supabase.from('stylist_requests').update({ approved_password: newPassword }).eq('id', session);
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); }
-      else { toast({ title: '✅ Password Updated!', description: 'Use new password next time you login.' }); setNewPassword(''); setConfirmPassword(''); }
+      else { toast({ title: 'Password Updated!', description: 'Use new password next time you login.' }); setNewPassword(''); setConfirmPassword(''); }
     }
     setChangingPassword(false);
   };
@@ -203,7 +204,7 @@ export function MemberDashboard() {
       requester_type: 'stylist', requester_id: profile?.id,
       subject: supportSubject, message: supportMessage, status: 'open', priority: 'normal',
     });
-    toast({ title: '✅ Support ticket submitted!', description: 'Admin will respond soon.' });
+    toast({ title: 'Support ticket submitted!', description: 'Admin will respond soon.' });
     setSupportSubject(''); setSupportMessage('');
     setSubmittingSupport(false);
   };
@@ -276,7 +277,7 @@ export function MemberDashboard() {
           <div className="relative z-10 flex items-start justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-                style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}>👩‍🎨</div>
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}><UserCheck className="w-6 h-6 text-white" /></div>
               <div>
                 <h1 className="text-white font-bold text-xl">{profile.full_name}</h1>
                 <p className="text-violet-300 text-sm">{profile.specialization}</p>
@@ -293,7 +294,7 @@ export function MemberDashboard() {
               style={locationSharing
                 ? { background: 'rgba(52,211,153,0.2)', border: '1px solid rgba(52,211,153,0.4)', color: '#34d399' }
                 : { background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: 'white' }}>
-              <MapPin className="w-4 h-4" />{locationSharing ? '📡 Sharing Location' : 'Share Location'}
+              {locationSharing ? <><Radio className="w-4 h-4 animate-pulse text-emerald-400" /> Sharing Location</> : <><MapPin className="w-4 h-4" /> Share Location</>}
             </button>
           </div>
 
@@ -302,7 +303,7 @@ export function MemberDashboard() {
               { label: 'Total Jobs', value: jobs.length, icon: Package, color: 'from-violet-400 to-purple-500' },
               { label: 'Completed', value: completedJobs.length, icon: CheckCircle, color: 'from-emerald-400 to-teal-500' },
               { label: 'Pending', value: pendingJobs.length, icon: Clock, color: 'from-amber-400 to-orange-500' },
-              { label: 'Rating', value: `${profile.rating?.toFixed(1) || '5.0'}★`, icon: Star, color: 'from-amber-400 to-yellow-500' },
+              { label: 'Rating', value: `${profile.rating?.toFixed(1) || '5.0'}`, icon: Star, color: 'from-amber-400 to-yellow-500' },
             ].map(({ label, value, icon: Icon, color }) => (
               <div key={label} className="flex items-center gap-3">
                 <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center flex-shrink-0`}>
@@ -348,6 +349,7 @@ export function MemberDashboard() {
                 {[
                   { id: 'overview', label: 'Overview', icon: Activity },
                   { id: 'jobs', label: 'My Jobs', icon: Package, badge: jobs.length },
+                  { id: 'training', label: 'Training Academy', icon: GraduationCap },
                   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
                   { id: 'profile', label: 'Profile', icon: User },
                   { id: 'support', label: 'Support', icon: MessageSquare },
@@ -383,6 +385,14 @@ export function MemberDashboard() {
 
           {/* Right Main Content */}
           <div className="flex-1 min-w-0 w-full">
+
+        {/* Training Academy */}
+        {activeTab === 'training' && (
+          <StylistTrainingAcademy
+            stylistId={profile.id}
+            stylistName={profile.full_name}
+          />
+        )}
 
         {/* Overview */}
         {activeTab === 'overview' && (
@@ -427,7 +437,7 @@ export function MemberDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className={`font-bold text-lg ${isOnline ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {isOnline ? '🟢 You are Online' : '⭕ You are Offline'}
+                    {isOnline ? <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> You are Online</span> : <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-slate-400 inline-block" /> You are Offline</span>}
                   </h3>
                   <p className={`text-sm ${isOnline ? 'text-emerald-400/70' : 'text-red-400/70'}`}>
                     {isOnline ? 'You can receive new bookings and assignments.' : 'Toggle on to start receiving bookings.'}

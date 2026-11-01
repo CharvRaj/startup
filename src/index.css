@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Dancing+Script:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@500;600;700&family=Dancing+Script:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,87 +6,87 @@
 
 @layer base {
   :root {
-    --background: 36 28% 98%;
-    --foreground: 25 18% 18%;
+    --background: 36 30% 97%; /* #FAF6F0 warm ivory */
+    --foreground: 25 22% 16%; /* #2D1F1D deep espresso plum */
 
-    --card: 36 24% 99%;
-    --card-foreground: 25 18% 18%;
+    --card: 0 0% 100%; /* #FFFFFF crisp white */
+    --card-foreground: 25 22% 16%;
 
-    --popover: 36 24% 99%;
-    --popover-foreground: 25 18% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 22% 16%;
 
-    --primary: 342 56% 50%;
+    --primary: 342 56% 50%; /* #C83E68 rich rose berry */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 36 25% 94%;
-    --secondary-foreground: 25 18% 18%;
+    --secondary: 345 40% 96%; /* #FDF0F4 soft blush */
+    --secondary-foreground: 342 50% 25%; /* #43152E */
 
-    --muted: 36 20% 93%;
-    --muted-foreground: 25 10% 45%;
+    --muted: 36 22% 93%; /* #F4ECE3 warm champagne cream */
+    --muted-foreground: 25 12% 44%; /* #6B5B57 */
 
-    --accent: 36 45% 92%;
-    --accent-foreground: 25 18% 18%;
+    --accent: 345 35% 94%; /* #F8DCE4 */
+    --accent-foreground: 342 50% 25%;
 
     --destructive: 0 75% 58%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 36 18% 88%;
-    --input: 36 18% 86%;
+    --border: 345 30% 90%; /* #F5DCE1 delicate blush border */
+    --input: 345 25% 88%;
     --ring: 342 56% 50%;
 
-    --radius: 0.875rem;
+    --radius: 1rem;
 
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
+    --chart-1: 342 56% 50%;
+    --chart-2: 36 50% 56%;
+    --chart-3: 173 58% 39%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
     /* Premium palette tokens - refined and gentle */
-    --gold: 36 50% 56%;
-    --champagne: 38 45% 88%;
+    --gold: 36 50% 56%; /* #C69A62 */
+    --champagne: 38 45% 88%; /* #F3E9DF */
     --obsidian: 240 10% 9%;
-    --rosegold: 342 45% 70%;
+    --rosegold: 342 45% 70%; /* #E5A2B5 */
   }
 
   .dark {
-    --background: 240 10% 9%;
-    --foreground: 36 20% 94%;
+    --background: 340 18% 10%; /* #1F151B rich luxury obsidian plum */
+    --foreground: 36 25% 94%; /* #F7F3EE */
 
-    --card: 240 9% 13%;
-    --card-foreground: 36 20% 94%;
+    --card: 340 16% 14%; /* #281D24 */
+    --card-foreground: 36 25% 94%;
 
-    --popover: 240 9% 13%;
-    --popover-foreground: 36 20% 94%;
+    --popover: 340 16% 14%;
+    --popover-foreground: 36 25% 94%;
 
-    --primary: 342 60% 60%;
+    --primary: 342 60% 60%; /* #D94875 */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 8% 18%;
-    --secondary-foreground: 36 20% 94%;
+    --secondary: 340 15% 18%;
+    --secondary-foreground: 36 25% 94%;
 
-    --muted: 240 8% 16%;
-    --muted-foreground: 36 12% 64%;
+    --muted: 340 12% 18%;
+    --muted-foreground: 36 14% 68%;
 
-    --accent: 36 30% 24%;
-    --accent-foreground: 36 20% 94%;
+    --accent: 342 30% 24%;
+    --accent-foreground: 36 25% 94%;
 
     --destructive: 0 65% 52%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 8% 22%;
-    --input: 240 8% 22%;
+    --border: 340 15% 24%;
+    --input: 340 15% 24%;
     --ring: 342 60% 60%;
 
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
+    --chart-1: 342 60% 60%;
+    --chart-2: 38 55% 62%;
+    --chart-3: 160 60% 45%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
     --gold: 38 55% 62%;
     --champagne: 38 35% 30%;
-    --obsidian: 240 12% 6%;
+    --obsidian: 340 20% 8%;
     --rosegold: 342 45% 65%;
   }
 }
@@ -127,41 +127,50 @@
   }
 
   .gradient-bg {
-    background: linear-gradient(135deg, hsl(30 25% 97%) 0%, hsl(345 20% 97%) 50%, hsl(38 30% 96%) 100%);
+    background: linear-gradient(180deg, #FAF6F0 0%, #FFF9F5 50%, #FAF6F0 100%);
   }
 
   .section-padding {
-    @apply py-20 md:py-28;
+    @apply py-16 md:py-24;
   }
 
   .card-luxury {
-    @apply bg-card/80 backdrop-blur-md border border-border/40 shadow-lg transition-all duration-500;
-    border-radius: 1.25rem;
+    background: #FFFFFF;
+    border: 1px solid #F5DCE1;
+    border-radius: 1.5rem;
+    box-shadow: 0 16px 40px -15px rgba(84, 35, 55, 0.06);
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .card-luxury:hover {
-    @apply shadow-2xl;
-    transform: translateY(-4px);
-    border-color: hsl(345 72% 58% / 0.15);
+    box-shadow: 0 20px 50px -12px rgba(84, 35, 55, 0.12);
+    transform: translateY(-3px);
+    border-color: rgba(200, 62, 104, 0.35);
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, hsl(345 72% 55%) 0%, hsl(345 65% 50%) 50%, hsl(338 60% 48%) 100%);
-    @apply text-white font-semibold shadow-lg transition-all duration-300;
-    box-shadow: 0 8px 32px hsl(345 72% 55% / 0.35);
+    background: linear-gradient(135deg, #C83E68 0%, #A82E52 100%);
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 1rem;
+    box-shadow: 0 8px 24px rgba(200, 62, 104, 0.28);
+    transition: all 0.3s ease;
   }
   .btn-primary:hover {
-    box-shadow: 0 12px 40px hsl(345 72% 55% / 0.5);
+    box-shadow: 0 12px 32px rgba(200, 62, 104, 0.42);
     transform: translateY(-2px);
-    filter: brightness(1.08);
+    filter: brightness(1.05);
   }
 
   .btn-gold {
-    background: linear-gradient(135deg, #c9956c 0%, #d4a574 40%, #e8c49a 100%);
-    @apply text-white font-semibold shadow-lg transition-all duration-300;
-    box-shadow: 0 8px 28px rgba(201, 149, 108, 0.35);
+    background: linear-gradient(135deg, #C69A62 0%, #D4AF70 50%, #E8C49A 100%);
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 1rem;
+    box-shadow: 0 8px 24px rgba(198, 154, 98, 0.3);
+    transition: all 0.3s ease;
   }
   .btn-gold:hover {
-    box-shadow: 0 12px 40px rgba(201, 149, 108, 0.5);
+    box-shadow: 0 12px 32px rgba(198, 154, 98, 0.45);
     transform: translateY(-2px);
   }
 
@@ -617,3 +626,210 @@ section {
   background: linear-gradient(90deg, #c9956c, #d4a574, #e8c49a);
   border-radius: 2px;
 }
+
+/* ==========================================================================
+   GLOBAL COMPREHENSIVE DARK MODE THEME SYSTEM
+   Transforms the entire site into an ultra-luxury Midnight Obsidian & Royal Gold palette
+   ========================================================================== */
+html.dark {
+  color-scheme: dark;
+}
+
+.dark,
+.dark body,
+.dark #root,
+.dark .page-transition {
+  background-color: #121015 !important;
+  color: #F7F3EE !important;
+}
+
+/* 1. Global Page and Section Backgrounds */
+.dark section,
+.dark main,
+.dark .gradient-bg,
+.dark [style*="#FAF6F0"],
+.dark [style*="#faf6f0"],
+.dark [style*="#FAF6EE"],
+.dark [style*="#faf6ee"],
+.dark [style*="#FFF9F5"],
+.dark [style*="#fff9f5"],
+.dark [style*="#FDF7F2"],
+.dark [style*="#fdf7f2"],
+.dark [style*="#FFFDFB"],
+.dark [style*="#fffdfb"],
+.dark [style*="#FFF9F3"],
+.dark [style*="#fff9f3"],
+.dark [style*="#FAF2EA"],
+.dark [style*="#faf2ea"],
+.dark [style*="#F5EBE1"],
+.dark [style*="#f5ebe1"],
+.dark [style*="#FDF4E7"],
+.dark [style*="#fdf4e7"],
+.dark [style*="#FBF2E6"],
+.dark [style*="#fbf2e6"] {
+  background-color: #121015 !important;
+}
+
+/* 2. Global Cards, Panels and Elevated Surfaces */
+.dark .bg-white,
+.dark .card-luxury,
+.dark [style*="background: #FFFFFF"],
+.dark [style*="background: #ffffff"],
+.dark [style*="background: '#FFFFFF'"],
+.dark [style*="background: '#ffffff'"],
+.dark [style*="background: rgb(255, 255, 255)"],
+.dark [style*="#FDFBF7"],
+.dark [style*="#fdfbf7"] {
+  background-color: #1A1721 !important;
+  color: #F7F3EE !important;
+  border-color: rgba(197, 160, 89, 0.22) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45) !important;
+}
+
+.dark .card-luxury:hover {
+  border-color: rgba(197, 160, 89, 0.45) !important;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 3. Deep Heading and Primary Text Colors */
+.dark .text-\[\#133826\],
+.dark .text-\[\#342A29\],
+.dark .text-\[\#2D1F1D\],
+.dark .text-\[\#542337\],
+.dark .text-\[\#4E3F37\],
+.dark .text-slate-900,
+.dark .text-stone-900,
+.dark .text-gray-900,
+.dark [style*="color: #133826"],
+.dark [style*="color: '#133826'"],
+.dark [style*="color: #342A29"],
+.dark [style*="color: '#342A29'"],
+.dark [style*="color: #2D1F1D"],
+.dark [style*="color: '#2D1F1D'"],
+.dark [style*="color: #542337"],
+.dark [style*="color: '#542337'"],
+.dark [style*="color: #4E3F37"],
+.dark [style*="color: '#4E3F37'"] {
+  color: #F7F3EE !important;
+}
+
+/* 4. Subtitle and Muted Body Text */
+.dark .text-\[\#6B5A51\],
+.dark .text-\[\#5A6D61\],
+.dark .text-\[\#8C776B\],
+.dark .text-\[\#7C8B82\],
+.dark .text-\[\#7A6B69\],
+.dark .text-\[\#3D5647\],
+.dark .text-slate-500,
+.dark .text-slate-600,
+.dark .text-stone-600,
+.dark [style*="color: #6B5A51"],
+.dark [style*="color: '#6B5A51'"],
+.dark [style*="color: #5A6D61"],
+.dark [style*="color: '#5A6D61'"],
+.dark [style*="color: #8C776B"],
+.dark [style*="color: '#8C776B'"] {
+  color: #C7B7A6 !important;
+}
+
+/* 5. Borders and Dividers */
+.dark [style*="borderColor: '#F5DCE1'"],
+.dark [style*="borderColor: '#EFE6DE'"],
+.dark [style*="borderColor: '#E8D9C5'"],
+.dark [style*="borderColor: '#E8D9C6'"],
+.dark [style*="borderColor: '#F0E2D2'"],
+.dark [style*="borderColor: '#F0E4D3'"],
+.dark [style*="borderColor: '#E0CDA9'"],
+.dark [style*="borderColor: 'rgba(245,220,225,0.9)'"],
+.dark .border-\[\#F5DCE1\],
+.dark .border-\[\#E8D9C5\],
+.dark .border-\[\#E8D9C6\],
+.dark .border-\[\#EFE6DE\],
+.dark .border-\[\#F0E2D2\],
+.dark .border-\[\#F0E4D3\],
+.dark .border-\[\#E0CDA9\] {
+  border-color: rgba(197, 160, 89, 0.22) !important;
+}
+
+/* 6. Tinted Badges and Micro Pills */
+.dark [style*="background: #F5DCE1"],
+.dark [style*="background: '#F5DCE1'"],
+.dark [style*="background: #FDF0F4"],
+.dark [style*="background: '#FDF0F4'"],
+.dark [style*="background: #F7EBE8"],
+.dark [style*="background: '#F7EBE8'"],
+.dark .bg-\[\#F5DCE1\],
+.dark .bg-\[\#FDF0F4\],
+.dark .bg-\[\#FAF3E3\],
+.dark .bg-\[\#FFF9F5\],
+.dark .bg-rose-50,
+.dark .bg-amber-50,
+.dark .bg-pink-50 {
+  background-color: rgba(197, 160, 89, 0.12) !important;
+  color: #E8DEC8 !important;
+  border-color: rgba(197, 160, 89, 0.28) !important;
+}
+
+/* 7. Dialogs, Modals, Popovers */
+.dark [role="dialog"],
+.dark .bg-popover {
+  background-color: #1A1721 !important;
+  color: #F7F3EE !important;
+  border-color: rgba(197, 160, 89, 0.25) !important;
+}
+
+/* 8. Inputs, Textareas, and Dropdown Controls */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
+.dark select {
+  background-color: #221D28 !important;
+  color: #F7F3EE !important;
+  border-color: rgba(197, 160, 89, 0.3) !important;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgba(247, 243, 238, 0.45) !important;
+}
+
+/* 9. Diwali Landing Arch Banner & Free Gift Containers */
+.dark [style*="linear-gradient(180deg, #FFFDF8 0%, #FAF3E8 55%, #F7EDE1 100%)"] {
+  background: linear-gradient(180deg, #1E1925 0%, #17131F 55%, #120F18 100%) !important;
+  border-color: rgba(197, 160, 89, 0.3) !important;
+}
+
+.dark [style*="linear-gradient(135deg, #FFFDFB 0%, #FAF2EA 60%, #F5EBE1 100%)"] {
+  background: linear-gradient(135deg, #1E1925 0%, #17131F 60%, #120F18 100%) !important;
+  border-color: rgba(197, 160, 89, 0.3) !important;
+}
+
+.dark [style*="from-[#FFF9EE] via-[#FFF3D6] to-[#FFEAB8]"],
+.dark [style*="from-[#FFFDF8] via-[#FFF8EB] to-[#FFF1D6]"] {
+  background: linear-gradient(135deg, #261F17 0%, #1F1710 100%) !important;
+  border-color: rgba(212, 175, 55, 0.45) !important;
+}
+
+.dark [style*="from-[#FFF9EE] via-[#FFF3D6] to-[#FFEAB8]"] h4,
+.dark [style*="from-[#FFFDF8] via-[#FFF8EB] to-[#FFF1D6]"] h4 {
+  color: #F5EFEB !important;
+}
+
+.dark [style*="from-[#FFF9EE] via-[#FFF3D6] to-[#FFEAB8]"] li,
+.dark [style*="from-[#FFF9EE] via-[#FFF3D6] to-[#FFEAB8]"] span {
+  color: #E8DEC8 !important;
+}
+
+/* 10. Tables, Lists, and Admin Surfaces */
+.dark table {
+  color: #F7F3EE !important;
+}
+.dark thead tr {
+  background-color: #221D28 !important;
+  border-color: rgba(197, 160, 89, 0.22) !important;
+}
+.dark tbody tr {
+  border-color: rgba(197, 160, 89, 0.12) !important;
+}
+.dark tbody tr:hover {
+  background-color: rgba(197, 160, 89, 0.06) !important;
+}
+

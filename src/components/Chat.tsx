@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Send, MessageSquare, Image, CheckCheck, Clock, Phone, User, Loader2, Minimize2, Maximize2 } from 'lucide-react';
+import { X, Send, MessageSquare, Image, CheckCheck, Clock, Phone, User, Loader2, Minimize2, Maximize2, UserCheck } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/auth';
 
@@ -90,7 +90,7 @@ export function Chat({ orderId, orderType, executiveName, executiveId, onClose }
     if (executiveId) {
       await supabase.from('notifications').insert({
         user_id: user.id,
-        title: '💬 New message',
+        title: 'New message',
         message: `Customer sent: ${msgContent.slice(0, 60)}`,
         type: 'chat',
         link: `/member-dashboard`,
@@ -163,8 +163,8 @@ export function Chat({ orderId, orderType, executiveName, executiveId, onClose }
         style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.6), rgba(190,24,93,0.4))', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
       >
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style={{ background: 'rgba(255,255,255,0.15)' }}>
-            👩‍🎨
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white" style={{ background: 'rgba(255,255,255,0.15)' }}>
+            <UserCheck className="w-5 h-5" />
           </div>
           <div>
             <p className="text-white font-semibold text-sm">{executiveName || 'Beauty Expert'}</p>
@@ -200,7 +200,7 @@ export function Chat({ orderId, orderType, executiveName, executiveId, onClose }
           <div className="flex flex-col items-center justify-center h-full text-center px-6">
             <MessageSquare className="w-12 h-12 text-white/15 mb-3" />
             <p className="text-white/40 text-sm">No messages yet</p>
-            <p className="text-white/25 text-xs mt-1">Say hello to your beauty expert! 👋</p>
+            <p className="text-white/25 text-xs mt-1">Say hello to your beauty expert!</p>
           </div>
         ) : (
           groupedMessages.map(group => (
@@ -216,9 +216,9 @@ export function Chat({ orderId, orderType, executiveName, executiveId, onClose }
                 return (
                   <div key={msg.id} className={`flex mb-2 ${isMe ? 'justify-end' : 'justify-start'}`}>
                     {!isMe && (
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-sm mr-2 mt-auto flex-shrink-0"
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-white mr-2 mt-auto flex-shrink-0"
                         style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}>
-                        👩‍🎨
+                        <UserCheck className="w-4 h-4" />
                       </div>
                     )}
                     <div

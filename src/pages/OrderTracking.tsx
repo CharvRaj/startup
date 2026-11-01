@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
   CheckCircle, Clock, MapPin, User, Phone, Package,
-  ArrowLeft, RefreshCw, Sparkles, Heart, Loader2, Navigation
+  ArrowLeft, RefreshCw, Sparkles, Heart, Loader2, Navigation, XCircle
 } from 'lucide-react';
 
 interface Order {
@@ -113,28 +113,29 @@ export function OrderTracking() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50/30 via-white to-violet-50/30 mt-20">
+    <div className="min-h-screen mt-20" style={{ background: '#FAF6F0' }}>
       <div className="container-custom max-w-6xl py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-pink-600 flex items-center justify-center">
-              <Navigation className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-sm"
+              style={{ background: 'linear-gradient(135deg, #C83E68 0%, #A82E52 100%)' }}>
+              <Navigation className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="font-display text-3xl font-bold gradient-text">Live Order Tracking</h1>
-              <p className="text-sm text-muted-foreground flex items-center gap-1">
-                <span className={`w-2 h-2 rounded-full ${refreshing ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400 animate-pulse'}`}></span>
+              <h1 className="font-display text-3xl font-bold text-[#342A29]">Live Order Tracking</h1>
+              <p className="text-sm text-[#7A6B69] flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full ${refreshing ? 'bg-amber-400 animate-pulse' : 'bg-emerald-500 animate-pulse'}`}></span>
                 Auto-refreshes every 10s · Last: {lastRefresh.toLocaleTimeString()}
               </p>
             </div>
           </div>
           <div className="flex gap-2">
-            <Button onClick={refreshOrders} variant="outline" size="sm" disabled={refreshing}>
-              {refreshing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+            <Button onClick={refreshOrders} variant="outline" size="sm" disabled={refreshing} className="border-[#F5DCE1] bg-white hover:bg-[#FAF6F0]">
+              {refreshing ? <Loader2 className="w-4 h-4 animate-spin text-[#C83E68]" /> : <RefreshCw className="w-4 h-4 text-[#C83E68]" />}
             </Button>
-            <Button onClick={() => navigate('/profile')} variant="outline" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-1" /> Back
+            <Button onClick={() => navigate('/profile')} variant="outline" size="sm" className="border-[#F5DCE1] bg-white hover:bg-[#FAF6F0] text-[#342A29]">
+              <ArrowLeft className="w-4 h-4 mr-1 text-[#C83E68]" /> Back
             </Button>
           </div>
         </div>
@@ -183,7 +184,7 @@ export function OrderTracking() {
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {order.order_type === 'mehndi' ? '🎨 Mehndi' : '🏠 Doorstep'} · ₹{order.total}
+                    {order.order_type === 'mehndi' ? 'Mehndi' : 'Doorstep'} · ₹{order.total}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
@@ -210,7 +211,7 @@ export function OrderTracking() {
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="font-bold text-xl">#{selectedOrder.order_number}</h3>
                             <Badge variant="outline" className={selectedOrder.order_type === 'mehndi' ? 'border-rose-300 text-rose-700' : 'border-teal-300 text-teal-700'}>
-                              {selectedOrder.order_type === 'mehndi' ? '🎨 Mehndi' : '🏠 Doorstep'}
+                              {selectedOrder.order_type === 'mehndi' ? 'Mehndi Art' : 'Doorstep Salon'}
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground flex items-center gap-1">
@@ -269,7 +270,7 @@ export function OrderTracking() {
                       {isCancelled ? (
                         <div className="text-center py-8">
                           <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-                            <span className="text-3xl">❌</span>
+                            <XCircle className="w-8 h-8 text-red-500" />
                           </div>
                           <p className="text-red-600 font-semibold text-lg">Order has been cancelled</p>
                           <p className="text-muted-foreground text-sm mt-1">Please contact us for support</p>
@@ -359,7 +360,7 @@ export function OrderTracking() {
                         <div className="mt-3 text-center">
                           <p className="text-emerald-700 font-semibold flex items-center justify-center gap-2">
                             <Sparkles className="w-4 h-4" />
-                            Service completed! Thank you for choosing us ✨
+                            Service completed! Thank you for choosing us.
                           </p>
                         </div>
                       )}

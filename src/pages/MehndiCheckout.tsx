@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Phone, Mail, User, DollarSign, CheckCircle, Loader2, Heart, Wallet, Tag, Star, Award } from 'lucide-react';
+import { MapPin, Phone, Mail, User, DollarSign, CheckCircle, Loader2, Heart, Wallet, Tag, Star, Award, Check } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -105,7 +105,7 @@ export function MehndiCheckout() {
             lng: position.coords.longitude,
           });
           toast({
-            title: 'Location Captured ✅',
+            title: 'Location Captured',
             description: 'Your location has been saved',
           });
         },
@@ -150,7 +150,7 @@ export function MehndiCheckout() {
       const maxW = Math.min(walletBalance, base);
       if (maxW <= 0) { toast({ title: 'Insufficient wallet balance', variant: 'destructive' }); return; }
       setWalletDiscount(maxW); setUseWallet(true);
-      toast({ title: `✅ Wallet applied! Saves ₹${maxW}` });
+      toast({ title: `Wallet applied! Saved ₹${maxW}` });
     } else { setWalletDiscount(0); setUseWallet(false); }
   };
 
@@ -185,7 +185,7 @@ export function MehndiCheckout() {
         setDiscount(discountAmount);
         setAppliedCoupon(dailyCoupon);
         toast({
-          title: '🎉 Coupon Applied!',
+          title: 'Coupon Applied!',
           description: `You saved ₹${discountAmount} (${dailyCoupon.discount_percentage}% off)`,
         });
         return;
@@ -217,7 +217,7 @@ export function MehndiCheckout() {
         setDiscount(Math.min(discountAmount, regularCoupon.max_discount || discountAmount));
         setAppliedCoupon(regularCoupon);
         toast({
-          title: '🎉 Coupon Applied!',
+          title: 'Coupon Applied!',
           description: `You saved ₹${discountAmount}`,
         });
         return;
@@ -318,7 +318,7 @@ export function MehndiCheckout() {
           }).sort((a, b) => b.score - a.score);
           const best = scored[0];
           await supabase.from('mehndi_orders').update({ executive_id: best.id, executive_name: best.full_name, executive_phone: best.phone, status: 'executive_assigned' }).eq('id', order.id);
-          await supabase.from('notifications').insert({ user_id: user!.id, title: '👩‍🎨 Mehndi Expert Assigned!', message: `${best.full_name} will come to apply your mehndi.`, type: 'assignment', link: `/track-executive?order=${order.id}&type=mehndi` });
+          await supabase.from('notifications').insert({ user_id: user!.id, title: 'Mehndi Expert Assigned!', message: `${best.full_name} will come to apply your mehndi.`, type: 'assignment', link: `/track-executive?order=${order.id}&type=mehndi` });
         }
       } catch (e) { console.error('Auto-assign:', e); }
 
@@ -365,7 +365,7 @@ export function MehndiCheckout() {
         .eq('user_id', user!.id);
 
       toast({
-        title: '🎉 Mehndi Order Placed!',
+        title: 'Mehndi Order Placed!',
         description: `Order #${orderNumber} confirmed. You earned ${points} loyalty points!`,
       });
 
@@ -384,11 +384,16 @@ export function MehndiCheckout() {
   if (!user || loading) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-white to-pink-50/50 mt-20">
+    <div className="min-h-screen mt-20" style={{ background: '#FAF6F0' }}>
       <div className="container-custom max-w-6xl py-8">
           <div className="flex items-center gap-3 mb-8">
-            <Heart className="w-8 h-8 text-primary animate-pulse" />
-            <h1 className="font-display text-4xl font-bold gradient-text">Mehndi Checkout</h1>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#FDF0F4] border border-[#F5DCE1] text-[#C83E68] shadow-sm">
+              <Heart className="w-6 h-6 animate-pulse" />
+            </div>
+            <div>
+              <h1 className="font-display text-4xl font-bold text-[#342A29]">Mehndi Checkout</h1>
+              <p className="text-sm text-[#7A6B69]">Confirm your address and complete your booking</p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -462,8 +467,8 @@ export function MehndiCheckout() {
                     />
                   </div>
                   <Button onClick={getLocation} variant="outline" className="w-full gap-2">
-                    <MapPin className="w-4 h-4" />
-                    {location ? 'Location Captured ✅' : 'Use My Current Location'}
+                    {location ? <CheckCircle className="w-4 h-4 text-emerald-600" /> : <MapPin className="w-4 h-4" />}
+                    {location ? 'Location Captured' : 'Use My Current Location'}
                   </Button>
                 </CardContent>
               </Card>
@@ -543,7 +548,9 @@ export function MehndiCheckout() {
                     ) : (
                       <div className="flex justify-between text-sm text-green-600">
                         <span>Delivery Charge</span>
-                        <span className="font-medium">FREE ✓</span>
+                        <span className="font-medium flex items-center gap-1">
+                          FREE <Check className="w-3.5 h-3.5 text-emerald-600 inline" />
+                        </span>
                       </div>
                     )}
                     {discount > 0 && (
@@ -566,8 +573,15 @@ export function MehndiCheckout() {
                           <div className="flex items-center gap-2"><Wallet className="w-4 h-4 text-emerald-600" /><span className="text-sm font-medium">Wallet</span></div>
                           <Badge className="bg-emerald-100 text-emerald-800">₹{walletBalance}</Badge>
                         </div>
-                        <button onClick={toggleWallet} className={`w-full text-xs py-1.5 rounded-lg font-semibold transition-all ${useWallet ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-300'}`}>
-                          {useWallet ? `✓ Applied (-₹${walletDiscount})` : `Use Wallet (save ₹${Math.min(walletBalance, subtotal + deliveryCharge + serviceCharge)})`}
+                        <button onClick={toggleWallet} className={`w-full text-xs py-1.5 rounded-lg font-semibold transition-all flex items-center justify-center gap-1.5 ${useWallet ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-300'}`}>
+                          {useWallet ? (
+                            <>
+                              <Check className="w-3.5 h-3.5" />
+                              Applied (-₹{walletDiscount})
+                            </>
+                          ) : (
+                            `Use Wallet (save ₹${Math.min(walletBalance, subtotal + deliveryCharge + serviceCharge)})`
+                          )}
                         </button>
                       </div>
                     </div>
@@ -578,7 +592,9 @@ export function MehndiCheckout() {
                     {appliedCoupon ? (
                       <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
                         <div>
-                          <p className="text-sm font-semibold text-green-800">{appliedCoupon.code} Applied ✓</p>
+                          <p className="text-sm font-semibold text-green-800 flex items-center gap-1.5">
+                            {appliedCoupon.code} Applied <Check className="w-3.5 h-3.5 text-green-700 inline" />
+                          </p>
                           <p className="text-xs text-green-600">{appliedCoupon.description}</p>
                         </div>
                         <Button size="sm" variant="ghost" onClick={removeCoupon} className="text-red-600">

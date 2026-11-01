@@ -77,7 +77,7 @@ export function Complaints() {
     // Notification
     await supabase.from('notifications').insert({
       user_id: user.id,
-      title: '📋 Complaint Registered',
+      title: 'Complaint Registered',
       message: `Your complaint #${cNum} has been received. We will respond within 24 hours.`,
       type: 'info',
       link: '/profile',

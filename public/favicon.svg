@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E8C37B"/>
+      <stop offset="35%" stop-color="#C5A059"/>
+      <stop offset="70%" stop-color="#9E7832"/>
+      <stop offset="100%" stop-color="#D4AF37"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1F1A17"/>
+      <stop offset="100%" stop-color="#120F0D"/>
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Dark luxury background circle for high-contrast browser tab visibility -->
+  <circle cx="32" cy="32" r="30" fill="url(#bg)" stroke="url(#gold)" stroke-width="1.2"/>
+  <circle cx="32" cy="32" r="28" stroke="url(#gold)" stroke-width="0.5" stroke-dasharray="2 2" opacity="0.4"/>
+
+  <!-- Left Laurel Branch -->
+  <path d="M 32 50 C 22 50 14 42 14 31 C 14 20 22 13 30 11" 
+        stroke="url(#gold)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+  
+  <!-- Left Leaves -->
+  <path d="M 17 44 C 13 43 11 39 13 36 C 16 38 18 41 17 44 Z" fill="url(#gold)"/>
+  <path d="M 14 36 C 10 34 9 29 12 27 C 14 30 15 33 14 36 Z" fill="url(#gold)"/>
+  <path d="M 15 27 C 12 24 13 19 16 18 C 18 21 18 25 15 27 Z" fill="url(#gold)"/>
+  <path d="M 21 19 C 19 15 22 11 25 11 C 26 14 24 18 21 19 Z" fill="url(#gold)"/>
+  <path d="M 28 13 C 27 9 31 7 33 7 C 33 10 31 13 28 13 Z" fill="url(#gold)"/>
+
+  <!-- Left Inner Sprigs & Berries -->
+  <path d="M 19 41 C 21 38 23 37 25 38" stroke="url(#gold)" stroke-width="0.9" fill="none"/>
+  <circle cx="26" cy="38" r="1.1" fill="url(#gold)"/>
+  <path d="M 17 31 C 20 29 22 30 23 31" stroke="url(#gold)" stroke-width="0.9" fill="none"/>
+  <circle cx="24" cy="31" r="1.1" fill="url(#gold)"/>
+  <path d="M 21 23 C 24 23 25 25 26 25" stroke="url(#gold)" stroke-width="0.9" fill="none"/>
+  <circle cx="27" cy="25" r="1.1" fill="url(#gold)"/>
+
+  <!-- Right Laurel Branch -->
+  <path d="M 32 50 C 42 50 50 42 50 31 C 50 20 42 13 34 11" 
+        stroke="url(#gold)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+
+  <!-- Right Leaves -->
+  <path d="M 47 44 C 51 43 53 39 51 36 C 48 38 46 41 47 44 Z" fill="url(#gold)"/>
+  <path d="M 50 36 C 54 34 55 29 52 27 C 50 30 49 33 50 36 Z" fill="url(#gold)"/>
+  <path d="M 49 27 C 52 24 51 19 48 18 C 46 21 46 25 49 27 Z" fill="url(#gold)"/>
+  <path d="M 43 19 C 45 15 42 11 39 11 C 38 14 40 18 43 19 Z" fill="url(#gold)"/>
+  <path d="M 36 13 C 37 9 33 7 31 7 C 31 10 33 13 36 13 Z" fill="url(#gold)"/>
+
+  <!-- Right Inner Sprigs & Berries -->
+  <path d="M 45 41 C 43 38 41 37 39 38" stroke="url(#gold)" stroke-width="0.9" fill="none"/>
+  <circle cx="38" cy="38" r="1.1" fill="url(#gold)"/>
+  <path d="M 47 31 C 44 29 42 30 41 31" stroke="url(#gold)" stroke-width="0.9" fill="none"/>
+  <circle cx="40" cy="31" r="1.1" fill="url(#gold)"/>
+  <path d="M 43 23 C 40 23 39 25 38 25" stroke="url(#gold)" stroke-width="0.9" fill="none"/>
+  <circle cx="37" cy="25" r="1.1" fill="url(#gold)"/>
+
+  <!-- Center Botanical Monogram or Sparkle Star -->
+  <path d="M 32 23 L 33.2 27.5 L 37.5 28.5 L 33.5 31 L 34.5 35.5 L 32 33 L 29.5 35.5 L 30.5 31 L 26.5 28.5 L 30.8 27.5 Z" 
+        fill="url(#gold)" opacity="0.9"/>
+  <!-- Stem Ribbon / Tie at bottom -->
+  <path d="M 29 49 C 32 52 32 52 35 49" stroke="url(#gold)" stroke-width="1.2" fill="none"/>
+  <path d="M 30 51 L 27 55" stroke="url(#gold)" stroke-width="1" stroke-linecap="round"/>
+  <path d="M 34 51 L 37 55" stroke="url(#gold)" stroke-width="1" stroke-linecap="round"/>
+</svg>

@@ -38,18 +38,18 @@ export function About() {
             </h2>
 
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
-              Welcome to Satguru Makeup Art, where beauty meets artistry. Founded by a passionate makeup artist with over 15 years of experience, we specialize in creating stunning looks that enhance your natural beauty and boost your confidence.
+              Welcome to BlindGlow By Satguru, where beauty meets doorstep luxury. Founded by passionate beauty specialists with over 15 years of industry excellence, we specialize in delivering salon-grade treatments directly to your doorstep.
             </p>
 
             <p className="text-muted-foreground text-lg mb-10 leading-relaxed">
-              Our mission is to provide exceptional beauty services in a warm, welcoming environment. We believe every woman deserves to feel beautiful, and we're here to make that happen with our expertise and dedication.
+              Our mission is to provide hygienic, certified, and personalized beauty care in the comfort of your home. We believe every person deserves to look and feel radiant without salon wait times.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
               {[
-                { icon: Award, value: '15+', label: 'Years Experience', gradient: 'linear-gradient(135deg, #be185d, #a8154f)' },
+                { icon: Award, value: '15+', label: 'Years Experience', gradient: 'linear-gradient(135deg, #C83E68, #A82E52)' },
                 { icon: Users, value: '1.2M+', label: 'Happy Clients', gradient: 'linear-gradient(135deg, #c9956c, #d4a574)' },
-                { icon: Heart, value: '100%', label: 'Satisfaction', gradient: 'linear-gradient(135deg, #7c3aed, #6d28d9)' },
+                { icon: Heart, value: '100%', label: 'Satisfaction', gradient: 'linear-gradient(135deg, #C83E68, #8E2345)' },
               ].map(({ icon: Icon, value, label, gradient }) => (
                 <div key={label} className="text-center p-5 transition-all duration-500 hover:-translate-y-2"
                   style={{

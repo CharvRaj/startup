@@ -25,6 +25,10 @@ import {
   Package,
   Layers,
   ChevronRight,
+  CreditCard,
+  Receipt,
+  ShieldCheck,
+  Crown,
 } from 'lucide-react';
 import {
   queryTicketService,
@@ -47,45 +51,45 @@ interface RaiseQueryModalProps {
   onTicketCreated?: (ticket: QueryTicket) => void;
 }
 
-const CATEGORIES: { label: TicketCategory; icon: string; desc: string }[] = [
+const CATEGORIES: { label: TicketCategory; icon: any; desc: string }[] = [
   {
     label: 'Stylist Delay / Not Arrived',
-    icon: '⏳',
+    icon: Clock,
     desc: 'Stylist is late or has not reached the location yet',
   },
   {
     label: 'Service Quality Concern',
-    icon: '✨',
+    icon: Sparkles,
     desc: 'Service did not meet expectations or product issue',
   },
   {
     label: 'Reschedule Request',
-    icon: '📅',
+    icon: Calendar,
     desc: 'Need urgent slot or date adjustment for your appointment',
   },
   {
     label: 'Cancellation & Refund',
-    icon: '💳',
+    icon: CreditCard,
     desc: 'Cancel booking or request refund back to wallet/bank',
   },
   {
     label: 'Billing / Overcharged',
-    icon: '🧾',
+    icon: Receipt,
     desc: 'Discrepancy in billing, invoice, or online payment',
   },
   {
     label: 'Stylist Conduct / Hygiene',
-    icon: '🛡️',
+    icon: ShieldCheck,
     desc: 'Safety, cleanliness, or professional conduct feedback',
   },
   {
     label: 'Special Pre-Bridal Request',
-    icon: '👑',
+    icon: Crown,
     desc: 'Special trial, shade customization, or wedding group instructions',
   },
   {
     label: 'General Support',
-    icon: '💬',
+    icon: MessageSquare,
     desc: 'Any other question or assistance needed from our team',
   },
 ];
@@ -170,7 +174,7 @@ export function RaiseQueryModal({
 
       setCreatedTicket(ticket);
       toast({
-        title: '🎫 Ticket Generated Successfully!',
+        title: 'Ticket Generated Successfully!',
         description: `Ticket Number: ${ticket.ticket_number}`,
       });
 
@@ -249,14 +253,16 @@ export function RaiseQueryModal({
                   Linked Booking: {createdTicket.booking_info.service_name}
                 </p>
                 {createdTicket.booking_info.service_date && (
-                  <p className="text-muted-foreground">
-                    📅 Slot: {createdTicket.booking_info.service_date} at{' '}
+                  <p className="text-muted-foreground flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-primary" />
+                    Slot: {createdTicket.booking_info.service_date} at{' '}
                     {createdTicket.booking_info.service_time || 'N/A'}
                   </p>
                 )}
                 {createdTicket.assigned_resolver_name && (
-                  <p className="text-primary font-medium">
-                    👤 Assigned Resolver: {createdTicket.assigned_resolver_name}
+                  <p className="text-primary font-medium flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5" />
+                    Assigned Resolver: {createdTicket.assigned_resolver_name}
                   </p>
                 )}
               </div>
@@ -389,28 +395,31 @@ export function RaiseQueryModal({
                   1. What problem are you facing? *
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {CATEGORIES.map((cat) => (
-                    <button
-                      type="button"
-                      key={cat.label}
-                      onClick={() => setCategory(cat.label)}
-                      className={`text-left p-3 rounded-xl border text-xs transition-all flex items-start gap-2.5 ${
-                        category === cat.label
-                          ? 'border-primary bg-primary/10 shadow-sm font-medium'
-                          : 'border-border hover:bg-secondary/60 text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      <span className="text-lg leading-none mt-0.5">{cat.icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className={`font-semibold truncate ${category === cat.label ? 'text-primary' : 'text-foreground'}`}>
-                          {cat.label}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground leading-tight line-clamp-1 mt-0.5">
-                          {cat.desc}
-                        </p>
-                      </div>
-                    </button>
-                  ))}
+                  {CATEGORIES.map((cat) => {
+                    const CatIcon = cat.icon;
+                    return (
+                      <button
+                        type="button"
+                        key={cat.label}
+                        onClick={() => setCategory(cat.label)}
+                        className={`text-left p-3 rounded-xl border text-xs transition-all flex items-start gap-2.5 ${
+                          category === cat.label
+                            ? 'border-primary bg-primary/10 shadow-sm font-medium'
+                            : 'border-border hover:bg-secondary/60 text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        <CatIcon className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                        <div className="flex-1 min-w-0">
+                          <p className={`font-semibold truncate ${category === cat.label ? 'text-primary' : 'text-foreground'}`}>
+                            {cat.label}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground leading-tight line-clamp-1 mt-0.5">
+                            {cat.desc}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -424,7 +433,7 @@ export function RaiseQueryModal({
                     [
                       { key: 'normal', label: 'Normal', desc: 'Standard query' },
                       { key: 'high', label: 'High', desc: 'Appointment today' },
-                      { key: 'urgent', label: '🚨 Urgent', desc: 'Immediate attention' },
+                      { key: 'urgent', label: 'Urgent', desc: 'Immediate attention' },
                     ] as const
                   ).map((p) => (
                     <button
@@ -473,8 +482,8 @@ export function RaiseQueryModal({
                   placeholder="Describe what occurred, any specific changes needed, stylist interaction, timing, or how you would like us to resolve this..."
                   className="w-full p-3.5 rounded-xl border border-border text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
                 />
-                <p className="text-[11px] text-muted-foreground mt-1">
-                  💡 Tip: The more details you provide, the faster our Query Resolver can assist
+                <p className="text-[11px] text-muted-foreground mt-1 flex items-center gap-1.5">
+                  <HelpCircle className="w-3.5 h-3.5 text-amber-500" /> Tip: The more details you provide, the faster our Query Resolver can assist
                   you.
                 </p>
               </div>

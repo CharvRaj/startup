@@ -6,7 +6,7 @@ export function DoorstepBanner() {
   const navigate = useNavigate();
 
   return (
-    <section className="py-14 sm:py-20 overflow-hidden relative" style={{ background: '#FFF9F5' }}>
+    <section className="py-14 sm:py-20 overflow-hidden relative bg-[#FFF9F5] dark:bg-[#121015] transition-colors duration-300">
       <div className="container-custom space-y-12 sm:space-y-16">
         
         {/* ========================================================
@@ -18,10 +18,8 @@ export function DoorstepBanner() {
             CTA: "Explore Home Services"
            ======================================================== */}
         <div
-          className="rounded-3xl sm:rounded-[36px] p-6 sm:p-10 md:p-12 lg:p-14 border shadow-xl relative overflow-hidden transition-all duration-300"
+          className="rounded-3xl sm:rounded-[36px] p-6 sm:p-10 md:p-12 lg:p-14 border border-[#F5DCE1] dark:border-[rgba(197,160,89,0.25)] bg-white dark:bg-[#1A1721] shadow-xl relative overflow-hidden transition-all duration-300"
           style={{
-            background: '#FFFFFF',
-            borderColor: '#F5DCE1',
             boxShadow: '0 20px 45px -15px rgba(84,35,55,0.07)',
           }}
         >
@@ -129,7 +127,7 @@ export function DoorstepBanner() {
                   style={{ borderColor: '#FFFFFF', boxShadow: '0 20px 45px -12px rgba(84,35,55,0.14)' }}
                 >
                   <img
-                    src="/images/banner-appointment.png"
+                    src="/images/larana-hero-flower.jpg"
                     alt="Facial skincare treatment at home"
                     className="w-full h-80 sm:h-96 md:h-[420px] object-cover object-center"
                     style={{ filter: 'none', opacity: 1 }}
@@ -159,10 +157,8 @@ export function DoorstepBanner() {
             CTA: "Explore Mehndi Designs"
            ======================================================== */}
         <div
-          className="rounded-3xl sm:rounded-[36px] p-6 sm:p-10 md:p-12 lg:p-14 border shadow-xl relative overflow-hidden transition-all duration-300"
+          className="rounded-3xl sm:rounded-[36px] p-6 sm:p-10 md:p-12 lg:p-14 border border-[rgba(200,100,50,0.25)] dark:border-[rgba(197,160,89,0.25)] bg-[#FFFDF9] dark:bg-[#1A1721] shadow-xl relative overflow-hidden transition-all duration-300"
           style={{
-            background: '#FFFDF9',
-            borderColor: 'rgba(200,100,50,0.25)',
             boxShadow: '0 20px 45px -15px rgba(139,69,19,0.1)',
           }}
         >

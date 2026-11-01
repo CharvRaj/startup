@@ -81,7 +81,7 @@ export function SplashScreen() {
               display: 'inline-block',
             }}
           >
-            Satguru Makeup Art
+            BlindGlow By Satguru
           </h1>
         </div>
 
@@ -98,7 +98,7 @@ export function SplashScreen() {
               transition: 'transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s',
             }}
           >
-            Beauty &amp; Elegance
+            Beauty at Your Doorstep
           </p>
         </div>
 

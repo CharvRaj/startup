@@ -22,7 +22,7 @@ export function ServiceDetailsModal({ service, onClose, onBookNow }: ServiceDeta
   const handleWishlist = () => {
     const added = toggleWishlist(service.id);
     toast({
-      title: added ? 'Saved to Wishlist ❤️' : 'Removed from Wishlist',
+      title: added ? 'Saved to Wishlist' : 'Removed from Wishlist',
       description: `${service.name} has been ${added ? 'added to' : 'removed from'} your wishlist.`,
     });
   };

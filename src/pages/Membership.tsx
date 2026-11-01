@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Crown, Check, Sparkles, TrendingUp, Gift, Star, Zap, Shield, Clock, Heart } from 'lucide-react';
+import { Crown, Check, Sparkles, TrendingUp, Gift, Star, Zap, Shield, Clock, Heart, Award, Medal, Trophy, Gem } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -8,12 +8,12 @@ import { useAuthStore } from '@/stores/auth';
 import { supabase } from '@/lib/supabase';
 import type { MembershipPlan, UserMembership } from '@/types';
 
-const TIER_CONFIG: Record<string, { gradient: string; badge: string; icon: string; glow: string; text: string }> = {
-  bronze:   { gradient: 'from-orange-400 to-amber-600',   badge: 'bg-orange-100 text-orange-800', icon: '🥉', glow: 'shadow-orange-200', text: 'text-orange-600' },
-  silver:   { gradient: 'from-slate-300 to-slate-500',    badge: 'bg-slate-100 text-slate-800',   icon: '🥈', glow: 'shadow-slate-200',  text: 'text-slate-600' },
-  gold:     { gradient: 'from-yellow-400 to-amber-500',   badge: 'bg-yellow-100 text-yellow-800', icon: '🥇', glow: 'shadow-yellow-200', text: 'text-yellow-600' },
-  platinum: { gradient: 'from-violet-400 to-purple-600',  badge: 'bg-violet-100 text-violet-800', icon: '💎', glow: 'shadow-violet-200', text: 'text-violet-600' },
-  diamond:  { gradient: 'from-cyan-400 to-blue-600',      badge: 'bg-cyan-100 text-cyan-800',     icon: '👑', glow: 'shadow-cyan-200',   text: 'text-cyan-600' },
+const TIER_CONFIG: Record<string, { gradient: string; badge: string; icon: any; glow: string; text: string }> = {
+  bronze:   { gradient: 'from-[#B55B33] to-[#D4AF70]', badge: 'bg-[#FDF0F4] text-[#B55B33]', icon: Award, glow: 'shadow-[#F5DCE1]', text: 'text-[#B55B33]' },
+  silver:   { gradient: 'from-[#7A706A] to-[#A39992]', badge: 'bg-stone-100 text-stone-800',   icon: Medal, glow: 'shadow-stone-200',  text: 'text-[#5C4D4A]' },
+  gold:     { gradient: 'from-[#C69A62] to-[#E5A855]', badge: 'bg-amber-50 text-amber-900',   icon: Trophy, glow: 'shadow-amber-200', text: 'text-[#B57C32]' },
+  platinum: { gradient: 'from-[#C83E68] to-[#992244]', badge: 'bg-[#F5DCE1] text-[#C83E68]', icon: Gem, glow: 'shadow-pink-200', text: 'text-[#C83E68]' },
+  diamond:  { gradient: 'from-[#43152E] to-[#6E1C48]', badge: 'bg-[#FDF0F4] text-[#43152E]', icon: Crown, glow: 'shadow-[#F5DCE1]', text: 'text-[#43152E]' },
 };
 
 export function Membership() {
@@ -63,29 +63,34 @@ export function Membership() {
   const cfg = (tier: string) => TIER_CONFIG[tier] || TIER_CONFIG.bronze;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50/30">
+    <div className="min-h-screen" style={{ background: '#FAF6F0' }}>
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-purple-700 to-indigo-800 pt-28 pb-20 px-6 text-center">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl" />
-        </div>
-        <div className="relative z-10 max-w-3xl mx-auto text-white">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-5 py-2 rounded-full text-sm font-medium mb-6">
-            <Crown className="w-4 h-4" />
-            Exclusive VIP Memberships
+      <div className="relative overflow-hidden pt-28 pb-16 px-6 text-center border-b border-[#F5DCE1]" style={{ background: '#FFF9F5' }}>
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <div
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-4 tracking-wide"
+            style={{ background: '#F5DCE1', color: '#542337', border: '1px solid rgba(200,62,104,0.2)' }}
+          >
+            <Crown className="w-3.5 h-3.5 text-[#C83E68]" />
+            Exclusive VIP Club
           </div>
-          <h1 className="font-display text-5xl md:text-6xl font-bold mb-4">
-            Unlock Your <span className="text-yellow-300">Premium</span> Experience
+          <h1
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight leading-tight"
+            style={{ color: '#342A29', fontFamily: "'Playfair Display', Georgia, serif" }}
+          >
+            Elevate Your <span className="italic" style={{ color: '#C83E68' }}>Beauty Experience</span>
           </h1>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
-            Save up to 30% on all services, earn multiplied loyalty points, and enjoy VIP treatment every visit
+          <p className="text-base sm:text-lg max-w-2xl mx-auto mb-8 font-normal" style={{ color: '#542337', opacity: 0.85 }}>
+            Enjoy up to 30% savings on every salon &amp; doorstep service, multiplied loyalty points, and VIP priority booking.
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {['10-30% Off All Services', 'Priority Booking', 'Loyalty Points Multiplier', 'Exclusive Perks'].map(f => (
-              <div key={f} className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium">
-                <Check className="w-4 h-4 text-yellow-300" />
+          <div className="flex flex-wrap justify-center gap-2.5">
+            {['10–30% Off All Services', 'Priority Artist Allocation', 'Multiplied Loyalty Points', 'Exclusive Member Gifts'].map(f => (
+              <div
+                key={f}
+                className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold border"
+                style={{ background: '#FFFFFF', borderColor: '#F5DCE1', color: '#342A29' }}
+              >
+                <Check className="w-3.5 h-3.5 text-[#C83E68]" />
                 {f}
               </div>
             ))}
@@ -96,17 +101,17 @@ export function Membership() {
       <div className="container-custom max-w-7xl py-12 px-4">
         {/* Active Membership Banner */}
         {userMembership && (userMembership.plan as MembershipPlan) && (
-          <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-r ${cfg((userMembership.plan as MembershipPlan).tier).gradient} p-6 mb-10 shadow-xl`}>
-            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -mr-24 -mt-24" />
+          <div className={`relative overflow-hidden rounded-3xl bg-gradient-to-r ${cfg((userMembership.plan as MembershipPlan).tier).gradient} p-6 sm:p-8 mb-10 shadow-lg border border-[#F5DCE1]`}>
+            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -mr-24 -mt-24 pointer-events-none" />
             <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-4xl shadow-lg">
-                  {cfg((userMembership.plan as MembershipPlan).tier).icon}
+                <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                  {(() => { const ActiveIcon = cfg((userMembership.plan as MembershipPlan).tier).icon; return <ActiveIcon className="w-8 h-8 text-white" />; })()}
                 </div>
                 <div className="text-white">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-bold text-xl">{(userMembership.plan as MembershipPlan).name}</h3>
-                    <Badge className="bg-white/30 text-white border-0 text-xs">✓ Active</Badge>
+                    <Badge className="bg-white/30 text-white border-0 text-xs flex items-center gap-1"><Check className="w-3 h-3" /> Active</Badge>
                   </div>
                   <p className="text-white/80 text-sm">
                     Valid until {new Date(userMembership.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -124,7 +129,7 @@ export function Membership() {
                 </div>
                 <Button
                   onClick={() => navigate('/doorstep-service')}
-                  className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
+                  className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm rounded-xl font-semibold"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
                   Shop Now
@@ -158,15 +163,15 @@ export function Membership() {
               return (
                 <div
                   key={plan.id}
-                  className={`relative bg-white rounded-2xl overflow-hidden border-2 transition-all duration-300 hover:-translate-y-2 flex flex-col group ${
-                    isPopular ? 'border-yellow-400 shadow-2xl shadow-yellow-100 scale-105' : 'border-border/40 hover:border-primary/30 shadow-sm hover:shadow-xl'
+                  className={`relative bg-white rounded-3xl overflow-hidden border transition-all duration-300 hover:-translate-y-2 flex flex-col group ${
+                    isPopular ? 'border-[#C69A62] shadow-xl ring-2 ring-[#C69A62]/20 scale-102' : 'border-[#F5DCE1] shadow-sm hover:shadow-lg'
                   }`}
                   style={{ animationDelay: `${idx * 100}ms` }}
                 >
                   {isPopular && (
-                    <div className="absolute top-0 inset-x-0 flex justify-center -translate-y-px">
-                      <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-bold px-4 py-1 rounded-b-xl flex items-center gap-1">
-                        <Star className="w-3 h-3" />
+                    <div className="absolute top-0 inset-x-0 flex justify-center -translate-y-px z-10">
+                      <div className="bg-[#C69A62] text-white text-[11px] font-bold px-3 py-0.5 rounded-b-xl flex items-center gap-1 shadow-sm">
+                        <Star className="w-3 h-3 fill-current" />
                         MOST POPULAR
                       </div>
                     </div>
@@ -177,8 +182,8 @@ export function Membership() {
 
                   {/* Header */}
                   <div className="p-6 text-center border-b border-border/30">
-                    <div className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${c.gradient} flex items-center justify-center text-4xl mb-4 shadow-lg ${c.glow} group-hover:scale-110 transition-transform duration-300`}>
-                      {c.icon}
+                    <div className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${c.gradient} flex items-center justify-center mb-4 shadow-lg ${c.glow} group-hover:scale-110 transition-transform duration-300`}>
+                      <c.icon className="w-10 h-10 text-white" />
                     </div>
                     <h3 className="font-bold text-lg mb-2 text-foreground">{plan.name}</h3>
                     <div className="flex items-baseline justify-center gap-1 mb-1">

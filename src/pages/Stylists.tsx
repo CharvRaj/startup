@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Star, Award, Calendar, Phone, Mail, Sparkles, TrendingUp, Users } from 'lucide-react';
+import { Star, Award, Calendar, Phone, Mail, Sparkles, TrendingUp, Users, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -33,14 +33,14 @@ export function Stylists() {
   };
 
   const getTierBadge = (rating: number) => {
-    if (rating >= 4.9) return { text: 'Master Artist', color: 'bg-purple-100 text-purple-800', icon: '👑' };
-    if (rating >= 4.7) return { text: 'Expert', color: 'bg-blue-100 text-blue-800', icon: '⭐' };
-    return { text: 'Professional', color: 'bg-green-100 text-green-800', icon: '✨' };
+    if (rating >= 4.9) return { text: 'Master Artist', color: 'bg-[#FDF0F4] text-[#C83E68] border border-[#F5DCE1]', icon: Crown };
+    if (rating >= 4.7) return { text: 'Expert Stylist', color: 'bg-[#FCF9F5] text-[#C69A62] border border-[#F5DCE1]', icon: Star };
+    return { text: 'Professional', color: 'bg-emerald-50 text-emerald-800 border border-emerald-200', icon: Sparkles };
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="section-padding bg-gradient-bg mt-20">
+    <div className="min-h-screen flex flex-col" style={{ background: '#FAF6F0' }}>
+      <main className="section-padding mt-20">
         <div className="container-custom max-w-7xl">
           {/* Hero Section */}
           <div className="text-center mb-12 animate-fade-in">
@@ -131,8 +131,8 @@ export function Stylists() {
                       
                       {/* Floating badge */}
                       <div className="absolute top-4 right-4 animate-bounce">
-                        <Badge className={tier.color}>
-                          {tier.icon} {tier.text}
+                        <Badge className={`${tier.color} flex items-center gap-1.5`}>
+                          <tier.icon className="w-3.5 h-3.5" /> {tier.text}
                         </Badge>
                       </div>
 

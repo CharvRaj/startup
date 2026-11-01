@@ -11,12 +11,12 @@ export interface LatestStory {
 }
 
 export const PRESET_LATEST_STORY_IMAGES = [
-  { label: '👰 Royal Bridal', url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80' },
-  { label: '✨ 24K Gold Facial', url: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80' },
-  { label: '🌿 Marwari Henna', url: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&q=80' },
-  { label: '💇 Hair Keratin Spa', url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80' },
-  { label: '🏡 VIP Doorstep Van', url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80' },
-  { label: '💅 Festive Nail Art', url: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?w=800&q=80' },
+  { label: 'Royal Bridal', url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80' },
+  { label: '24K Gold Facial', url: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80' },
+  { label: 'Marwari Henna', url: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&q=80' },
+  { label: 'Hair Keratin Spa', url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80' },
+  { label: 'VIP Doorstep Van', url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80' },
+  { label: 'Festive Nail Art', url: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?w=800&q=80' },
 ];
 
 export const DEFAULT_LATEST_STORIES: LatestStory[] = [

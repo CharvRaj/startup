@@ -190,7 +190,7 @@ export function AddMoneyModal({
       onBalanceUpdated(newBalance, newTxn);
       setSuccess(true);
       toast({
-        title: 'Wallet Funded Successfully! 👛',
+        title: 'Wallet Funded Successfully!',
         description: `₹${amount.toLocaleString('en-IN')} added via ${method.toUpperCase()}. New balance: ₹${newBalance.toLocaleString('en-IN')}`,
       });
     } catch (err: any) {

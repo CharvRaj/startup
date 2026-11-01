@@ -166,7 +166,7 @@ export function Booking() {
       });
 
       toast({
-        title: '💌 Thanks for Contacting Us!',
+        title: 'Thanks for Contacting Us!',
         description: 'Your booking has arrived! Our salon team will review your slot and provide confirmation within 15–30 minutes.',
       });
 
@@ -197,7 +197,7 @@ export function Booking() {
   };
 
   return (
-    <section id="booking" className="section-padding scroll-mt-20" style={{ background: '#FDF7F2' }}>
+    <section id="booking" className="section-padding scroll-mt-20 bg-[#FDF7F2] dark:bg-[#121015] transition-colors duration-300">
       <div className="container-custom">
         <div className="text-center mb-16 animate-fade-in">
           <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-4">
@@ -217,7 +217,9 @@ export function Booking() {
           <Dialog open={!!bookingConfirmation} onOpenChange={() => setBookingConfirmation(null)}>
             <DialogContent className="max-w-sm text-center">
               <DialogHeader>
-                <DialogTitle className="text-xl font-bold gradient-text">Booking Confirmed! 🎉</DialogTitle>
+                <DialogTitle className="text-xl font-bold gradient-text flex items-center justify-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary" /> Booking Confirmed!
+                </DialogTitle>
               </DialogHeader>
               <div className="py-4">
                 <div className="bg-gradient-to-br from-primary/5 to-pink-50 rounded-2xl p-6 mb-4">
@@ -334,7 +336,9 @@ export function Booking() {
                           <div className="flex items-center gap-2">
                             <span>{shop.name} - {shop.area}</span>
                             {shop.distance && (
-                              <span className="text-xs text-muted-foreground">📍 {shop.distance} km</span>
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <MapPin className="w-3 h-3 text-primary inline" /> {shop.distance} km
+                              </span>
                             )}
                           </div>
                         </SelectItem>
@@ -342,7 +346,9 @@ export function Booking() {
                     </SelectContent>
                   </Select>
                   {userLocation && (
-                    <p className="text-xs text-green-600 mt-1">📍 Showing nearest shops based on your location</p>
+                    <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5" /> Showing nearest shops based on your location
+                    </p>
                   )}
                 </div>
 

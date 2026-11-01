@@ -19,7 +19,7 @@ export function ServiceCard({ service, onViewDetails, onBookNow }: ServiceCardPr
     e.stopPropagation();
     const added = toggleWishlist(service.id);
     toast({
-      title: added ? 'Saved to Wishlist ❤️' : 'Removed from Wishlist',
+      title: added ? 'Saved to Wishlist' : 'Removed from Wishlist',
       description: `${service.name} has been ${added ? 'added to' : 'removed from'} your wishlist.`,
     });
   };

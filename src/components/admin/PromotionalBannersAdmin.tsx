@@ -118,7 +118,7 @@ export function PromotionalBannersAdmin() {
           endAt: formData.endAt ? new Date(formData.endAt).toISOString() : undefined,
           displayOrder: Number(formData.displayOrder) || editingBanner.displayOrder,
         });
-        toast({ title: 'Banner Updated ✅', description: `"${formData.title}" was saved successfully.` });
+        toast({ title: 'Banner Updated', description: `"${formData.title}" was saved successfully.` });
       } else {
         await createPromotionalBanner({
           title: formData.title,
@@ -132,7 +132,7 @@ export function PromotionalBannersAdmin() {
           endAt: formData.endAt ? new Date(formData.endAt).toISOString() : undefined,
           displayOrder: Number(formData.displayOrder) || banners.length + 1,
         });
-        toast({ title: 'Banner Created 🎉', description: `New promotional banner published.` });
+        toast({ title: 'Banner Created', description: `New promotional banner published.` });
       }
       setDialogOpen(false);
       loadBanners();
@@ -145,7 +145,7 @@ export function PromotionalBannersAdmin() {
     try {
       const updated = await toggleBannerStatus(id);
       toast({
-        title: updated.status === 'active' ? '🟢 Banner Activated' : '⚪ Banner Deactivated',
+        title: updated.status === 'active' ? 'Banner Activated' : 'Banner Deactivated',
         description: `Status changed to ${updated.status}. Customer homepage updated.`,
       });
       loadBanners();
@@ -158,7 +158,7 @@ export function PromotionalBannersAdmin() {
     try {
       const updated = await moveBannerOrder(id, direction);
       setBanners(updated);
-      toast({ title: 'Order Updated ↕️', description: 'Banner display sequence updated.' });
+      toast({ title: 'Order Updated', description: 'Banner display sequence updated.' });
     } catch (e: any) {
       toast({ title: 'Error', description: e.message, variant: 'destructive' });
     }
@@ -168,7 +168,7 @@ export function PromotionalBannersAdmin() {
     try {
       await deletePromotionalBanner(id);
       setDeleteConfirmId(null);
-      toast({ title: 'Banner Deleted 🗑️', description: 'The promotional banner was removed.' });
+      toast({ title: 'Banner Deleted', description: 'The promotional banner was removed.' });
       loadBanners();
     } catch (e: any) {
       toast({ title: 'Error', description: e.message, variant: 'destructive' });

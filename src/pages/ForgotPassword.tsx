@@ -90,32 +90,34 @@ export function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-bg py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center py-14 px-4" style={{ background: '#FAF6F0' }}>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link to="/login" className="inline-flex items-center gap-2 mb-6 text-muted-foreground hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
+          <Link to="/login" className="inline-flex items-center gap-2 mb-6 text-xs font-semibold text-[#7A6B69] hover:text-[#C83E68] transition-colors bg-white/80 px-3.5 py-1.5 rounded-full border border-[#F5DCE1] shadow-xs">
+            <ArrowLeft className="w-3.5 h-3.5" />
             Back to Login
           </Link>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Sparkles className="w-8 h-8 text-primary" />
-            <span className="font-display text-3xl font-bold gradient-text">
-              Satguru Makeup Art
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-[#FDF0F4] border border-[#F5DCE1] flex items-center justify-center text-[#C83E68]">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <span className="font-display text-2xl font-bold text-[#342A29]">
+              BlindGlow By Satguru
             </span>
           </div>
-          <p className="text-muted-foreground">Reset your password</p>
+          <p className="text-[#7A6B69] text-xs">Reset your password with verified OTP</p>
         </div>
 
-        <Card className="card-luxury">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">
+        <Card className="rounded-3xl border border-[#F5DCE1] shadow-lg bg-white overflow-hidden">
+          <CardHeader className="pb-3 border-b border-[#F5DCE1]">
+            <CardTitle className="text-xl text-center text-[#342A29]" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               {step === 'email' && 'Forgot Password'}
-              {step === 'otp' && 'Enter OTP'}
-              {step === 'password' && 'Reset Password'}
-              {step === 'success' && 'Success!'}
+              {step === 'otp' && 'Enter Verification Code'}
+              {step === 'password' && 'Set New Password'}
+              {step === 'success' && 'Password Reset Complete'}
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-5">
             {step === 'email' && (
               <form onSubmit={handleSendOTP} className="space-y-4">
                 <div>

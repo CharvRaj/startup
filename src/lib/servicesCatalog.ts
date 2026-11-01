@@ -112,14 +112,15 @@ export const CATEGORY_MAP: Record<string, { label: string; image: string; tag: s
 };
 
 export const DISPLAY_CATEGORIES = [
-  { id: 'all', label: 'All Services', image: '/images/larana-hero-portrait.png', count: 35 },
-  { id: 'facial', label: 'Facial & Clean-up', image: '/images/larana-facial-cleansing.png', filterTag: 'Facial & Clean-up' },
-  { id: 'waxing', label: 'Waxing & Threading', image: '/images/category-waxing.jpg', filterTag: 'Waxing & Threading' },
-  { id: 'hair', label: 'Hair Care & Styling', image: '/images/service-hair.png', filterTag: 'Hair Care & Styling' },
-  { id: 'makeup', label: 'Makeup & Bridal', image: '/images/category-bridal.jpg', filterTag: 'Makeup & Bridal' },
-  { id: 'nails', label: 'Manicure & Pedicure', image: '/images/category-nails.jpg', filterTag: 'Manicure & Pedicure' },
-  { id: 'massage', label: 'Massage & Spa', image: '/images/larana-relaxing-spa.png', filterTag: 'Massage & Spa' },
-  { id: 'skincare', label: 'Skin Care & Detan', image: '/images/larana-glow-refresh.png', filterTag: 'Skin Care & Detan' },
+  { id: 'all', label: 'All Services', image: '/images/larana-hero-flower.jpg', count: 35 },
+  { id: 'facial', label: 'Facial & Clean-up', image: '/images/larana-promo-facial.jpg', filterTag: 'Facial & Clean-up' },
+  { id: 'waxing', label: 'Waxing', image: '/images/larana-cat-waxing.jpg', filterTag: 'Waxing & Threading' },
+  { id: 'hair-care', label: 'Hair Care', image: '/images/larana-promo-hair.jpg', filterTag: 'Hair Care & Styling' },
+  { id: 'hair-styling', label: 'Hair Styling', image: '/images/service-hair.png', filterTag: 'Hair Care & Styling' },
+  { id: 'makeup', label: 'Makeup', image: '/images/service-face.png', filterTag: 'Makeup & Bridal' },
+  { id: 'nails', label: 'Manicure & Pedicure', image: '/images/larana-promo-nails.jpg', filterTag: 'Manicure & Pedicure' },
+  { id: 'massage', label: 'Massage', image: '/images/larana-cat-massage.jpg', filterTag: 'Massage & Spa' },
+  { id: 'skincare', label: 'Skin Care', image: '/images/larana-glow-refresh.png', filterTag: 'Skin Care & Detan' },
 ];
 
 /**
@@ -131,62 +132,62 @@ export function getServiceImage(name: string, category: string): { image: string
 
   if (n.includes('bridal') || n.includes('bride')) {
     return {
-      image: '/images/category-bridal.jpg',
-      banners: ['/images/category-bridal.jpg', '/images/larana-hero-portrait.png', '/images/banner-appointment.png'],
+      image: '/images/larana-bridal-art.jpg',
+      banners: ['/images/larana-bridal-art.jpg', '/images/category-bridal.jpg', '/images/larana-hero-flower.jpg'],
     };
   }
   if (n.includes('party makeup') || n.includes('engagement') || c.includes('makeup')) {
     return {
-      image: '/images/banner-appointment.png',
-      banners: ['/images/banner-appointment.png', '/images/category-bridal.jpg', '/images/larana-hero-portrait.png'],
+      image: '/images/service-face.png',
+      banners: ['/images/service-face.png', '/images/larana-bridal-art.jpg', '/images/banner-appointment.png'],
     };
   }
   if (n.includes('threading') || n.includes('eyebrow') || n.includes('upper lip') || n.includes('forehead')) {
     return {
       image: '/images/service-face.png',
-      banners: ['/images/service-face.png', '/images/larana-facial-cleansing.png', '/images/larana-hero-portrait.png'],
+      banners: ['/images/service-face.png', '/images/larana-facial-cleansing.png', '/images/larana-hero-flower.jpg'],
     };
   }
   if (n.includes('cleanup') || n.includes('clean-up') || n.includes('fruit facial')) {
     return {
-      image: '/images/larana-skincare-ritual.png',
-      banners: ['/images/larana-skincare-ritual.png', '/images/larana-facial-cleansing.png', '/images/service-face.png'],
+      image: '/images/larana-promo-facial.jpg',
+      banners: ['/images/larana-promo-facial.jpg', '/images/larana-facial-cleansing.png', '/images/service-face.png'],
     };
   }
   if (n.includes('gold facial') || n.includes('hydra') || c.includes('facial') || n.includes('facial')) {
     return {
-      image: '/images/larana-facial-cleansing.png',
-      banners: ['/images/larana-facial-cleansing.png', '/images/service-facial.png', '/images/larana-glow-refresh.png'],
+      image: '/images/larana-promo-facial.jpg',
+      banners: ['/images/larana-promo-facial.jpg', '/images/larana-facial-cleansing.png', '/images/larana-glow-refresh.png'],
     };
   }
   if (n.includes('wax') || c.includes('waxing')) {
     return {
-      image: '/images/category-waxing.jpg',
-      banners: ['/images/category-waxing.jpg', '/images/banner-relaxing.png', '/images/service-facial.png'],
+      image: '/images/larana-cat-waxing.jpg',
+      banners: ['/images/larana-cat-waxing.jpg', '/images/category-waxing.jpg', '/images/banner-relaxing.png'],
     };
   }
   if (n.includes('keratin') || n.includes('spa') && (c.includes('hair') || n.includes('hair'))) {
     return {
-      image: '/images/larana-hair-moments.png',
-      banners: ['/images/larana-hair-moments.png', '/images/service-hair.png', '/images/banner-beauty-spa.png'],
+      image: '/images/larana-promo-hair.jpg',
+      banners: ['/images/larana-promo-hair.jpg', '/images/larana-hair-moments.png', '/images/service-hair.png'],
     };
   }
   if (c.includes('hair') || n.includes('hair') || n.includes('blow dry') || n.includes('straightening')) {
     return {
       image: '/images/service-hair.png',
-      banners: ['/images/service-hair.png', '/images/larana-hair-moments.png', '/images/banner-service.png'],
+      banners: ['/images/service-hair.png', '/images/larana-promo-hair.jpg', '/images/banner-service.png'],
     };
   }
   if (n.includes('pedicure') || n.includes('manicure') || n.includes('nail') || c.includes('nail')) {
     return {
-      image: '/images/category-nails.jpg',
-      banners: ['/images/category-nails.jpg', '/images/larana-nail-art.png', '/images/banner-sunscreen.png'],
+      image: '/images/larana-promo-nails.jpg',
+      banners: ['/images/larana-promo-nails.jpg', '/images/category-nails.jpg', '/images/banner-sunscreen.png'],
     };
   }
   if (n.includes('massage') || c.includes('massage') || n.includes('head massage') || n.includes('body')) {
     return {
-      image: '/images/larana-relaxing-spa.png',
-      banners: ['/images/larana-relaxing-spa.png', '/images/larana-spa-massage.png', '/images/banner-relaxing.png'],
+      image: '/images/larana-cat-massage.jpg',
+      banners: ['/images/larana-cat-massage.jpg', '/images/larana-relaxing-spa.png', '/images/larana-spa-massage.png'],
     };
   }
   if (n.includes('detan') || n.includes('de-tan') || c.includes('skin')) {

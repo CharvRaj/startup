@@ -179,38 +179,37 @@ export function FestiveCategoryCanopy() {
     e.stopPropagation();
     const added = toggleWishlist(cat.id);
     toast({
-      title: added ? 'Saved to Wishlist ❤️' : 'Removed from Wishlist',
+      title: added ? 'Saved to Wishlist' : 'Removed from Wishlist',
       description: `${cat.name} has been ${added ? 'added to' : 'removed from'} your wishlist.`,
     });
   };
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 overflow-hidden relative" style={{ background: '#FFF9F5' }}>
+    <section className="py-12 sm:py-16 md:py-20 overflow-hidden relative bg-[#FFF9F5] dark:bg-[#121015] transition-colors duration-300">
       <div className="container-custom space-y-10 sm:space-y-14">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <div
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide"
-            style={{ background: '#F5DCE1', color: '#542337', border: '1px solid rgba(200,62,104,0.2)' }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide bg-[#F5DCE1] dark:bg-[#2A202A] text-[#542337] dark:text-[#E8DEC8] border border-[rgba(200,62,104,0.2)] dark:border-[rgba(197,160,89,0.3)]"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#C83E68]" />
+            <Sparkles className="w-3.5 h-3.5 text-[#C83E68] dark:text-[#E8C37B]" />
             Personalised Rituals
           </div>
 
           <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight"
-            style={{ color: '#342A29', fontFamily: "'Playfair Display', Georgia, serif" }}
+            className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#342A29] dark:text-[#F7F3EE]"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
           >
-            Find Your Perfect <span className="italic" style={{ color: '#C83E68' }}>Beauty Ritual</span>
+            Find Your Perfect <span className="italic text-[#C83E68] dark:text-[#E8C37B]">Beauty Ritual</span>
           </h2>
 
-          <p className="text-sm sm:text-base max-w-xl mx-auto" style={{ color: '#542337', opacity: 0.85 }}>
+          <p className="text-sm sm:text-base max-w-xl mx-auto text-[#542337]/85 dark:text-[#C7B7A6]">
             Explore treatments designed around your beauty goals.
           </p>
 
           {/* Category Section Switcher */}
-          <div className="inline-flex p-1.5 rounded-2xl bg-white border border-[#F5DCE1] shadow-xs mt-3">
+          <div className="inline-flex p-1.5 rounded-2xl bg-white dark:bg-[#1A1721] border border-[#F5DCE1] dark:border-[rgba(197,160,89,0.25)] shadow-xs mt-3">
             <button
               onClick={() => setActiveTab('doorstep')}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2 ${

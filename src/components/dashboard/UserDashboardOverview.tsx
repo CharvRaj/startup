@@ -100,7 +100,7 @@ export function UserDashboardOverview({
               <p className="text-sm font-medium text-[#43152E]/70">{greetingTime},</p>
               <h1 className="font-serif text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#3B1228] tracking-tight leading-tight flex items-center gap-2">
                 <span>{displayName}</span>
-                <span className="text-[#D4AF70] not-italic text-2xl sm:text-3xl">✨</span>
+                <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-[#D4AF70] inline" />
               </h1>
               <p className="text-xs sm:text-sm text-[#7D6B73] mt-1 font-medium">
                 Glow today, brighter tomorrow!
@@ -116,7 +116,7 @@ export function UserDashboardOverview({
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EEDCD2] text-[#6E4E3A] text-xs font-semibold cursor-pointer hover:bg-[#E5D0C3] transition-colors shadow-2xs border border-[#DFC8BA]"
                 title="View membership tier perks"
               >
-                <span className="text-sm">🥉</span>
+                <Award className="w-3.5 h-3.5 text-[#6E4E3A]" />
                 <span className="capitalize">{loyaltyTier || 'Bronze'} Member</span>
               </button>
 

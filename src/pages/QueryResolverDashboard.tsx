@@ -198,7 +198,7 @@ export function QueryResolverDashboard() {
       setLastSyncTime(new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }));
       if (showToast) {
         toast({
-          title: '🔄 Tickets Synced',
+          title: 'Tickets Synced',
           description: `Loaded ${all.length} total tickets from portal database.`,
         });
       }
@@ -348,7 +348,7 @@ export function QueryResolverDashboard() {
           resolver.name,
           resolver.id
         );
-        toast({ title: '🔒 Internal note saved' });
+        toast({ title: 'Internal note saved' });
       } else {
         await queryTicketService.addMessage(selectedTicket.id, {
           sender_type: 'resolver',
@@ -356,7 +356,7 @@ export function QueryResolverDashboard() {
           sender_id: resolver.id,
           message: replyText.trim(),
         });
-        toast({ title: '✅ Reply sent to customer' });
+        toast({ title: 'Reply sent to customer' });
       }
 
       setReplyText('');
@@ -469,7 +469,7 @@ export function QueryResolverDashboard() {
                 Query Resolution Desk
               </h1>
               <Badge className="bg-emerald-50 text-emerald-700 border-emerald-300 text-[10px] py-0 font-medium">
-                🟢 Live Desk
+                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block mr-1.5" />Live Desk
               </Badge>
             </div>
             <p className="text-[11px] text-muted-foreground hidden sm:block">
@@ -694,7 +694,7 @@ export function QueryResolverDashboard() {
                         priorityFilter === p ? themeClasses.activePill : themeClasses.inactivePill
                       }`}
                     >
-                      {p === 'urgent' ? '🚨 Urgent (<1h)' : p === 'high' ? '⚡ High (<2h)' : p === 'normal' ? 'Normal (2-4h)' : p}
+                      {p === 'urgent' ? 'Urgent (<1h)' : p === 'high' ? 'High (<2h)' : p === 'normal' ? 'Normal (2-4h)' : p}
                     </button>
                   ))}
                 </div>
@@ -1270,8 +1270,8 @@ export function QueryResolverDashboard() {
                   </div>
                   <span className="text-[11px] text-muted-foreground hidden sm:inline">
                     {replyMode === 'internal'
-                      ? '🔒 Private to resolvers only'
-                      : '💬 Will be delivered to client'}
+                      ? 'Private to resolvers only'
+                      : 'Will be delivered to client'}
                   </span>
                 </div>
 
@@ -1329,7 +1329,7 @@ export function QueryResolverDashboard() {
         <DialogContent className="max-w-md bg-white border-[#F8DCE4] p-6 rounded-3xl">
           <DialogHeader>
             <DialogTitle className="font-serif italic text-2xl text-[#43152E]">
-              Mark Ticket as Resolved ✨
+              <span className="flex items-center gap-1.5"><Sparkles className="w-4 h-4 inline" /> Mark Ticket as Resolved</span>
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
               Record how this query was handled. A solution confirmation will be saved to the ticket history.

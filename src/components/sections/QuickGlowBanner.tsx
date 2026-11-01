@@ -121,7 +121,7 @@ export function QuickGlowBanner() {
 
   const handleCardClick = (item: QuickGlowItem) => {
     toast({
-      title: `${item.title} ✨`,
+      title: `${item.title}`,
       description: `Viewing ${item.discount} offer slots.`,
     });
     if (item.filterName.includes('Mehndi')) {
@@ -144,28 +144,26 @@ export function QuickGlowBanner() {
   };
 
   return (
-    <section className="py-10 sm:py-14 overflow-hidden relative" style={{ background: '#FDF7F2' }}>
+    <section className="py-10 sm:py-14 overflow-hidden relative bg-[#FDF7F2] dark:bg-[#121015] transition-colors duration-300">
       <div className="container-custom">
         {/* Warm Ivory Deal Box */}
         <div
-          className="rounded-3xl sm:rounded-[36px] p-6 sm:p-8 md:p-10 border shadow-lg relative overflow-hidden"
+          className="rounded-3xl sm:rounded-[36px] p-6 sm:p-8 md:p-10 border border-[rgba(201,149,108,0.25)] dark:border-[rgba(197,160,89,0.25)] bg-white dark:bg-[#1A1721] shadow-lg relative overflow-hidden"
           style={{
-            background: '#FFFFFF',
-            borderColor: 'rgba(201,149,108,0.25)',
             boxShadow: '0 16px 40px -12px rgba(180,120,80,0.08)',
           }}
         >
           {/* Header Row */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/40 mb-2">
                 <Zap className="w-3.5 h-3.5 text-rose-600 fill-rose-600" />
                 Limited-Time Beauty Deals
               </div>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900">
-                Quick Glow <span className="italic font-serif text-rose-700">Flash Offers</span>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-[#F7F3EE]">
+                Quick Glow <span className="italic font-serif text-rose-700 dark:text-[#E8C37B]">Flash Offers</span>
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-[#C7B7A6] mt-0.5">
                 Handpicked top treatments with verified doorstep arrival &amp; certified tools
               </p>
             </div>

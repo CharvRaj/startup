@@ -35,7 +35,7 @@ const PROMO_SLIDES: PromoSlide[] = [
     imageAlt: 'Woman enjoying serene, natural salon beauty treatment with radiant skin',
     floatingTag: 'Your Beauty, Your Comfort',
     floatingSubtag: 'Professional care at home',
-    ratingText: '4.9 ★ (2,800+ Clients)',
+    ratingText: '4.9 (2,800+ Clients)',
   },
   {
     id: 'facial-promo',
@@ -51,7 +51,7 @@ const PROMO_SLIDES: PromoSlide[] = [
     imageAlt: 'Gentle facial skincare ritual performed with hygienic tools',
     floatingTag: '100% Hygienic Tools',
     floatingSubtag: 'Single-use sealed kit',
-    ratingText: '4.9 ★ (1,420 Reviews)',
+    ratingText: '4.9 (1,420 Reviews)',
   },
   {
     id: 'mehndi-promo',
@@ -67,7 +67,7 @@ const PROMO_SLIDES: PromoSlide[] = [
     imageAlt: 'Detailed traditional Indian bridal henna on hand',
     floatingTag: 'Natural Sojat Cones',
     floatingSubtag: 'Rich dark mahogany stain',
-    ratingText: '5.0 ★ (1,150 Brides)',
+    ratingText: '5.0 (1,150 Brides)',
   },
 ];
 
@@ -103,8 +103,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative pt-24 pb-12 sm:pt-28 sm:pb-16 md:pt-32 md:pb-20 overflow-hidden"
-      style={{ background: '#FFF9F5' }}
+      className="relative pt-24 pb-12 sm:pt-28 sm:pb-16 md:pt-32 md:pb-20 overflow-hidden bg-[#FFF9F5] dark:bg-[#121015] transition-colors duration-300"
     >
       {/* Subtle Warm Backdrop Geometry */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -121,10 +120,8 @@ export function Hero() {
       <div className="container-custom relative z-10">
         {/* Main E-Commerce Campaign Banner Card */}
         <div
-          className="rounded-3xl sm:rounded-[36px] p-6 sm:p-10 md:p-14 lg:p-16 border shadow-xl relative overflow-hidden transition-all duration-500"
+          className="rounded-3xl sm:rounded-[36px] p-6 sm:p-10 md:p-14 lg:p-16 border border-[#F5DCE1] dark:border-[rgba(197,160,89,0.25)] bg-white dark:bg-[#1A1721] shadow-xl relative overflow-hidden transition-all duration-500"
           style={{
-            background: '#FFFFFF',
-            borderColor: 'rgba(245,220,225,0.9)',
             boxShadow: '0 20px 50px -15px rgba(84,35,55,0.08)',
           }}
         >
@@ -136,20 +133,14 @@ export function Hero() {
               {/* Trust Badge */}
               <div className="flex items-center gap-2">
                 <span
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide"
-                  style={{
-                    background: '#F5DCE1',
-                    color: '#542337',
-                    border: '1px solid rgba(200,62,104,0.2)',
-                  }}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide bg-[#F5DCE1] dark:bg-[#2D202B] text-[#542337] dark:text-[#E8DEC8] border border-[rgba(200,62,104,0.2)] dark:border-[rgba(197,160,89,0.3)]"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-[#C83E68]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#C83E68] dark:text-[#E8C37B]" />
                   {slide.badge}
                 </span>
 
                 <span
-                  className="text-xs font-medium px-2.5 py-1 rounded-full hidden sm:inline-block"
-                  style={{ background: '#FFF9F5', color: '#542337', border: '1px solid #F5DCE1' }}
+                  className="text-xs font-medium px-2.5 py-1 rounded-full hidden sm:inline-block bg-[#FFF9F5] dark:bg-[#251F2A] text-[#542337] dark:text-[#E8DEC8] border border-[#F5DCE1] dark:border-[rgba(197,160,89,0.2)]"
                 >
                   Doorstep &amp; Studio
                 </span>
@@ -157,8 +148,8 @@ export function Hero() {
 
               {/* Headline */}
               <h1
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.14]"
-                style={{ color: '#342A29', fontFamily: "'Playfair Display', Georgia, serif" }}
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.14] text-[#342A29] dark:text-[#F7F3EE]"
+                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
               >
                 {slide.title}{' '}
                 <span
@@ -173,8 +164,7 @@ export function Hero() {
 
               {/* Supporting Text */}
               <p
-                className="text-base sm:text-lg leading-relaxed max-w-xl font-normal"
-                style={{ color: '#542337', opacity: 0.85 }}
+                className="text-base sm:text-lg leading-relaxed max-w-xl font-normal text-[#542337]/85 dark:text-[#C7B7A6]"
               >
                 {slide.description}
               </p>
@@ -233,12 +223,7 @@ export function Hero() {
                     }
                   }}
                   variant="outline"
-                  className="h-13 px-7 text-sm font-bold rounded-2xl border-2 transition-all duration-300 hover:bg-[#F5DCE1]/40 flex items-center justify-center gap-2"
-                  style={{
-                    borderColor: 'rgba(200,62,104,0.3)',
-                    color: '#542337',
-                    background: '#FFFFFF',
-                  }}
+                  className="h-13 px-7 text-sm font-bold rounded-2xl border-2 transition-all duration-300 hover:bg-[#F5DCE1]/40 flex items-center justify-center gap-2 border-[rgba(200,62,104,0.3)] dark:border-[rgba(197,160,89,0.35)] text-[#542337] dark:text-[#F7F3EE] bg-white dark:bg-[#251F2A]"
                 >
                   <Heart className="w-4 h-4 text-[#C83E68]" />
                   {slide.secondaryCta}
@@ -246,14 +231,14 @@ export function Hero() {
               </div>
 
               {/* Slide Navigation Controls */}
-              <div className="flex items-center gap-4 pt-4 border-t border-[#F5DCE1]/70">
+              <div className="flex items-center gap-4 pt-4 border-t border-[#F5DCE1]/70 dark:border-[rgba(197,160,89,0.2)]">
                 <div className="flex gap-2">
                   {PROMO_SLIDES.map((s, idx) => (
                     <button
                       key={s.id}
                       onClick={() => goToSlide(idx)}
                       className={`h-2 rounded-full transition-all duration-300 ${
-                        currentSlide === idx ? 'w-8 bg-[#C83E68]' : 'w-2 bg-[#F5DCE1] hover:bg-[#C83E68]/40'
+                        currentSlide === idx ? 'w-8 bg-[#C83E68]' : 'w-2 bg-[#F5DCE1] dark:bg-stone-700 hover:bg-[#C83E68]/40'
                       }`}
                       aria-label={`Slide ${idx + 1}`}
                     />
@@ -263,14 +248,14 @@ export function Hero() {
                 <div className="flex items-center gap-1.5 ml-auto">
                   <button
                     onClick={prevSlide}
-                    className="w-9 h-9 rounded-full border border-[#F5DCE1] bg-white flex items-center justify-center text-[#542337] hover:bg-[#F5DCE1] hover:text-[#C83E68] transition-colors shadow-xs"
+                    className="w-9 h-9 rounded-full border border-[#F5DCE1] dark:border-[rgba(197,160,89,0.25)] bg-white dark:bg-[#251F2A] flex items-center justify-center text-[#542337] dark:text-[#E8DEC8] hover:bg-[#F5DCE1] dark:hover:bg-[#322A38] hover:text-[#C83E68] transition-colors shadow-xs"
                     aria-label="Previous Slide"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   <button
                     onClick={nextSlide}
-                    className="w-9 h-9 rounded-full border border-[#F5DCE1] bg-white flex items-center justify-center text-[#542337] hover:bg-[#F5DCE1] hover:text-[#C83E68] transition-colors shadow-xs"
+                    className="w-9 h-9 rounded-full border border-[#F5DCE1] dark:border-[rgba(197,160,89,0.25)] bg-white dark:bg-[#251F2A] flex items-center justify-center text-[#542337] dark:text-[#E8DEC8] hover:bg-[#F5DCE1] dark:hover:bg-[#322A38] hover:text-[#C83E68] transition-colors shadow-xs"
                     aria-label="Next Slide"
                   >
                     <ChevronRight className="w-4 h-4" />

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft, User, Star, Package, TrendingUp, Clock, MapPin, Phone, Mail,
   Loader2, CheckCircle, XCircle, Power, Award, Wallet, MessageSquare,
-  BarChart3, Activity, FileText, Shield, RefreshCw, Download, Send, Edit, AlertTriangle
+  BarChart3, Activity, FileText, Shield, RefreshCw, Download, Send, Edit, AlertTriangle, UserCheck
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line
@@ -97,27 +97,27 @@ export function StylistProfile() {
     const newStatus = !stylist.is_active;
     await supabase.from('stylist_requests').update({ is_active: newStatus }).eq('id', id);
     setStylist({ ...stylist, is_active: newStatus });
-    toast({ title: newStatus ? '🟢 Stylist Online' : '⭕ Stylist Offline' });
+    toast({ title: newStatus ? 'Stylist Online' : 'Stylist Offline' });
   };
 
   const suspendAccount = async () => {
     if (!confirm('Suspend this stylist account?')) return;
     await supabase.from('stylist_requests').update({ is_active: false, status: 'suspended' }).eq('id', id);
     setStylist({ ...stylist, is_active: false, status: 'suspended' });
-    toast({ title: '⛔ Stylist Suspended' });
+    toast({ title: 'Stylist Suspended' });
   };
 
   const activateAccount = async () => {
     await supabase.from('stylist_requests').update({ status: 'approved', is_active: true }).eq('id', id);
     setStylist({ ...stylist, is_active: true, status: 'approved' });
-    toast({ title: '✅ Account Activated' });
+    toast({ title: 'Account Activated' });
   };
 
   const updateEarnings = async () => {
     const val = parseFloat(editEarnings) || 0;
     await supabase.from('stylist_requests').update({ earnings: val }).eq('id', id);
     setStylist({ ...stylist, earnings: val });
-    toast({ title: '✅ Earnings Updated' });
+    toast({ title: 'Earnings Updated' });
   };
 
   const sendNotification = async () => {
@@ -127,12 +127,12 @@ export function StylistProfile() {
     if (stylist.user_id) {
       await supabase.from('notifications').insert({
         user_id: stylist.user_id,
-        title: '📢 Admin Notification',
+        title: 'Admin Notification',
         message: notifText,
         type: 'info',
       });
     }
-    toast({ title: '✅ Notification Sent' });
+    toast({ title: 'Notification Sent' });
     setNotifText('');
     setSendingNotif(false);
   };
@@ -177,13 +177,14 @@ export function StylistProfile() {
             <ArrowLeft className="w-4 h-4 mr-1" />Admin
           </Button>
           <div className="flex items-center gap-3 ml-2">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}>👩‍🎨</div>
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white"
+              style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}><UserCheck className="w-5 h-5" /></div>
             <div>
               <h1 className="font-bold text-lg">{stylist.full_name}</h1>
               <div className="flex items-center gap-2">
-                <Badge className={`text-xs border ${stylist.is_active ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-gray-100 text-gray-700 border-gray-200'}`}>
-                  {stylist.is_active ? '🟢 Online' : '⭕ Offline'}
+                <Badge className={`text-xs border flex items-center gap-1.5 ${stylist.is_active ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-gray-100 text-gray-700 border-gray-200'}`}>
+                  <span className={`w-2 h-2 rounded-full ${stylist.is_active ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+                  {stylist.is_active ? 'Online' : 'Offline'}
                 </Badge>
                 <Badge className={`text-xs border ${stylist.status === 'approved' ? 'bg-blue-100 text-blue-800 border-blue-200' : 'bg-red-100 text-red-800 border-red-200'}`}>
                   {stylist.status}
@@ -203,7 +204,7 @@ export function StylistProfile() {
           {[
             { label: 'Total Jobs', value: bookings.length, icon: Package, color: 'from-violet-500 to-purple-600' },
             { label: 'Completed', value: completedJobs, icon: CheckCircle, color: 'from-emerald-500 to-teal-600' },
-            { label: 'Rating', value: `${avgRating.toFixed(1)}★`, icon: Star, color: 'from-amber-500 to-yellow-600' },
+            { label: 'Rating', value: `${avgRating.toFixed(1)}`, icon: Star, color: 'from-amber-500 to-yellow-600' },
             { label: 'Earnings', value: `₹${(stylist.earnings || 0).toLocaleString()}`, icon: TrendingUp, color: 'from-pink-500 to-rose-600' },
           ].map(({ label, value, icon: Icon, color }) => (
             <Card key={label} className="border-0 shadow-md overflow-hidden">
@@ -464,7 +465,7 @@ export function StylistProfile() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-3">
                   {[
-                    ['Online Status', stylist.is_active ? '🟢 Online' : '⭕ Offline'],
+                    ['Online Status', stylist.is_active ? 'Online' : 'Offline'],
                     ['Last Location Update', stylist.last_location_update ? new Date(stylist.last_location_update).toLocaleString('en-IN') : 'Not available'],
                     ['Latitude', stylist.latitude || 'N/A'],
                     ['Longitude', stylist.longitude || 'N/A'],
@@ -486,7 +487,7 @@ export function StylistProfile() {
                   {stylist.latitude ? (
                     <p className="text-sm text-muted-foreground text-center">
                       <MapPin className="w-8 h-8 mx-auto mb-2 text-primary" />
-                      📍 {stylist.latitude.toFixed(4)}, {stylist.longitude?.toFixed(4)}
+                      <span className="font-mono text-foreground font-semibold">{stylist.latitude.toFixed(4)}, {stylist.longitude?.toFixed(4)}</span>
                     </p>
                   ) : (
                     <p className="text-sm text-muted-foreground text-center p-6">

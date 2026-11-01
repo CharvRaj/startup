@@ -1,6 +1,6 @@
 import {
   Phone, Mail, MapPin, Instagram, Facebook, Twitter, Users,
-  ArrowUpRight, Heart, Moon, Sun, ShieldCheck, Sparkles
+  ArrowUpRight, Heart, Moon, Sun, ShieldCheck, Sparkles, Gift, Lock, Ticket
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@/context/ThemeContext';
@@ -84,7 +84,7 @@ export function Footer() {
               <BrandLogo isLightMode={theme === 'light'} />
             </div>
             <p className="text-sm leading-relaxed mb-6 text-muted-foreground">
-              Satguru Makeup Art is your destination for bespoke bridal artistry, advanced skin therapies, doorstep services, and timeless festive elegance.
+              BlindGlow By Satguru is your destination for bespoke bridal artistry, advanced doorstep skin therapies, organic mehndi, and timeless festive elegance.
             </p>
             <div className="flex gap-2.5">
               {[
@@ -116,15 +116,16 @@ export function Footer() {
                 { label: 'Specialist Mehndi Art', to: '/mehndi-service' },
                 { label: 'VIP Membership Club', to: '/membership' },
                 { label: 'Customer Reviews', to: '/reviews' },
-                { label: '🎁 Refer & Earn Cash', to: '/referral' },
+                { label: 'Refer & Earn Cash', to: '/referral', icon: Gift },
                 { label: 'Contact & Studio Map', to: '/contact' },
-              ].map(({ label, to }) => (
+              ].map(({ label, to, icon: LinkIcon }) => (
                 <li key={label}>
                   <Link
                     to={to}
                     className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"
                   >
-                    {label}
+                    {LinkIcon && <LinkIcon className="w-3.5 h-3.5 text-primary" />}
+                    <span>{label}</span>
                   </Link>
                 </li>
               ))}
@@ -139,19 +140,20 @@ export function Footer() {
             <ul className="space-y-3">
               {[
                 { label: 'Meet Our Certified Stylists', action: () => navigate('/stylists') },
-                { label: '🔐 Partner Portal Login', action: () => navigate('/partner-login') },
-                { label: '🎫 My Bookings & Query Desk', action: () => navigate('/profile') },
+                { label: 'Partner Portal Login', action: () => navigate('/partner-login'), icon: Lock },
+                { label: 'My Bookings & Query Desk', action: () => navigate('/profile'), icon: Ticket },
                 { label: 'Join Our Artist Team', action: () => navigate('/join-team') },
                 { label: 'Become a Salon Associate', action: () => navigate('/associate') },
                 { label: 'Personalized Beauty Profile', action: () => navigate('/beauty-profile') },
                 { label: 'Customer Help & Complaints', action: () => navigate('/complaints') },
-              ].map(({ label, action }) => (
+              ].map(({ label, action, icon: ActionIcon }) => (
                 <li key={label}>
                   <button
                     onClick={action}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors text-left"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 text-left"
                   >
-                    {label}
+                    {ActionIcon && <ActionIcon className="w-3.5 h-3.5 text-primary" />}
+                    <span>{label}</span>
                   </button>
                 </li>
               ))}
@@ -167,7 +169,7 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-1" />
                 <span>
-                  Satguru Makeup Art & Beauty Studio<br />
+                  BlindGlow By Satguru<br />
                   Singhana, Rajasthan — 333516<br />
                   India
                 </span>
@@ -180,8 +182,8 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-primary flex-shrink-0" />
-                <a href="mailto:info@satgurumakeupart.com" className="hover:text-primary">
-                  info@satgurumakeupart.com
+                <a href="mailto:info@blindglow.in" className="hover:text-primary">
+                  info@blindglow.in
                 </a>
               </li>
             </ul>
@@ -224,7 +226,7 @@ export function Footer() {
 
           {/* Copyright & Made with love */}
           <div className="flex flex-col sm:flex-row items-center gap-4 text-xs text-muted-foreground">
-            <span>© {currentYear} Satguru Makeup Art. All rights reserved.</span>
+            <span>© {currentYear} BlindGlow By Satguru. All rights reserved.</span>
             <span className="hidden sm:inline opacity-30">•</span>
             <span className="flex items-center gap-1">
               Made with <Heart className="w-3 h-3 text-primary fill-primary" /> for beauty enthusiasts

@@ -24,12 +24,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const root = document.documentElement;
+    const body = document.body;
     if (theme === 'dark') {
       root.classList.add('dark');
       root.classList.remove('light');
+      body.classList.add('dark');
+      body.classList.remove('light');
     } else {
       root.classList.remove('dark');
       root.classList.add('light');
+      body.classList.remove('dark');
+      body.classList.add('light');
     }
     try {
       localStorage.setItem('satguru_theme', theme);

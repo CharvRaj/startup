@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function FloatingVideo() {
@@ -55,8 +55,8 @@ export function FloatingVideo() {
 
           {/* Text Overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-            <p className="font-semibold text-sm mb-1">
-              Watch Our Artists in Action 💄
+            <p className="font-semibold text-sm mb-1 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-pink-400" /> Watch Our Artists in Action
             </p>
             <p className="text-xs opacity-90">
               Professional Makeup Service at Doorstep

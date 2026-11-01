@@ -80,172 +80,9 @@ const STORAGE_KEYS = {
 };
 
 // Seed initial default resolvers so admin and resolvers can test immediately
-const DEFAULT_RESOLVERS: QueryResolver[] = [
-  {
-    id: 'res-default-1',
-    name: 'Pooja Sharma',
-    email: 'resolver@satgurumakeup.com',
-    password: 'Resolver@123',
-    phone: '+91 98765 43210',
-    department: 'Salon & Bridal Bookings',
-    is_active: true,
-    total_resolved: 18,
-    created_at: new Date(Date.now() - 86400000 * 15).toISOString(),
-  },
-  {
-    id: 'res-default-2',
-    name: 'Rahul Verma',
-    email: 'support@satgurumakeup.com',
-    password: 'Support@123',
-    phone: '+91 98111 22334',
-    department: 'Doorstep & Mehndi Orders',
-    is_active: true,
-    total_resolved: 12,
-    created_at: new Date(Date.now() - 86400000 * 10).toISOString(),
-  },
-];
+const DEFAULT_RESOLVERS: QueryResolver[] = [];
 
-const DEFAULT_TICKETS: QueryTicket[] = [
-  {
-    id: 'ticket-seed-1',
-    ticket_number: 'TKT-2026-92814',
-    user_id: 'admin-super-user',
-    customer_name: 'Charv Raj',
-    customer_email: 'charvraj2006@gmail.com',
-    customer_phone: '+91 98765 43210',
-    category: 'Reschedule Request',
-    subject: 'Skin Renewal Facial - Appointment Timing Confirmation',
-    description: 'Can you please confirm the specialist assignment and timings for my Skin Renewal Facial?',
-    priority: 'normal',
-    status: 'resolved',
-    booking_info: {
-      booking_id: 'booking-seed-1',
-      service_name: 'Skin Renewal Facial',
-      service_date: 'Sun, 27 Sept',
-      service_time: '14:40:00',
-      type: 'salon_booking',
-      current_status: 'confirmed',
-      stylist_name: 'Pooja Sharma',
-    },
-    assigned_resolver_id: 'res-default-1',
-    assigned_resolver_name: 'Pooja Sharma',
-    assigned_resolver_email: 'resolver@satgurumakeup.com',
-    resolution_notes: 'Confirmed specialist Meera for 2:40 PM slot. Client notified.',
-    created_at: new Date(Date.now() - 86400000 * 18).toISOString(),
-    updated_at: new Date(Date.now() - 86400000 * 17).toISOString(),
-    resolved_at: new Date(Date.now() - 86400000 * 17).toISOString(),
-    messages: [
-      {
-        id: 'msg-seed-1',
-        sender_type: 'user',
-        sender_name: 'Charv Raj',
-        sender_id: 'admin-super-user',
-        message: 'Can you please confirm the specialist assignment and timings for my Skin Renewal Facial?',
-        created_at: new Date(Date.now() - 86400000 * 18).toISOString(),
-      },
-      {
-        id: 'msg-seed-2',
-        sender_type: 'resolver',
-        sender_name: 'Pooja Sharma (Help Desk)',
-        sender_id: 'res-default-1',
-        message: 'Hello Charv! Senior aesthetician Meera has been assigned for your Skin Renewal Facial. She will have the herbal spa suite prepared 10 minutes ahead of time.',
-        created_at: new Date(Date.now() - 86400000 * 17).toISOString(),
-      },
-    ],
-  },
-  {
-    id: 'ticket-seed-2',
-    ticket_number: 'TKT-2026-71402',
-    user_id: 'admin-super-user',
-    customer_name: 'Charv Raj',
-    customer_email: 'charvraj2006@gmail.com',
-    customer_phone: '+91 98765 43210',
-    category: 'Special Pre-Bridal Request',
-    subject: 'Doorstep Organic Mehndi - Artist Arrival Schedule',
-    description: 'We need the herbal mehndi specialist to arrive with fresh organic cones for 4 family members.',
-    priority: 'high',
-    status: 'in_progress',
-    booking_info: {
-      order_id: 'ORD-2026-8819',
-      service_name: 'Bridal & Family Herbal Mehndi',
-      service_date: 'Fri, 23 Oct',
-      service_time: '11:00 AM',
-      type: 'mehndi_order',
-      current_status: 'confirmed',
-      stylist_name: 'Rahul Verma',
-    },
-    assigned_resolver_id: 'res-default-2',
-    assigned_resolver_name: 'Rahul Verma',
-    assigned_resolver_email: 'support@satgurumakeup.com',
-    created_at: new Date(Date.now() - 86400000 * 1).toISOString(),
-    updated_at: new Date().toISOString(),
-    messages: [
-      {
-        id: 'msg-seed-3',
-        sender_type: 'user',
-        sender_name: 'Charv Raj',
-        sender_id: 'admin-super-user',
-        message: 'We need the herbal mehndi specialist to arrive with fresh organic cones for 4 family members.',
-        created_at: new Date(Date.now() - 86400000 * 1).toISOString(),
-      },
-      {
-        id: 'msg-seed-4',
-        sender_type: 'resolver',
-        sender_name: 'Rahul Verma (Help Desk)',
-        sender_id: 'res-default-2',
-        message: 'Namaste Charv! Noted. Two senior mehndi specialists will arrive with freshly prepared organic herbal henna cones 15 minutes prior to the 11:00 AM slot.',
-        created_at: new Date().toISOString(),
-      },
-    ],
-  },
-  {
-    id: 'ticket-seed-3',
-    ticket_number: 'TKT-2026-63910',
-    user_id: 'admin-super-user',
-    customer_name: 'Charv Raj',
-    customer_email: 'charvraj2006@gmail.com',
-    customer_phone: '+91 98765 43210',
-    category: 'Billing / Overcharged',
-    subject: 'Pre-Bridal Luxury Package - GST Invoice Request',
-    description: 'Could you please send over the official GST invoice receipt for our pre-bridal consultation booking?',
-    priority: 'low',
-    status: 'closed',
-    booking_info: {
-      booking_id: 'booking-seed-3',
-      service_name: 'Luxury Pre-Bridal Consultation',
-      service_date: 'Mon, 18 Aug',
-      service_time: '12:00 PM',
-      type: 'salon_booking',
-      current_status: 'completed',
-      stylist_name: 'Pooja Sharma',
-    },
-    assigned_resolver_id: 'res-default-1',
-    assigned_resolver_name: 'Pooja Sharma',
-    assigned_resolver_email: 'resolver@satgurumakeup.com',
-    resolution_notes: 'GST invoice generated and emailed to charvraj2006@gmail.com.',
-    created_at: new Date(Date.now() - 86400000 * 45).toISOString(),
-    updated_at: new Date(Date.now() - 86400000 * 44).toISOString(),
-    resolved_at: new Date(Date.now() - 86400000 * 44).toISOString(),
-    messages: [
-      {
-        id: 'msg-seed-5',
-        sender_type: 'user',
-        sender_name: 'Charv Raj',
-        sender_id: 'admin-super-user',
-        message: 'Could you please send over the official GST invoice receipt for our pre-bridal consultation booking?',
-        created_at: new Date(Date.now() - 86400000 * 45).toISOString(),
-      },
-      {
-        id: 'msg-seed-6',
-        sender_type: 'resolver',
-        sender_name: 'Pooja Sharma (Help Desk)',
-        sender_id: 'res-default-1',
-        message: 'Namaste Charv! The signed GST invoice has been forwarded to your registered email address. Have a wonderful day!',
-        created_at: new Date(Date.now() - 86400000 * 44).toISOString(),
-      },
-    ],
-  },
-];
+const DEFAULT_TICKETS: QueryTicket[] = [];
 
 class QueryTicketService {
   private static instance: QueryTicketService;
@@ -264,36 +101,26 @@ class QueryTicketService {
   private initStorage() {
     if (typeof window === 'undefined') return;
     try {
+      // Purge any legacy seed data from local storage so Admin is 100% clean
       const existingResolvers = localStorage.getItem(STORAGE_KEYS.RESOLVERS);
-      if (!existingResolvers) {
-        localStorage.setItem(STORAGE_KEYS.RESOLVERS, JSON.stringify(DEFAULT_RESOLVERS));
-      }
-      const existingTickets = localStorage.getItem(STORAGE_KEYS.TICKETS);
-      if (!existingTickets || existingTickets === '[]' || JSON.parse(existingTickets).length === 0) {
-        localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(DEFAULT_TICKETS));
-      } else {
+      if (existingResolvers) {
         try {
-          const parsed: QueryTicket[] = JSON.parse(existingTickets);
-          let changed = false;
-          for (const dt of DEFAULT_TICKETS) {
-            const idx = parsed.findIndex((p) => p.id === dt.id);
-            if (idx === -1) {
-              parsed.push(dt);
-              changed = true;
-            } else if (parsed[idx].created_at !== dt.created_at) {
-              parsed[idx] = { ...parsed[idx], created_at: dt.created_at };
-              changed = true;
-            }
-          }
-          if (changed) {
-            localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(parsed));
-          }
-        } catch {
-          localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(DEFAULT_TICKETS));
-        }
+          const parsed = JSON.parse(existingResolvers);
+          const clean = parsed.filter((r: any) => !r.id?.startsWith('res-default-') && r.email !== 'resolver@satgurumakeup.com');
+          localStorage.setItem(STORAGE_KEYS.RESOLVERS, JSON.stringify(clean));
+        } catch {}
+      }
+
+      const existingTickets = localStorage.getItem(STORAGE_KEYS.TICKETS);
+      if (existingTickets) {
+        try {
+          const parsed = JSON.parse(existingTickets);
+          const clean = parsed.filter((t: any) => !t.id?.startsWith('ticket-seed-'));
+          localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(clean));
+        } catch {}
       }
     } catch (e) {
-      console.warn('LocalStorage error in QueryTicketService init:', e);
+      console.warn('LocalStorage clean error in QueryTicketService init:', e);
     }
   }
 
@@ -316,7 +143,7 @@ class QueryTicketService {
     } catch (e) {
       console.error('Failed to get resolvers:', e);
     }
-    return [...DEFAULT_RESOLVERS];
+    return [];
   }
 
   addResolver(resolver: Omit<QueryResolver, 'id' | 'created_at' | 'total_resolved'>): QueryResolver {
@@ -471,7 +298,7 @@ class QueryTicketService {
                   id: `msg-ack-${d.id}`,
                   sender_type: 'system',
                   sender_name: 'Satguru Support Desk',
-                  message: `✨ Thank you for contacting Satguru Makeup Art! We have received your query regarding "${cleanSubject}". Our dedicated Query Resolver has been assigned to your case and will provide a solution as soon as possible (estimated resolution: within 2 to 4 hours during salon hours 9:00 AM – 8:00 PM).`,
+                  message: `Thank you for contacting Satguru Makeup Art! We have received your query regarding "${cleanSubject}". Our dedicated Query Resolver has been assigned to your case and will provide a solution as soon as possible (estimated resolution: within 2 to 4 hours during salon hours 9:00 AM – 8:00 PM).`,
                   created_at: new Date(new Date(d.created_at || Date.now()).getTime() + 1000).toISOString(),
                 },
               ],
@@ -546,7 +373,7 @@ class QueryTicketService {
       id: `msg-${Date.now()}-ack`,
       sender_type: 'system',
       sender_name: 'Satguru Support Desk',
-      message: `✨ Thank you for contacting Satguru Makeup Art! We have received your query regarding "${serviceOrTopic}". Our dedicated Query Resolver has been assigned to your case and will provide a solution as soon as possible (estimated resolution: within 2 to 4 hours during salon hours 9:00 AM – 8:00 PM). If urgent, call our front desk directly at +91 98765 43210.`,
+      message: `Thank you for contacting Satguru Makeup Art! We have received your query regarding "${serviceOrTopic}". Our dedicated Query Resolver has been assigned to your case and will provide a solution as soon as possible (estimated resolution: within 2 to 4 hours during salon hours 9:00 AM – 8:00 PM). If urgent, call our front desk directly at +91 98765 43210.`,
       created_at: new Date(Date.now() + 500).toISOString(),
     };
 
@@ -603,7 +430,7 @@ class QueryTicketService {
       // Notification for user
       await supabase.from('notifications').insert({
         user_id: params.user_id,
-        title: `🎫 Ticket Generated #${ticketNumber}`,
+        title: `Ticket Generated #${ticketNumber}`,
         message: `Thank you for contacting us! We have received your query regarding "${serviceOrTopic}". Our Query Resolver will provide a solution as soon as possible (estimated: within 2 to 4 hours).`,
         type: 'info',
         link: '/help-support#my-tickets',
@@ -664,7 +491,7 @@ class QueryTicketService {
       try {
         await supabase.from('notifications').insert({
           user_id: ticket.user_id,
-          title: `💬 New Reply on Ticket #${ticket.ticket_number}`,
+          title: `New Reply on Ticket #${ticket.ticket_number}`,
           message: `${message.sender_name}: "${message.message.slice(0, 60)}..."`,
           type: 'info',
           link: '/profile',
@@ -773,7 +600,7 @@ class QueryTicketService {
     const internalMsg: TicketMessage = {
       id: `note-${Date.now()}`,
       sender_type: 'system',
-      sender_name: `🔒 Internal Note (${authorName})`,
+      sender_name: `Internal Note (${authorName})`,
       sender_id: authorId,
       message: `[INTERNAL PRIVATE NOTE] ${note.trim()}`,
       created_at: new Date().toISOString(),

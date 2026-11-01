@@ -71,8 +71,8 @@ export function Reviews() {
   const stats = calculateStats();
 
   return (
-    <div className="min-h-screen">
-      <main className="section-padding bg-gradient-bg mt-20">
+    <div className="min-h-screen" style={{ background: '#FAF6F0' }}>
+      <main className="section-padding mt-20">
         <div className="container-custom max-w-6xl">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">

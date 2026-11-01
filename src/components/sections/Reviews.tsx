@@ -5,7 +5,7 @@ const reviews = [
   {
     name: 'Akansha',
     rating: 5,
-    text: 'Absolutely stunning work! The bridal makeup was perfect and lasted throughout my wedding day. Highly recommend Satguru Makeup Art!',
+    text: 'Absolutely stunning work! The bridal makeup was perfect and lasted throughout my wedding day. Highly recommend BlindGlow By Satguru!',
     image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop',
   },
   {

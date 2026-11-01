@@ -149,7 +149,7 @@ export function MembershipPayment() {
             </div>
             <h2 className="font-display text-3xl font-bold mb-2"
               style={{ background: 'linear-gradient(135deg, #f9a8d4, #fbbf24, #f472b6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              Welcome to {planName}! 🎉
+              Welcome to {planName}!
             </h2>
             <p className="text-white/60 mb-8">Your membership is now active. Enjoy exclusive benefits!</p>
 
@@ -337,7 +337,7 @@ export function MembershipPayment() {
             <Button onClick={handleActivate} disabled={loading}
               className="w-full h-12 font-semibold text-base"
               style={{ background: 'linear-gradient(135deg, #be185d, #ec4899)', border: 'none', color: 'white' }}>
-              {loading ? <><Loader2 className="w-5 h-5 animate-spin mr-2" />Activating...</> : <><Crown className="w-5 h-5 mr-2" />Activate {planName} ✨</>}
+              {loading ? <><Loader2 className="w-5 h-5 animate-spin mr-2" />Activating...</> : <><Crown className="w-5 h-5 mr-2" />Activate {planName}</>}
             </Button>
           </div>
         )}

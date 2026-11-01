@@ -109,7 +109,7 @@ export function BeautyProfile() {
       });
 
       toast({
-        title: 'Profile Updated! ✨',
+        title: 'Profile Updated',
         description: 'Your beauty profile has been saved successfully',
       });
     } catch (error: any) {
@@ -144,19 +144,19 @@ export function BeautyProfile() {
     if (user?.referral_code) {
       navigator.clipboard.writeText(user.referral_code);
       toast({
-        title: 'Copied! 🎉',
+        title: 'Copied!',
         description: 'Referral code copied to clipboard',
       });
     }
   };
 
   const shareReferral = async () => {
-    const referralText = `Join Satguru Makeup Art with my referral code: ${user?.referral_code} and get 100 bonus points! 💝`;
+    const referralText = `Join BlindGlow By Satguru with my referral code: ${user?.referral_code} and get 100 bonus points!`;
     
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Satguru Makeup Art Referral',
+          title: 'BlindGlow By Satguru Referral',
           text: referralText,
         });
       } catch (error) {
@@ -165,7 +165,7 @@ export function BeautyProfile() {
     } else {
       navigator.clipboard.writeText(referralText);
       toast({
-        title: 'Copied! 📋',
+        title: 'Copied!',
         description: 'Referral message copied to clipboard',
       });
     }
@@ -174,8 +174,8 @@ export function BeautyProfile() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="section-padding bg-gradient-bg mt-20">
+    <div className="min-h-screen flex flex-col" style={{ background: '#FAF6F0' }}>
+      <main className="section-padding mt-20">
         <div className="container-custom max-w-4xl">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
@@ -313,7 +313,7 @@ export function BeautyProfile() {
                   </Button>
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Share with friends and earn 100 points for each successful referral! 🎁
+                  Share with friends and earn 100 points for each successful referral!
                 </p>
                 <Button onClick={shareReferral} className="btn-primary w-full gap-2">
                   <Share2 className="w-4 h-4" />
@@ -341,7 +341,7 @@ export function BeautyProfile() {
                   </div>
                 ) : (
                   <p className="text-center text-muted-foreground py-8">
-                    No referrals yet. Share your code to earn rewards! 🎉
+                    No referrals yet. Share your code to earn rewards!
                   </p>
                 )}
               </div>

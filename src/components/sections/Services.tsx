@@ -129,7 +129,7 @@ export function Services() {
 
   const handleCategoryClick = (title: string) => {
     toast({
-      title: `${title} ✨`,
+      title: `${title}`,
       description: `Select your preferred date and time to book ${title}.`,
     });
     const el = document.getElementById('booking');
@@ -199,14 +199,14 @@ export function Services() {
           background: 'linear-gradient(180deg, var(--background) 0%, hsl(var(--secondary) / 0.4) 100%)',
         }}
       >
-        {/* Subtle Green Botanical Glow Line Effect at top */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+        {/* Subtle Rose Glow Line Effect at top */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#C83E68]/40 to-transparent" />
 
         <div className="container-custom relative z-10">
           {/* ── 1. Header with Organic Intro ── */}
           <div className="text-center mb-10 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-3 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-3 bg-[#FDF0F4] text-[#C83E68] border border-[#F5DCE1] shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C83E68] animate-pulse" />
               <span>Tailored Beauty Experiences</span>
             </div>
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
@@ -229,14 +229,14 @@ export function Services() {
             <button
               onClick={prevSlide}
               aria-label="Previous service"
-              className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-background/85 border border-border shadow-md flex items-center justify-center text-foreground hover:bg-emerald-500 hover:text-white transition-all hover:scale-105 active:scale-95 backdrop-blur-sm"
+              className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-background/85 border border-border shadow-md flex items-center justify-center text-foreground hover:bg-[#C83E68] hover:text-white transition-all hover:scale-105 active:scale-95 backdrop-blur-sm"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={nextSlide}
               aria-label="Next service"
-              className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-background/85 border border-border shadow-md flex items-center justify-center text-foreground hover:bg-emerald-500 hover:text-white transition-all hover:scale-105 active:scale-95 backdrop-blur-sm"
+              className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-background/85 border border-border shadow-md flex items-center justify-center text-foreground hover:bg-[#C83E68] hover:text-white transition-all hover:scale-105 active:scale-95 backdrop-blur-sm"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -270,13 +270,13 @@ export function Services() {
                         width: `${100 / visibleCards}%`,
                       }}
                     >
-                      {/* Active green light pool aura directly under current service */}
+                      {/* Active rose light pool aura directly under current service */}
                       <div
                         className={`absolute -bottom-2 left-1/2 -translate-x-1/2 pointer-events-none transition-all duration-700 ${
                           isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
                         }`}
                       >
-                        <div className="w-24 h-6 rounded-full bg-emerald-500/35 blur-md" />
+                        <div className="w-24 h-6 rounded-full bg-[#C83E68]/25 blur-md" />
                       </div>
 
                       {/* Silhouette Frame */}
@@ -289,8 +289,8 @@ export function Services() {
                         <div
                           className={`absolute inset-0 rounded-full transition-all duration-500 ${
                             isActive
-                              ? 'bg-gradient-to-br from-emerald-500/30 to-teal-400/20 blur-lg scale-110'
-                              : 'bg-gradient-to-br from-emerald-500/10 to-rose-400/10 blur-md group-hover:scale-110'
+                              ? 'bg-gradient-to-br from-[#C83E68]/30 to-[#C69A62]/20 blur-lg scale-110'
+                              : 'bg-gradient-to-br from-[#C83E68]/10 to-[#C69A62]/10 blur-md group-hover:scale-110'
                           }`}
                         />
 
@@ -298,8 +298,8 @@ export function Services() {
                         <div
                           className={`relative w-full h-full overflow-hidden shadow-md transition-all duration-500 ${
                             isActive
-                              ? 'border-2 border-emerald-500 shadow-[0_0_18px_rgba(16,185,129,0.35)]'
-                              : 'border-2 border-stone-200/80 dark:border-stone-700/60 group-hover:border-emerald-400/60'
+                              ? 'border-2 border-[#C83E68] shadow-[0_0_18px_rgba(200,62,104,0.3)]'
+                              : 'border-2 border-stone-200/80 dark:border-stone-700/60 group-hover:border-[#C83E68]/60'
                           } ${
                             item.shape === 'flower'
                               ? 'rounded-[38%_62%_63%_37%_/_41%_44%_56%_59%]'
@@ -334,7 +334,7 @@ export function Services() {
 
                         {/* Active sparkle badge */}
                         {isActive && (
-                          <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-md animate-bounce">
+                          <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#C83E68] text-white flex items-center justify-center shadow-md animate-bounce">
                             <Sparkles className="w-3 h-3" />
                           </div>
                         )}
@@ -344,7 +344,7 @@ export function Services() {
                       <h4
                         className={`font-display font-bold text-sm transition-colors duration-300 ${
                           isActive
-                            ? 'text-emerald-600 dark:text-emerald-400'
+                            ? 'text-[#C83E68]'
                             : 'text-foreground group-hover:text-primary'
                         }`}
                       >
@@ -354,12 +354,12 @@ export function Services() {
                         {item.tagline}
                       </p>
 
-                      {/* Little bit of green light bar directly under current active service */}
+                      {/* Little bit of rose light bar directly under current active service */}
                       <div className="mt-2.5 h-1 flex items-center justify-center">
                         <div
                           className={`h-1 rounded-full transition-all duration-700 ${
                             isActive
-                              ? 'w-10 bg-emerald-500 shadow-[0_0_10px_#10B981] animate-green-pulse'
+                              ? 'w-10 bg-[#C83E68] shadow-[0_0_10px_#C83E68]'
                               : 'w-0 bg-transparent'
                           }`}
                         />
@@ -370,18 +370,17 @@ export function Services() {
               </div>
             </div>
 
-            {/* ── Dedicated Green Light Bar Below the Services ── */}
+            {/* ── Dedicated Rose Light Bar Below the Services ── */}
             <div className="relative mt-2 max-w-2xl mx-auto px-4">
-              {/* Subtle ambient green light baseline */}
-              <div className="relative w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent rounded-full overflow-hidden">
-                {/* 1s right-to-left travelling green light sweep beam */}
-                <div className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-emerald-400 to-transparent animate-green-sweep" />
+              {/* Subtle ambient light baseline */}
+              <div className="relative w-full h-[2px] bg-gradient-to-r from-transparent via-[#C83E68]/40 to-transparent rounded-full overflow-hidden">
+                <div className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-[#C83E68] to-transparent animate-green-sweep" />
               </div>
 
-              {/* Little bit green light floor glow pool */}
-              <div className="w-3/4 mx-auto h-3 -mt-1 bg-emerald-500/20 blur-md rounded-full pointer-events-none animate-green-pulse" />
+              {/* Little bit light floor glow pool */}
+              <div className="w-3/4 mx-auto h-3 -mt-1 bg-[#C83E68]/15 blur-md rounded-full pointer-events-none" />
 
-              {/* Navigation Indicator Dots with Green Light */}
+              {/* Navigation Indicator Dots */}
               <div className="flex items-center justify-center gap-1.5 mt-3">
                 {SILHOUETTE_CATEGORIES.map((_, i) => (
                   <button
@@ -390,8 +389,8 @@ export function Services() {
                     aria-label={`Go to service ${i + 1}`}
                     className={`h-1.5 rounded-full transition-all duration-500 ${
                       i === currentIndex
-                        ? 'w-6 bg-emerald-500 shadow-[0_0_8px_#10b981]'
-                        : 'w-1.5 bg-emerald-500/25 hover:bg-emerald-500/50'
+                        ? 'w-6 bg-[#C83E68] shadow-[0_0_8px_#C83E68]'
+                        : 'w-1.5 bg-[#C83E68]/25 hover:bg-[#C83E68]/50'
                     }`}
                   />
                 ))}
@@ -403,7 +402,7 @@ export function Services() {
           <div className="pt-8 border-t border-border/60">
             <div className="text-center mb-10">
               <div className="section-pill">
-                <Star className="w-4 h-4 text-emerald-500" />
+                <Star className="w-4 h-4 text-[#C83E68]" />
                 <span>Verified Results</span>
               </div>
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-3 text-foreground">

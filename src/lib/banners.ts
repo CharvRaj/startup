@@ -17,14 +17,14 @@ export interface PromotionalBanner {
 }
 
 export const PRESET_BANNER_IMAGES = [
-  { label: '✨ Glow & Refresh Facial', url: '/images/larana-glow-refresh.png' },
-  { label: '💇 Hair Care Moments', url: '/images/larana-hair-moments.png' },
-  { label: '💅 Nail Art & Care', url: '/images/larana-nail-art.png' },
-  { label: '🌿 Relaxing Spa & Stones', url: '/images/larana-relaxing-spa.png' },
-  { label: '🕯️ Swedish Massage & Care', url: '/images/larana-spa-massage.png' },
-  { label: '🧖‍♀️ Deep Pore Cleansing', url: '/images/larana-facial-cleansing.png' },
-  { label: '👰 Luxe Bridal Glow', url: '/images/category-bridal.jpg' },
-  { label: '🌸 Radiant Natural Beauty', url: '/images/larana-hero-portrait.png' },
+  { label: 'Glow & Refresh Facial', url: '/images/larana-glow-refresh.png' },
+  { label: 'Hair Care Moments', url: '/images/larana-hair-moments.png' },
+  { label: 'Nail Art & Care', url: '/images/larana-nail-art.png' },
+  { label: 'Relaxing Spa & Stones', url: '/images/larana-relaxing-spa.png' },
+  { label: 'Swedish Massage & Care', url: '/images/larana-spa-massage.png' },
+  { label: 'Deep Pore Cleansing', url: '/images/larana-facial-cleansing.png' },
+  { label: 'Luxe Bridal Glow', url: '/images/category-bridal.jpg' },
+  { label: 'Radiant Natural Beauty', url: '/images/larana-hero-portrait.png' },
 ];
 
 export const DEFAULT_PROMOTIONAL_BANNERS: PromotionalBanner[] = [

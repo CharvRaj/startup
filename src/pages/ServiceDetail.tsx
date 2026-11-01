@@ -148,7 +148,7 @@ export function ServiceDetail() {
   const handleWishlistToggle = () => {
     const added = toggleWishlist(service.id);
     toast({
-      title: added ? 'Saved to Wishlist ❤️' : 'Removed from Wishlist',
+      title: added ? 'Saved to Wishlist' : 'Removed from Wishlist',
       description: `${service.name} has been ${added ? 'added to' : 'removed from'} your wishlist.`,
     });
   };
@@ -285,8 +285,9 @@ export function ServiceDetail() {
               </button>
 
               {/* Bottom Subtle Pill */}
-              <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-semibold text-[#342A29] shadow-md border border-[#F5DCE1]">
-                ✨ Single-Use Sealed Kit
+              <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-semibold text-[#342A29] shadow-md border border-[#F5DCE1] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#C83E68]" />
+                <span>Single-Use Sealed Kit</span>
               </div>
             </div>
 

@@ -7,11 +7,11 @@ export function FloatingCoupon() {
   useEffect(() => {
     const hasSeenCoupon = localStorage.getItem('coupon_seen');
 
-    if (hasSeenCoupon) return; // ❌ Already shown once → never show again
+    if (hasSeenCoupon) return; // Already shown once → never show again
 
     const timer = setTimeout(() => {
       setIsVisible(true);
-      localStorage.setItem('coupon_seen', 'true'); // ✅ mark as shown
+      localStorage.setItem('coupon_seen', 'true'); // mark as shown
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -19,7 +19,7 @@ export function FloatingCoupon() {
 
   const handleClose = () => {
     setIsVisible(false);
-    localStorage.setItem('coupon_seen', 'true'); // ✅ ensure never again
+    localStorage.setItem('coupon_seen', 'true'); // ensure never again
   };
 
   const handleCopy = () => {
@@ -29,7 +29,7 @@ export function FloatingCoupon() {
     copyNotification.className =
       'fixed top-24 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[100]';
     copyNotification.innerHTML =
-      '✅ Coupon code SAVE25 copied! Apply at checkout for 25% off';
+      '<span style="display:inline-flex;align-items:center;gap:6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Coupon code SAVE25 copied! Apply at checkout for 25% off</span>';
 
     document.body.appendChild(copyNotification);
 

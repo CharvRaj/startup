@@ -1,8 +1,9 @@
+import { AssociateTrainingSection } from '@/components/training/AssociateTrainingSection';
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Store, Star, Package, Activity, MessageSquare, User, LogOut, Power, MapPin,
-  CheckCircle, Clock, Loader2, Calendar, TrendingUp, BarChart3, Megaphone, AlertTriangle, QrCode, ScanLine, Key, Lock, Eye, EyeOff
+  CheckCircle, XCircle, Clock, Loader2, Calendar, GraduationCap, TrendingUp, BarChart3, Megaphone, AlertTriangle, QrCode, ScanLine, Key, Lock, Eye, EyeOff
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { useToast } from '@/hooks/use-toast';
@@ -21,7 +22,7 @@ export function AssociateDashboard() {
   const associateId = searchParams.get('id');
 
   const [profile, setProfile] = useState<AssociateProfile | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'bookings' | 'analytics' | 'profile' | 'support' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'bookings' | 'training' | 'analytics' | 'profile' | 'support' | 'settings'>('overview');
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(true);
   const [supportMessage, setSupportMessage] = useState('');
@@ -102,7 +103,7 @@ export function AssociateDashboard() {
     const newStatus = !isOnline;
     setIsOnline(newStatus);
     await supabase.from('associate_requests').update({ is_active: newStatus }).eq('id', profile.id);
-    toast({ title: newStatus ? '🟢 Shop is now Open' : '⭕ Shop is now Closed' });
+    toast({ title: newStatus ? 'Shop is now Open' : 'Shop is now Closed' });
   };
 
   const changePassword = async () => {
@@ -113,7 +114,7 @@ export function AssociateDashboard() {
     if (session) {
       const { error } = await supabase.from('associate_requests').update({ approved_password: newPassword }).eq('id', session);
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); }
-      else { toast({ title: '✅ Password Updated!' }); setNewPassword(''); setConfirmPassword(''); }
+      else { toast({ title: 'Password Updated!' }); setNewPassword(''); setConfirmPassword(''); }
     }
     setChangingPassword(false);
   };
@@ -126,10 +127,10 @@ export function AssociateDashboard() {
         latitude: pos.coords.latitude, longitude: pos.coords.longitude,
         message: 'SOS from associate dashboard', status: 'active'
       });
-      toast({ title: '🆘 SOS Sent!', description: 'Admin has been notified.', variant: 'destructive' });
+      toast({ title: 'SOS Sent!', description: 'Admin has been notified.', variant: 'destructive' });
     }, async () => {
       await supabase.from('sos_requests').insert({ requester_type: 'associate', requester_id: profile.id, message: 'SOS', status: 'active' });
-      toast({ title: '🆘 SOS Sent!', variant: 'destructive' });
+      toast({ title: 'SOS Sent!', variant: 'destructive' });
     });
   };
 
@@ -146,7 +147,7 @@ export function AssociateDashboard() {
       requester_type: 'associate', requester_id: profile?.id,
       subject: supportSubject, message: supportMessage, status: 'open',
     });
-    toast({ title: '✅ Support ticket submitted!' });
+    toast({ title: 'Support ticket submitted!' });
     setSupportSubject(''); setSupportMessage('');
     setSubmittingSupport(false);
   };
@@ -216,7 +217,7 @@ export function AssociateDashboard() {
           <div className="relative z-10 flex items-start justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-                style={{ background: 'linear-gradient(135deg, #be185d, #ec4899)' }}>🏪</div>
+                style={{ background: 'linear-gradient(135deg, #be185d, #ec4899)' }}><Store className="w-6 h-6 text-white" /></div>
               <div>
                 <h1 className="text-white font-bold text-xl">{profile.shop_name}</h1>
                 <p className="text-pink-300 text-sm">Owner: {profile.owner_name}</p>
@@ -231,7 +232,7 @@ export function AssociateDashboard() {
               { label: 'Total Bookings', value: bookings.length, icon: Package, color: 'from-rose-400 to-pink-500' },
               { label: 'Completed', value: completedBookings.length, icon: CheckCircle, color: 'from-emerald-400 to-teal-500' },
               { label: 'This Month', value: bookings.filter(b => new Date(b.created_at) > new Date(Date.now() - 30*86400000)).length, icon: Calendar, color: 'from-violet-400 to-purple-500' },
-              { label: 'Rating', value: `${profile.rating?.toFixed(1) || '5.0'}★`, icon: Star, color: 'from-amber-400 to-yellow-500' },
+              { label: 'Rating', value: `${profile.rating?.toFixed(1) || '5.0'}`, icon: Star, color: 'from-amber-400 to-yellow-500' },
             ].map(({ label, value, icon: Icon, color }) => (
               <div key={label} className="flex items-center gap-3">
                 <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center flex-shrink-0`}>
@@ -251,6 +252,7 @@ export function AssociateDashboard() {
           {[
             { id: 'overview', label: 'Overview', icon: Activity },
             { id: 'bookings', label: 'Bookings', icon: Package },
+            { id: 'training', label: 'Staff Training', icon: GraduationCap },
             { id: 'analytics', label: 'Analytics', icon: BarChart3 },
             { id: 'profile', label: 'Profile', icon: Store },
             { id: 'support', label: 'Support', icon: MessageSquare },
@@ -266,7 +268,15 @@ export function AssociateDashboard() {
           ))}
         </div>
 
-        {/* Overview */}
+        {/* Associate Training Section */}
+        {activeTab === 'training' && (
+          <AssociateTrainingSection
+            associateId={profile.id}
+            associateName={profile.owner_name || profile.shop_name}
+          />
+        )}
+
+        {/* Overview */}"
         {activeTab === 'overview' && (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -302,12 +312,12 @@ export function AssociateDashboard() {
                     <div className={`rounded-xl p-4 ${scanResult.found ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-red-500/10 border border-red-500/30'}`}>
                       {scanResult.found ? (
                         <>
-                          <p className="text-emerald-400 font-bold text-sm">✅ Valid Booking</p>
+                          <p className="text-emerald-400 font-bold text-sm flex items-center gap-1.5"><CheckCircle className="w-4 h-4 inline" /> Valid Booking</p>
                           <p className="text-white text-sm mt-1">{scanResult.data.name}</p>
                           <p className="text-white/60 text-xs">{scanResult.data.service} • {new Date(scanResult.data.preferred_date).toLocaleDateString()}</p>
                           <p className="text-white/60 text-xs">{scanResult.data.preferred_time}</p>
                         </>
-                      ) : <p className="text-red-400 font-bold text-sm">❌ Booking not found</p>}
+                      ) : <p className="text-red-400 font-bold text-sm flex items-center gap-1.5"><XCircle className="w-4 h-4 inline" /> Booking not found</p>}
                     </div>
                   )}
                 </div>
@@ -318,7 +328,7 @@ export function AssociateDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className={`font-bold text-lg ${isOnline ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {isOnline ? '🟢 Shop is Open' : '⭕ Shop is Closed'}
+                    {isOnline ? <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Shop is Open</span> : <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-slate-400 inline-block" /> Shop is Closed</span>}
                   </h3>
                   <p className="text-white/40 text-sm">{isOnline ? 'Customers can find and book at your shop.' : 'Toggle on when your shop is open.'}</p>
                 </div>

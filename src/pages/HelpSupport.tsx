@@ -183,7 +183,7 @@ export function HelpSupport() {
         }, 150);
 
         toast({
-          title: 'Booking Details Pre-filled ✨',
+          title: 'Booking Details Pre-filled',
           description: `Loaded details for "${state.serviceName || 'your booking'}". Review and submit your ticket below.`,
         });
       }
@@ -356,7 +356,7 @@ export function HelpSupport() {
       });
 
       toast({
-        title: 'Thanks for Contacting Us! ✨',
+        title: 'Thanks for Contacting Us!',
         description: `Your ticket ${newTicket.ticket_number} has been created. We will provide a solution as soon as possible (estimated: within 2 to 4 hours)!`,
       });
 

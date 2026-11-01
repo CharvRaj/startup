@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { GlowUpSection } from '@/components/sections/GlowUpSection';
 import { Hero } from '@/components/sections/Hero';
+import { DiwaliUtsavSection } from '@/components/sections/DiwaliUtsavSection';
 import { FestiveCategoryCanopy } from '@/components/sections/FestiveCategoryCanopy';
 import { QuickGlowBanner } from '@/components/sections/QuickGlowBanner';
 import { Services } from '@/components/sections/Services';
@@ -11,7 +13,7 @@ import { Location } from '@/components/sections/Location';
 import { DoorstepBanner } from '@/components/sections/DoorstepBanner';
 import { StoryBanners } from '@/components/StoryBanners';
 import { FloatingVideo } from '@/components/FloatingVideo';
-import { Sparkles, Gift, Crown, Zap, Users, Star, MapPin, Calendar, Loader2, ArrowRight } from 'lucide-react';
+import { Sparkles, Gift, Crown, Zap, Users, Star, MapPin, Calendar, Loader2, ArrowRight, Pin, AlertTriangle, BookOpen, Megaphone, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { initScrollAnimations } from '@/lib/scroll-animations';
@@ -77,7 +79,7 @@ export function Home() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       {/* Announcements Banner */}
       {visibleAnn.length > 0 && (
         <div className="fixed top-[72px] left-0 right-0 z-30 pointer-events-none">
@@ -90,12 +92,18 @@ export function Home() {
                   boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
                   backdropFilter: 'blur(8px)',
                 }}>
-                <span className="text-lg flex-shrink-0">{ann.type === 'promo' ? '🎉' : ann.type === 'emergency' ? '🚨' : ann.type === 'training' ? '📚' : '📢'}</span>
+                <span className="flex-shrink-0 text-white">
+                  {ann.type === 'promo' ? <Sparkles className="w-5 h-5" /> : ann.type === 'emergency' ? <AlertTriangle className="w-5 h-5" /> : ann.type === 'training' ? <BookOpen className="w-5 h-5" /> : <Megaphone className="w-5 h-5" />}
+                </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-bold text-sm truncate">{ann.title}</p>
                   <p className="text-white/70 text-xs truncate">{ann.message}</p>
                 </div>
-                {ann.pinned && <span className="text-white/60 text-xs bg-white/15 px-2 py-0.5 rounded-full flex-shrink-0">📌 Pinned</span>}
+                {ann.pinned && (
+                  <span className="text-white/80 text-xs bg-white/15 px-2 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1">
+                    <Pin className="w-3 h-3" /> Pinned
+                  </span>
+                )}
                 <button onClick={() => setDismissedAnn(p => [...p, ann.id])} className="text-white/50 hover:text-white flex-shrink-0 transition-colors">
                   <span className="text-lg leading-none">×</span>
                 </button>
@@ -104,7 +112,9 @@ export function Home() {
           </div>
         </div>
       )}
+      <GlowUpSection />
       <Hero />
+      <DiwaliUtsavSection />
       <FestiveCategoryCanopy />
       <DoorstepBanner />
       <QuickGlowBanner />
@@ -269,110 +279,22 @@ export function Home() {
             </div>
           </div>
 
-          {/* Two Partner Banners (Heart-touching, modern salon aesthetic) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 scroll-reveal">
-
-            {/* Join Our Team Banner */}
-            <div
-              onClick={() => navigate('/join-team')}
-              className="cursor-pointer group relative overflow-hidden rounded-3xl p-7 sm:p-8 bg-card border border-border/80 hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between"
-            >
-              {/* Green Glow Line Accent at top */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent group-hover:via-emerald-400 group-hover:h-[3px] transition-all" />
-
-              {/* Faint luxury photo backdrop */}
-              <div
-                className="absolute right-0 bottom-0 top-0 w-2/5 bg-[url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80')] bg-cover bg-center opacity-[0.06] dark:opacity-[0.12] pointer-events-none group-hover:scale-105 transition-transform duration-700"
-              />
-
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-sm group-hover:scale-110 transition-transform">
-                    <Star className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Careers at Satguru</span>
-                    <h3 className="text-xl sm:text-2xl font-bold text-foreground font-display">Join Our Expert Team</h3>
-                  </div>
-                </div>
-
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-md">
-                  Build your career with Satguru Makeup Art. Enjoy competitive pay, flexible hours, branded toolkits, and fast growth opportunities.
-                </p>
-              </div>
-
-              <div className="relative z-10 flex items-center justify-between pt-4 border-t border-border/60">
-                <span className="text-xs text-muted-foreground font-medium">Hiring Artists, Stylists & Mehndi Experts</span>
-                <Button
-                  className="text-xs font-semibold px-4 py-2 rounded-xl text-white shadow-md transition-all hover:scale-105 active:scale-95"
-                  style={{
-                    background: 'linear-gradient(135deg, #c9956c 0%, #d4a574 100%)',
-                  }}
-                >
-                  Apply Now
-                  <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Associate Partnership Banner */}
-            <div
-              onClick={() => navigate('/associate')}
-              className="cursor-pointer group relative overflow-hidden rounded-3xl p-7 sm:p-8 bg-card border border-border/80 hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between"
-            >
-              {/* Green Glow Line Accent at top */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent group-hover:via-emerald-400 group-hover:h-[3px] transition-all" />
-
-              {/* Faint luxury photo backdrop */}
-              <div
-                className="absolute right-0 bottom-0 top-0 w-2/5 bg-[url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80')] bg-cover bg-center opacity-[0.06] dark:opacity-[0.12] pointer-events-none group-hover:scale-105 transition-transform duration-700"
-              />
-
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 shadow-sm group-hover:scale-110 transition-transform">
-                    <Users className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">Salon Growth Network</span>
-                    <h3 className="text-xl sm:text-2xl font-bold text-foreground font-display">Partner With Us</h3>
-                  </div>
-                </div>
-
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-md">
-                  Expand your independent salon business. Join our verified partner network to receive premium client bookings and marketing support.
-                </p>
-              </div>
-
-              <div className="relative z-10 flex items-center justify-between pt-4 border-t border-border/60">
-                <span className="text-xs text-muted-foreground font-medium">For Salon Owners & Freelancers</span>
-                <Button
-                  className="text-xs font-semibold px-4 py-2 rounded-xl text-white shadow-md transition-all hover:scale-105 active:scale-95"
-                  style={{
-                    background: 'linear-gradient(135deg, #be185d 0%, #9d174d 100%)',
-                  }}
-                >
-                  Become Partner
-                  <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-                </Button>
-              </div>
-            </div>
-          </div>
+          {/* Partner Banners — Removed. Users can find partner/career info in the footer. */}
 
           {/* Large Feature Banner — Bridal */}
           <div
-            className="relative overflow-hidden scroll-reveal-scale rounded-[28px] p-8 sm:p-12 border border-border/80 bg-gradient-to-br from-card via-card to-secondary/40 shadow-xl"
+            className="relative overflow-hidden scroll-reveal-scale rounded-[28px] p-8 sm:p-12 border border-[#F5DCE1] bg-gradient-to-br from-white via-[#FCF9F5] to-[#FDF0F4] shadow-xl"
           >
-            {/* Green glowing line accent */}
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
+            {/* Rose glowing line accent */}
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#C83E68]/40 to-transparent" />
 
             {/* Decorative orbs */}
-            <div className="absolute top-0 right-[20%] w-[260px] h-[260px] rounded-full pointer-events-none bg-gradient-to-br from-amber-500/10 to-rose-500/10 blur-3xl" />
-            <div className="absolute bottom-0 left-[10%] w-[220px] h-[220px] rounded-full pointer-events-none bg-gradient-to-br from-emerald-500/10 to-teal-500/10 blur-3xl" />
+            <div className="absolute top-0 right-[20%] w-[260px] h-[260px] rounded-full pointer-events-none bg-gradient-to-br from-[#C69A62]/10 to-[#C83E68]/10 blur-3xl" />
+            <div className="absolute bottom-0 left-[10%] w-[220px] h-[220px] rounded-full pointer-events-none bg-gradient-to-br from-[#C83E68]/10 to-[#FDF0F4] blur-3xl" />
 
             <div className="relative z-10 max-w-4xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-sm">
-                <Sparkles className="w-4 h-4 text-emerald-500" />
+              <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 bg-[#FDF0F4] text-[#C83E68] border border-[#F5DCE1] shadow-sm">
+                <Sparkles className="w-4 h-4 text-[#C83E68]" />
                 <span className="text-xs font-semibold">Limited Time Offer</span>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 font-display">
@@ -396,9 +318,9 @@ export function Home() {
                     }
                   }}
                   size="lg"
-                  className="text-sm font-semibold text-white px-7 py-3 rounded-2xl shadow-lg shadow-emerald-600/20 transition-all hover:scale-105 active:scale-95"
+                  className="text-sm font-semibold text-white px-7 py-3 rounded-2xl shadow-lg shadow-[#C83E68]/20 transition-all hover:scale-105 active:scale-95"
                   style={{
-                    background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+                    background: 'linear-gradient(135deg, #C83E68 0%, #A82E52 100%)',
                   }}
                 >
                   <Calendar className="w-4 h-4 mr-2" />
@@ -429,7 +351,7 @@ export function Home() {
                 <Sparkles className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h2 className="font-display text-2xl font-bold">✨ Recommended For You</h2>
+                <h2 className="font-display text-2xl font-bold">Recommended For You</h2>
                 <p className="text-muted-foreground text-sm">Personalised picks based on your beauty profile</p>
               </div>
               <Button onClick={() => navigate('/profile')} variant="outline" size="sm" className="ml-auto text-xs rounded-xl"
@@ -448,7 +370,9 @@ export function Home() {
                       border: '1px solid rgba(201,149,108,0.1)',
                     }}>
                     <div className="flex items-start gap-3">
-                      <span className="text-3xl">{rec.icon || '💄'}</span>
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                        <Sparkles className="w-5 h-5" />
+                      </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="font-bold text-sm">{rec.service}</h4>
@@ -456,10 +380,13 @@ export function Home() {
                           {rec.urgency === 'highly_recommended' && <span className="text-xs px-2 py-0.5 bg-violet-100 text-violet-700 rounded-full font-bold">Top Pick</span>}
                         </div>
                         <p className="text-xs text-muted-foreground mb-2">{rec.reason}</p>
-                        <p className="text-xs text-emerald-600 font-medium mb-3">✓ {rec.benefit}</p>
+                        <p className="text-xs text-[#C83E68] font-medium mb-3 flex items-center gap-1">
+                          <Check className="w-3.5 h-3.5 text-[#C83E68]" />
+                          {rec.benefit}
+                        </p>
                         <button onClick={() => navigate(rec.type === 'doorstep' ? '/doorstep-service' : '/#booking')}
                           className="text-xs font-semibold text-white px-4 py-1.5 transition-all group-hover:scale-105"
-                          style={{ borderRadius: '12px', background: 'linear-gradient(135deg, #be185d, #a8154f)', boxShadow: '0 4px 12px rgba(190,24,93,0.25)' }}>
+                          style={{ borderRadius: '12px', background: 'linear-gradient(135deg, #C83E68, #A82E52)', boxShadow: '0 4px 12px rgba(200,62,104,0.25)' }}>
                           {rec.type === 'doorstep' ? 'Order Now' : 'Book Now'}
                         </button>
                       </div>
@@ -474,7 +401,7 @@ export function Home() {
                 background: 'linear-gradient(135deg, rgba(201,149,108,0.06), rgba(190,24,93,0.04))',
                 border: '1px solid rgba(201,149,108,0.12)',
               }}>
-                <p className="text-sm"><span className="font-bold text-primary">✨ Beauty Tip: </span><span className="text-muted-foreground">{aiRecs.tip}</span></p>
+                <p className="text-sm"><span className="font-bold text-primary inline-flex items-center gap-1"><Sparkles className="w-4 h-4 inline" /> Beauty Tip: </span><span className="text-muted-foreground">{aiRecs.tip}</span></p>
               </div>
             )}
           </div>

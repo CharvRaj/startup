@@ -12,6 +12,7 @@ import {
   MapPin,
   Tag,
   Loader2,
+  Check,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -183,7 +184,7 @@ export function GuidedBookingModal({
         onBookingCreated(data);
       }
       toast({
-        title: 'Thanks for Contacting Us! ✨',
+        title: 'Thanks for Contacting Us!',
         description: `Your booking for ${selectedService.name} has arrived! Our team will provide confirmation within 15–30 minutes.`,
       });
     } catch (err: any) {
@@ -207,7 +208,7 @@ export function GuidedBookingModal({
         onBookingCreated(fallbackBooking);
       }
       toast({
-        title: 'Thanks for Contacting Us! ✨',
+        title: 'Thanks for Contacting Us!',
         description: `Your booking for ${selectedService.name} has arrived! Our team will provide confirmation within 15–30 minutes.`,
       });
     } finally {
@@ -228,7 +229,7 @@ export function GuidedBookingModal({
         <div className="p-5 border-b border-[#F8DCE4] bg-white flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-[#F8DCE4] text-[#D81B60] flex items-center justify-center font-bold text-xs">
-              {step < 5 ? step : '✓'}
+              {step < 5 ? step : <Check className="w-3.5 h-3.5" />}
             </span>
             <div>
               <h3 className="font-serif italic text-xl text-[#43152E]">
@@ -470,8 +471,9 @@ export function GuidedBookingModal({
               </div>
 
               <div>
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#DCE8D7] text-[#174D3A] text-xs font-semibold mb-2">
-                  🟢 Confirmed
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#DCE8D7] text-[#174D3A] text-xs font-semibold mb-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  Confirmed
                 </span>
                 <h3 className="font-serif italic text-2xl sm:text-3xl text-[#43152E]">
                   Your Appointment is Booked!

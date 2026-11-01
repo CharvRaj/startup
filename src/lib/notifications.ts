@@ -65,7 +65,7 @@ export class NotificationService {
    * Show notification for new booking
    */
   async notifyNewBooking(bookingData: { name: string; service: string }) {
-    return this.show('🔔 New Booking Request!', {
+    return this.show('New Booking Request', {
       body: `${bookingData.name} requested ${bookingData.service}`,
       tag: 'new-booking',
       requireInteraction: false,
@@ -77,7 +77,7 @@ export class NotificationService {
    * Show notification for booking confirmation
    */
   async notifyBookingConfirmed(bookingData: { service: string; date: string; time: string }) {
-    return this.show('✅ Booking Confirmed!', {
+    return this.show('Booking Confirmed', {
       body: `Your ${bookingData.service} appointment on ${new Date(bookingData.date).toLocaleDateString()} at ${bookingData.time}`,
       tag: 'booking-confirmed',
     });
@@ -87,7 +87,7 @@ export class NotificationService {
    * Show notification for profile update
    */
   async notifyProfileUpdated() {
-    return this.show('✨ Profile Updated!', {
+    return this.show('Profile Updated', {
       body: 'Your profile has been successfully updated',
       tag: 'profile-updated',
     });

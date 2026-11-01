@@ -1,3 +1,5 @@
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
@@ -32,6 +34,9 @@ import { Complaints } from './pages/Complaints';
 import { QueryResolverLogin } from './pages/QueryResolverLogin';
 import { QueryResolverDashboard } from './pages/QueryResolverDashboard';
 import { HelpSupport } from './pages/HelpSupport';
+import { BeautyStudio } from './pages/BeautyStudio';
+import { DiwaliLanding } from './pages/DiwaliLanding';
+const VirtualStudio = lazy(() => import('./pages/VirtualStudio').then((m) => ({ default: m.VirtualStudio })));
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Toaster } from '@/components/ui/toaster';
@@ -60,11 +65,17 @@ function AppContent() {
   ) || HIDE_STARTS_WITH.some(p => location.pathname.startsWith(p));
 
   return (
-    <div className="page-transition">
+    <div className="page-transition min-h-screen bg-background text-foreground transition-colors duration-300">
       <SplashScreen />
       {!hideHeaderFooter && <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/diwali" element={<DiwaliLanding />} />
+        <Route path="/diwali-mahotsav" element={<DiwaliLanding />} />
+        <Route path="/virtual-studio" element={<Suspense fallback={<div className="min-h-screen pt-32 text-center text-sm text-muted-foreground">Loading BlindGlow AI Studio…</div>}><VirtualStudio /></Suspense>} />
+        <Route path="/beauty-studio" element={<Suspense fallback={<div className="min-h-screen pt-32 text-center text-sm text-muted-foreground">Loading BlindGlow AI Studio…</div>}><VirtualStudio /></Suspense>} />
+        <Route path="/blindglow-ai" element={<Suspense fallback={<div className="min-h-screen pt-32 text-center text-sm text-muted-foreground">Loading BlindGlow AI Studio…</div>}><VirtualStudio /></Suspense>} />
+        <Route path="/ai-glow" element={<Suspense fallback={<div className="min-h-screen pt-32 text-center text-sm text-muted-foreground">Loading BlindGlow AI Studio…</div>}><VirtualStudio /></Suspense>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -110,7 +121,9 @@ function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
-        <AppContent />
+        <ErrorBoundary>
+          <AppContent />
+        </ErrorBoundary>
         <Toaster />
         <FloatingWhatsApp />
         <FloatingAssistant />

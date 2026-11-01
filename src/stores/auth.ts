@@ -20,11 +20,30 @@ function mapSupabaseUser(user: User): AuthUser {
   };
 }
 
+const getInitialUser = (): AuthUser | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const cached = localStorage.getItem('satguru_auth_user');
+    if (cached) return JSON.parse(cached);
+  } catch {}
+  return null;
+};
+
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  loading: true,
-  login: (user) => set({ user }),
-  logout: () => set({ user: null }),
+  user: getInitialUser(),
+  loading: typeof window !== 'undefined' ? !getInitialUser() : true,
+  login: (user) => {
+    try {
+      localStorage.setItem('satguru_auth_user', JSON.stringify(user));
+    } catch {}
+    set({ user, loading: false });
+  },
+  logout: () => {
+    try {
+      localStorage.removeItem('satguru_auth_user');
+    } catch {}
+    set({ user: null, loading: false });
+  },
   setLoading: (loading) => set({ loading }),
 }));
 
@@ -33,7 +52,8 @@ let mounted = true;
 
 supabase.auth.getSession().then(({ data: { session } }) => {
   if (mounted && session?.user) {
-    useAuthStore.getState().login(mapSupabaseUser(session.user));
+    const u = mapSupabaseUser(session.user);
+    useAuthStore.getState().login(u);
   }
   if (mounted) {
     useAuthStore.getState().setLoading(false);
