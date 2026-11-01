@@ -11,8 +11,8 @@ export function FloatingVideo() {
       const scrollPosition = window.scrollY;
       const windowHeight = window.innerHeight;
 
-      // Show video after scrolling one full screen
-      if (scrollPosition > windowHeight && !hasScrolled) {
+      // Show video after passing the intro and hero sections into services
+      if (scrollPosition > windowHeight * 3.5 && !hasScrolled) {
         setHasScrolled(true);
         setIsVisible(true);
       }

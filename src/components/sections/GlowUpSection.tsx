@@ -10,6 +10,8 @@ const PAL = [
   ['#FFD36B', '#C77700'],
 ];
 
+const getHeaderOffset = () => (typeof window !== 'undefined' && window.innerWidth < 640 ? 60 : 90);
+
 function hexToRgb(h: string): [number, number, number] {
   return [1, 3, 5].map((i) => parseInt(h.substr(i, 2), 16)) as [number, number, number];
 }
@@ -186,7 +188,7 @@ export const GlowUpSection: React.FC = () => {
       const clamped = Math.min(CH - 1, Math.max(0, nextStep));
       currentStep = clamped;
 
-      const headerOffset = window.innerWidth <= 820 ? 60 : 62;
+      const headerOffset = getHeaderOffset();
       const storyTop = story.getBoundingClientRect().top + window.scrollY;
       const travel = story.offsetHeight - window.innerHeight;
       const targetScroll = storyTop - headerOffset + (clamped / (CH - 1)) * travel;
@@ -201,7 +203,7 @@ export const GlowUpSection: React.FC = () => {
 
     function readScroll() {
       if (!story) return;
-      const headerOffset = window.innerWidth <= 820 ? 60 : 62;
+      const headerOffset = getHeaderOffset();
       const t = story.offsetHeight - window.innerHeight;
       if (t <= 0) return;
       const progress = (headerOffset - story.getBoundingClientRect().top) / t;
@@ -220,7 +222,7 @@ export const GlowUpSection: React.FC = () => {
     /* Step-by-Step Wheel Interceptor */
     const onWheel = (e: WheelEvent) => {
       if (!story) return;
-      const headerOffset = window.innerWidth <= 820 ? 60 : 62;
+      const headerOffset = getHeaderOffset();
       const rect = story.getBoundingClientRect();
 
       // Check if section is currently locked in viewport
@@ -264,7 +266,7 @@ export const GlowUpSection: React.FC = () => {
 
     const onTouchEnd = (e: TouchEvent) => {
       if (!story) return;
-      const headerOffset = window.innerWidth <= 820 ? 60 : 62;
+      const headerOffset = getHeaderOffset();
       const rect = story.getBoundingClientRect();
       const isPinned = rect.top <= headerOffset + 15 && rect.bottom >= window.innerHeight - 30;
       if (!isPinned) return;
