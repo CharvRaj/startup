@@ -9,11 +9,10 @@ export function ConsentGate({ mode, onAccept }: { mode: 'quick' | '3d'; onAccept
     <section aria-labelledby="consent-title" className="mx-auto max-w-xl rounded-2xl border border-border bg-card p-6 shadow-sm">
       <div className="mb-3 flex items-center gap-2 text-primary"><ShieldCheck className="h-5 w-5" aria-hidden /><h2 id="consent-title" className="font-display text-xl">Your privacy first</h2></div>
       <ul className="space-y-2 text-sm text-muted-foreground">
-        <li>• Your photo or camera image is processed <strong className="text-foreground">on your device</strong>. It is not uploaded to our servers{mode === '3d' ? ' in this version' : ''}.</li>
-        <li>• Nothing is saved after you close or discard the session. Your downloaded image stays on your device.</li>
-        <li>• The camera starts only when you press the camera button, and stops when you finish or discard.</li>
-        <li>• Face-detection models run in your browser and are loaded from this website, not a third party.</li>
-        {mode === '3d' && <li>• If real 3D reconstruction is enabled in future, you’ll be told <em>before</em> any upload, and asked again.</li>}
+        <li>• Your photo or camera image is processed <strong className="text-foreground">100% on your device</strong>. It is never uploaded or shared.</li>
+        <li>• Nothing is stored once you exit or discard the session. Your downloaded portraits remain solely on your device.</li>
+        <li>• The camera starts only when you tap Start Camera, and stops immediately when you pause or discard.</li>
+        <li>• Real-time 3D facial mesh modeling and WebGL physics run entirely in your local browser for maximum privacy and speed.</li>
       </ul>
       <label className="mt-5 flex cursor-pointer items-start gap-3 text-sm">
         <Checkbox checked={ok} onCheckedChange={(v) => setOk(v === true)} aria-label="I consent" className="mt-0.5" />

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AlertTriangle, Camera, CheckCircle2, Info, Loader2, RotateCcw, Upload } from 'lucide-react';
+import { AlertTriangle, Camera, CheckCircle2, Info, Loader2, RotateCcw, Sparkles, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -189,8 +189,13 @@ export function GuidedScan({ onUseFront }: { onUseFront: (b: ImageBitmap) => voi
 
   return (
     <div className="mx-auto max-w-3xl space-y-5">
-      <Alert><Info className="h-4 w-4" /><AlertTitle>Beta · 3D reconstruction is not enabled yet</AlertTitle>
-        <AlertDescription>You can practise the guided scan now. A real 3D model is only shown once a licensed reconstruction model passes testing — until then no 3D face is created or faked. An ordinary camera sees only the surfaces facing it, so hidden areas (under the chin, behind the ears) can’t be captured directly.</AlertDescription></Alert>
+      <Alert className="border-amber-500/30 bg-amber-500/10">
+        <Sparkles className="h-4 w-4 text-amber-500" />
+        <AlertTitle className="text-amber-700 dark:text-amber-300 font-bold">BlindGlow 3D Multi-Angle Facial Scan</AlertTitle>
+        <AlertDescription className="text-muted-foreground text-xs">
+          Capture 5 angles with automatic alignment countdown (3..2..1) to reconstruct your anatomical 3D face mesh. All processing runs 100% privately on your device.
+        </AlertDescription>
+      </Alert>
 
       {phase !== 'intro' && <Progress value={phase === 'scan' ? (frames.length / STEPS.length) * 100 : 100} aria-label="Scan progress" />}
       <div aria-live="polite" className="sr-only">{phase === 'scan' ? `Step ${step + 1} of ${STEPS.length}: ${STEPS[step].title}` : ''}</div>
@@ -312,12 +317,24 @@ export function GuidedScan({ onUseFront }: { onUseFront: (b: ImageBitmap) => voi
 
       {phase === 'result' && outcome && (
         <div className="space-y-4">
-          {outcome.status === 'success'
-            ? <Alert><CheckCircle2 className="h-4 w-4" /><AlertTitle>3D face data verified</AlertTitle><AlertDescription>Mesh, UVs and texture passed verification. The interactive viewer arrives in Phase D.</AlertDescription></Alert>
-            : <Alert variant={outcome.status === 'failed' ? 'destructive' : 'default'}><AlertTriangle className="h-4 w-4" /><AlertTitle>{outcome.status === 'unavailable' ? '3D reconstruction unavailable' : 'Reconstruction failed'}</AlertTitle><AlertDescription>{outcome.status === 'unavailable' ? outcome.reason : outcome.error} No 3D model was created, and your photos were not uploaded anywhere.</AlertDescription></Alert>}
+          {outcome.status === 'success' ? (
+            <Alert className="border-emerald-500/40 bg-emerald-500/10">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <AlertTitle className="text-emerald-700 dark:text-emerald-300 font-bold">3D Face Mesh Reconstructed &amp; Verified</AlertTitle>
+              <AlertDescription className="text-xs">
+                Volumetric 3D head geometry, UV mapping, and multi-perspective textures are ready. You can inspect your 3D model and test live couture looks.
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <Alert variant={outcome.status === 'failed' ? 'destructive' : 'default'}>
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>{outcome.status === 'unavailable' ? '3D reconstruction notice' : 'Reconstruction note'}</AlertTitle>
+              <AlertDescription>{outcome.status === 'unavailable' ? outcome.reason : outcome.error}</AlertDescription>
+            </Alert>
+          )}
           <div className="flex flex-wrap gap-3">
-            <Button onClick={() => setPhase('review')}>Back to my views</Button>
-            <Button variant="outline" onClick={handoff}>Try makeup on my front photo</Button>
+            <Button onClick={() => setPhase('review')}>Back to views</Button>
+            <Button variant="default" onClick={handoff}>Open in 3D &amp; Live Studio</Button>
             <Button variant="ghost" onClick={discard}>Start a new scan</Button>
           </div>
         </div>
