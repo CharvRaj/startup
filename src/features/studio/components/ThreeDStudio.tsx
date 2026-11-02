@@ -105,36 +105,46 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [snapshotSuccess, setSnapshotSuccess] = useState(false);
   const [loadedUserPhoto, setLoadedUserPhoto] = useState<string | null>(null);
+  const [initError, setInitError] = useState<string | null>(null);
 
   // Initialize 3D Engine
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const studio = createTrue3DStudio({
-      container: containerRef.current,
-      skinTone,
-      initialMakeup: makeup,
-      onReady: () => {
-        // Apply initial theme background
-        if (studio.scene) {
-          studio.scene.background.setHex(THEMES[activeTheme].canvasBg);
+    try {
+      const studio = createTrue3DStudio({
+        container: containerRef.current,
+        skinTone,
+        initialMakeup: makeup,
+        onReady: () => {
+          // Apply initial theme background safely
+          if (studio.scene && studio.scene.background) {
+            (studio.scene.background as any).setHex?.(THEMES[activeTheme].canvasBg);
+          }
+        },
+      });
+
+      studioRef.current = studio;
+
+      return () => {
+        try {
+          studio.destroy();
+        } catch (e) {
+          console.warn('3D studio cleanup warning:', e);
         }
-      },
-    });
-
-    studioRef.current = studio;
-
-    return () => {
-      studio.destroy();
-      studioRef.current = null;
-    };
+        studioRef.current = null;
+      };
+    } catch (err: any) {
+      console.error('Failed to initialize 3D Studio:', err);
+      setInitError(err?.message || '3D Studio could not initialize.');
+    }
   }, []);
 
   // Update Theme
   useEffect(() => {
     const s = studioRef.current;
-    if (s && s.scene) {
-      s.scene.background.setHex(THEMES[activeTheme].canvasBg);
+    if (s && s.scene && s.scene.background) {
+      (s.scene.background as any).setHex?.(THEMES[activeTheme].canvasBg);
     }
   }, [activeTheme]);
 
@@ -505,10 +515,11 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
                 </label>
                 <div className="grid grid-cols-5 gap-2">
                   {SHADE_PALETTES.lips.map((shade) => {
+                    const shadeName = (shade as any).name || (shade as any).label || 'Shade';
                     const isSel = makeup.lips.color.toLowerCase() === shade.hex.toLowerCase();
                     return (
                       <button
-                        key={shade.label}
+                        key={shadeName || shade.hex}
                         onClick={() => updateMakeup((m) => ({ ...m, lips: { ...m.lips, color: shade.hex, enabled: true } }))}
                         className="group flex flex-col items-center gap-1 p-1 rounded-xl hover:bg-white/5 transition-all"
                       >
@@ -521,7 +532,7 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
                         >
                           {isSel && <Check className="w-3.5 h-3.5 text-white drop-shadow stroke-[3]" />}
                         </div>
-                        <span className="text-[9.5px] text-white/70 truncate w-full text-center">{shade.label.split(' ')[0]}</span>
+                        <span className="text-[9.5px] text-white/70 truncate w-full text-center">{shadeName.split(' ')[0]}</span>
                       </button>
                     );
                   })}
@@ -597,11 +608,12 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
                   Eyeshadow Tone
                 </label>
                 <div className="grid grid-cols-5 gap-2">
-                  {SHADE_PALETTES.eyes.map((shade) => {
+                  {(SHADE_PALETTES.eyeshadow || []).map((shade) => {
+                    const shadeName = (shade as any).name || (shade as any).label || 'Shade';
                     const isSel = makeup.eyes.eyeshadow.primaryColor === shade.hex;
                     return (
                       <button
-                        key={shade.label}
+                        key={shadeName || shade.hex}
                         onClick={() =>
                           updateMakeup((m) => ({
                             ...m,
@@ -622,7 +634,7 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
                         >
                           {isSel && <Check className="w-3.5 h-3.5 text-white drop-shadow stroke-[3]" />}
                         </div>
-                        <span className="text-[9.5px] text-white/70 truncate w-full text-center">{shade.label.split(' ')[0]}</span>
+                        <span className="text-[9.5px] text-white/70 truncate w-full text-center">{shadeName.split(' ')[0]}</span>
                       </button>
                     );
                   })}
@@ -680,11 +692,12 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
                   Silk Blush Shading
                 </label>
                 <div className="grid grid-cols-4 gap-2">
-                  {SHADE_PALETTES.blush.map((bl) => {
+                  {(SHADE_PALETTES.blush || []).map((bl) => {
+                    const blName = (bl as any).name || (bl as any).label || 'Blush';
                     const isSel = makeup.face.blush.color === bl.hex;
                     return (
                       <button
-                        key={bl.label}
+                        key={blName || bl.hex}
                         onClick={() =>
                           updateMakeup((m) => ({
                             ...m,
@@ -697,7 +710,7 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
                         )}
                       >
                         <span className="w-4 h-4 rounded-full border border-white/30 flex-shrink-0" style={{ background: bl.hex }} />
-                        <span className="text-[10px] text-white truncate">{bl.label}</span>
+                        <span className="text-[10px] text-white truncate">{blName}</span>
                       </button>
                     );
                   })}
@@ -748,11 +761,12 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
                   Hair Color Tone
                 </label>
                 <div className="grid grid-cols-3 gap-2">
-                  {SHADE_PALETTES.hair.map((hr) => {
+                  {(SHADE_PALETTES.hair || []).map((hr) => {
+                    const hrName = (hr as any).name || (hr as any).label || 'Hair';
                     const isSel = makeup.hair.color === hr.hex;
                     return (
                       <button
-                        key={hr.label}
+                        key={hrName || hr.hex}
                         onClick={() => updateMakeup((m) => ({ ...m, hair: { ...m.hair, color: hr.hex, enabled: true } }))}
                         className={cn(
                           'p-2 rounded-xl border flex items-center gap-2 transition-all',
@@ -760,7 +774,7 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
                         )}
                       >
                         <span className="w-5 h-5 rounded-full border border-white/30 flex-shrink-0" style={{ background: hr.hex }} />
-                        <span className="text-[11px] truncate">{hr.label}</span>
+                        <span className="text-[11px] truncate">{hrName}</span>
                       </button>
                     );
                   })}
@@ -780,12 +794,14 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
               <div className="grid gap-2.5">
                 {PRESET_LOOKS.map((p) => {
                   const isActive = makeup.activePreset === p.id;
+                  const presetData = (p as any).preset || (p as any).makeup || {};
+                  const thumbColor = (p as any).previewShade || (p as any).thumbnailColor || '#D4AF37';
                   return (
                     <button
                       key={p.id}
                       onClick={() =>
                         updateMakeup(() => ({
-                          ...p.makeup,
+                          ...presetData,
                           activePreset: p.id,
                         }))
                       }
@@ -799,7 +815,7 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
                       <div className="flex items-center gap-3">
                         <div
                           className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm border border-white/20 flex-shrink-0"
-                          style={{ background: p.thumbnailColor }}
+                          style={{ background: thumbColor }}
                         >
                           {isActive ? <Check className="w-5 h-5" /> : <Sparkles className="w-4 h-4 text-white/80" />}
                         </div>

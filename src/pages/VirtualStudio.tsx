@@ -1,12 +1,73 @@
-import { useState } from 'react';
+import { useState, Component, ErrorInfo, ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Box, Camera } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sparkles, Box, Camera, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ConsentGate } from '@/features/studio/components/ConsentGate';
 import { QuickMakeup } from '@/features/studio/components/QuickMakeup';
 import { ThreeDStudio } from '@/features/studio/components/ThreeDStudio';
 
 type Mode = 'quick' | '3d';
+
+interface StudioBoundaryProps {
+  children: ReactNode;
+  onFallbackToQuick: () => void;
+}
+
+interface StudioBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+class StudioErrorBoundary extends Component<StudioBoundaryProps, StudioBoundaryState> {
+  state: StudioBoundaryState = { hasError: false };
+
+  static getDerivedStateFromError(error: Error): StudioBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.warn('3D Studio encountered an error, offering fallback:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="rounded-3xl p-8 border border-amber-500/30 bg-card/90 backdrop-blur-md shadow-2xl text-center max-w-xl mx-auto space-y-4 my-8">
+          <div className="w-14 h-14 rounded-2xl mx-auto bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 shadow-sm">
+            <Sparkles className="w-7 h-7" />
+          </div>
+          <h3 className="font-display text-2xl font-bold text-foreground">
+            3D Studio Optimization
+          </h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Your browser or device encountered an issue with WebGL 3D rendering. You can switch to Quick Makeup Live AR or try reloading 3D Studio.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Button
+              onClick={() => {
+                this.setState({ hasError: false });
+                this.props.onFallbackToQuick();
+              }}
+              className="bg-primary hover:bg-primary/90 text-white font-bold"
+            >
+              <Camera className="w-4 h-4 mr-2" />
+              Switch to Quick Makeup Live AR
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => this.setState({ hasError: false })}
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Retry 3D Studio
+            </Button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export function VirtualStudio() {
   const [mode, setMode] = useState<Mode>('3d');
@@ -61,7 +122,9 @@ export function VirtualStudio() {
         {!consent ? (
           <ConsentGate mode={mode} onAccept={() => setConsent(true)} />
         ) : mode === '3d' ? (
-          <ThreeDStudio onHandoffPhoto={(b) => { setHandoff(b); setMode('quick'); }} />
+          <StudioErrorBoundary onFallbackToQuick={() => setMode('quick')}>
+            <ThreeDStudio onHandoffPhoto={(b) => { setHandoff(b); setMode('quick'); }} />
+          </StudioErrorBoundary>
         ) : (
           <QuickMakeup initialBitmap={handoff} onDiscarded={() => setHandoff(null)} />
         )}
