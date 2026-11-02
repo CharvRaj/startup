@@ -93,7 +93,8 @@ export function QuickGlowBanner() {
 
   useEffect(() => {
     const updateVisible = () => {
-      if (window.innerWidth < 640) setVisibleCards(2);
+      if (window.innerWidth < 420) setVisibleCards(1);
+      else if (window.innerWidth < 640) setVisibleCards(2);
       else if (window.innerWidth < 1024) setVisibleCards(3);
       else setVisibleCards(4);
     };

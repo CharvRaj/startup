@@ -209,33 +209,33 @@ export function FestiveCategoryCanopy() {
           </p>
 
           {/* Category Section Switcher */}
-          <div className="inline-flex p-1.5 rounded-2xl bg-white dark:bg-[#1A1721] border border-[#F5DCE1] dark:border-[rgba(197,160,89,0.25)] shadow-xs mt-3">
+          <div className="inline-flex max-w-full flex-wrap sm:flex-nowrap justify-center p-1 sm:p-1.5 rounded-2xl bg-white dark:bg-[#1A1721] border border-[#F5DCE1] dark:border-[rgba(197,160,89,0.25)] shadow-xs mt-3 gap-1">
             <button
               onClick={() => setActiveTab('doorstep')}
-              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
+              className={`px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 ${
                 activeTab === 'doorstep'
                   ? 'text-white shadow-md'
-                  : 'text-[#542337] hover:text-[#C83E68]'
+                  : 'text-[#542337] dark:text-[#E8DEC8] hover:text-[#C83E68]'
               }`}
               style={{
                 background: activeTab === 'doorstep' ? 'linear-gradient(135deg, #C83E68 0%, #A82E52 100%)' : 'transparent',
               }}
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               Doorstep Beauty ({DOORSTEP_CATEGORIES.length})
             </button>
             <button
               onClick={() => setActiveTab('mehndi')}
-              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
+              className={`px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 ${
                 activeTab === 'mehndi'
                   ? 'text-white shadow-md'
-                  : 'text-[#542337] hover:text-[#C86432]'
+                  : 'text-[#542337] dark:text-[#E8DEC8] hover:text-[#C86432]'
               }`}
               style={{
                 background: activeTab === 'mehndi' ? 'linear-gradient(135deg, #8B4513 0%, #C86432 100%)' : 'transparent',
               }}
             >
-              <Heart className="w-4 h-4" />
+              <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               Mehndi Art ({MEHNDI_CATEGORIES.length})
             </button>
           </div>

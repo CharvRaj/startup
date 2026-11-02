@@ -10,9 +10,9 @@ export function BrandLogo({ variant = 'full', className = '', isLightMode }: Bra
   const goldId = React.useId().replace(/:/g, '');
 
   return (
-    <div className={`inline-flex items-center gap-2 sm:gap-2.5 select-none group pr-2 ${className}`}>
+    <div className={`inline-flex items-center gap-1.5 sm:gap-2.5 select-none group pr-1 sm:pr-2 ${className}`}>
       {/* Botanical Laurel Wreath Emblem */}
-      <div className="relative w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+      <div className="relative w-7 h-7 sm:w-9 sm:h-9 flex-shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
         <svg
           className="w-full h-full drop-shadow-xs"
           viewBox="0 0 64 64"
@@ -100,10 +100,10 @@ export function BrandLogo({ variant = 'full', className = '', isLightMode }: Bra
         <div className="flex flex-col text-left justify-center leading-none whitespace-nowrap">
           {/* Main Title: BLINDGLOW */}
           <span
-            className="font-serif text-[1.05rem] sm:text-[1.18rem] font-bold tracking-[0.15em] uppercase transition-colors"
+            className="font-serif text-[0.92rem] xs:text-[1.05rem] sm:text-[1.18rem] font-bold tracking-[0.12em] sm:tracking-[0.15em] uppercase transition-colors"
             style={{
               fontFamily: "'Playfair Display', 'Cinzel', 'Didot', 'Georgia', serif",
-              letterSpacing: '0.15em',
+              letterSpacing: '0.14em',
               background: isLightMode
                 ? 'linear-gradient(135deg, #8C6510 0%, #BA8E3A 40%, #7E5919 100%)'
                 : 'linear-gradient(135deg, #F5D7A1 0%, #D4AF7A 50%, #C48E59 100%)',
@@ -116,10 +116,10 @@ export function BrandLogo({ variant = 'full', className = '', isLightMode }: Bra
 
           {/* Subtitle: BEAUTY AT YOUR DOORSTEP BY SATGURU */}
           <span
-            className="text-[6.5px] sm:text-[7.2px] font-semibold tracking-[0.2em] uppercase transition-colors mt-0.5"
+            className="text-[5.5px] xs:text-[6.5px] sm:text-[7.2px] font-semibold tracking-[0.15em] sm:tracking-[0.2em] uppercase transition-colors mt-0.5 hidden min-[340px]:block"
             style={{
               fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-              letterSpacing: '0.2em',
+              letterSpacing: '0.18em',
               color: isLightMode ? '#7A6237' : 'rgba(235, 215, 178, 0.85)',
             }}
           >

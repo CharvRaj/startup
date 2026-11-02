@@ -25,11 +25,11 @@ export function FloatingHelpButton() {
     <aside aria-label="Quick Support Helpdesk">
       <button
         onClick={() => navigate('/help-support')}
-        className="fixed bottom-6 left-6 z-50 group flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#43152E] hover:bg-[#2F0E20] text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border border-[#F8DCE4]/30"
+        className="fixed bottom-18 sm:bottom-24 left-4 sm:left-6 z-50 group flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-full bg-[#43152E] hover:bg-[#2F0E20] text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border border-[#F8DCE4]/30"
         title="Help & Support Desk"
       >
-        <div className="w-8 h-8 rounded-full bg-[#F8DCE4] text-[#D81B60] flex items-center justify-center flex-shrink-0 group-hover:rotate-12 transition-transform">
-          <HelpCircle className="w-4 h-4" />
+        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#F8DCE4] text-[#D81B60] flex items-center justify-center flex-shrink-0 group-hover:rotate-12 transition-transform">
+          <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         </div>
         <div className="text-left hidden sm:block">
           <div className="text-xs font-bold leading-none tracking-tight">Need Help?</div>
@@ -37,8 +37,8 @@ export function FloatingHelpButton() {
             Help & Support Desk
           </div>
         </div>
-        <span className="sm:hidden text-xs font-bold">Help</span>
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
+        <span className="sm:hidden text-[11px] font-bold">Help</span>
+        <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
       </button>
     </aside>
   );

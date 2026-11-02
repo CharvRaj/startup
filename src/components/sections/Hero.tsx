@@ -103,7 +103,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative pt-24 pb-12 sm:pt-28 sm:pb-16 md:pt-32 md:pb-20 overflow-hidden bg-[#FFF9F5] dark:bg-[#121015] transition-colors duration-300"
+      className="relative pt-20 pb-8 sm:pt-28 sm:pb-16 md:pt-32 md:pb-20 overflow-hidden bg-[#FFF9F5] dark:bg-[#121015] transition-colors duration-300"
     >
       {/* Subtle Warm Backdrop Geometry */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -120,7 +120,7 @@ export function Hero() {
       <div className="container-custom relative z-10">
         {/* Main E-Commerce Campaign Banner Card */}
         <div
-          className="rounded-3xl sm:rounded-[36px] p-6 sm:p-10 md:p-14 lg:p-16 border border-[#F5DCE1] dark:border-[rgba(197,160,89,0.25)] bg-white dark:bg-[#1A1721] shadow-xl relative overflow-hidden transition-all duration-500"
+          className="rounded-3xl sm:rounded-[36px] p-4 sm:p-8 md:p-12 lg:p-16 border border-[#F5DCE1] dark:border-[rgba(197,160,89,0.25)] bg-white dark:bg-[#1A1721] shadow-xl relative overflow-hidden transition-all duration-500"
           style={{
             boxShadow: '0 20px 50px -15px rgba(84,35,55,0.08)',
           }}
@@ -128,12 +128,12 @@ export function Hero() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
             
             {/* Left Column: Heading, description, trust badges and CTAs */}
-            <div className="lg:col-span-7 flex flex-col justify-center space-y-5 sm:space-y-6">
+            <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-6">
               
               {/* Trust Badge */}
               <div className="flex items-center gap-2">
                 <span
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide bg-[#F5DCE1] dark:bg-[#2D202B] text-[#542337] dark:text-[#E8DEC8] border border-[rgba(200,62,104,0.2)] dark:border-[rgba(197,160,89,0.3)]"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-semibold tracking-wide bg-[#F5DCE1] dark:bg-[#2D202B] text-[#542337] dark:text-[#E8DEC8] border border-[rgba(200,62,104,0.2)] dark:border-[rgba(197,160,89,0.3)]"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-[#C83E68] dark:text-[#E8C37B]" />
                   {slide.badge}
@@ -148,7 +148,7 @@ export function Hero() {
 
               {/* Headline */}
               <h1
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.14] text-[#342A29] dark:text-[#F7F3EE]"
+                className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.14] text-[#342A29] dark:text-[#F7F3EE]"
                 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
               >
                 {slide.title}{' '}
@@ -280,7 +280,7 @@ export function Hero() {
                   <img
                     src={slide.image}
                     alt={slide.imageAlt}
-                    className="w-full h-[360px] sm:h-[420px] md:h-[480px] lg:h-[520px] object-cover object-center transition-transform duration-700 hover:scale-102"
+                    className="w-full h-[260px] xs:h-[320px] sm:h-[400px] md:h-[480px] lg:h-[520px] object-cover object-center transition-transform duration-700 hover:scale-102"
                     style={{
                       // Natural realistic colors, no purple or pink filter overlay
                       filter: 'none',

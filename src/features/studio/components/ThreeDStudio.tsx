@@ -844,3 +844,4 @@ export function ThreeDStudio({ onHandoffPhoto }: { onHandoffPhoto?: (b: ImageBit
     </div>
   );
 }
+

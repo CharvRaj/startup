@@ -674,10 +674,10 @@ export function Header() {
             </div>
 
             {/* Mobile / Tablet Actions Cluster (< lg) */}
-            <div className="lg:hidden flex items-center gap-1.5 flex-shrink-0">
+            <div className="lg:hidden flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
               <button
                 onClick={() => scrollToSection('#booking')}
-                className="h-7 px-2.5 text-[11px] font-bold text-white rounded-lg transition-transform flex items-center gap-1 shadow-xs cursor-pointer"
+                className="h-7 px-2 sm:px-2.5 text-[10.5px] sm:text-[11px] font-bold text-white rounded-lg transition-transform flex items-center gap-1 shadow-xs cursor-pointer"
                 style={{
                   background: 'linear-gradient(135deg, #C5A059 0%, #9E7832 50%, #B8860B 100%)',
                 }}
@@ -722,7 +722,7 @@ export function Header() {
           {/* Mobile Drawer */}
           {isMenuOpen && (
             <div
-              className="lg:hidden py-3 border-t border-border/80 animate-in fade-in slide-in-from-top-2 duration-150 rounded-b-2xl shadow-xl mt-1"
+              className="lg:hidden py-3 border-t border-border/80 animate-in fade-in slide-in-from-top-2 duration-150 rounded-b-2xl shadow-xl mt-1 max-h-[calc(100vh-70px)] max-h-[calc(100svh-70px)] overflow-y-auto"
               style={{ background: theme === 'dark' ? 'rgba(20,18,22,0.98)' : '#FFFFFF' }}
             >
               <div className="flex flex-col gap-0.5 px-3">

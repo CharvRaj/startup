@@ -119,9 +119,10 @@ export function FloatingAssistant() {
       {/* Floating Button */}
       {!isOpen && (
         <button onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-24 z-50 w-16 h-16 rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 transition-all group"
+          aria-label="Sia AI Assistant"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 md:right-24 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group"
           style={{ background: 'linear-gradient(135deg, #7c3aed, #be185d, #ec4899)' }}>
-          <Bot className="w-7 h-7 text-white" />
+          <Bot className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
           {pendingTodos > 0 && (
             <span className="absolute -top-2 -right-2 w-5 h-5 bg-amber-400 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg">
               {pendingTodos}
