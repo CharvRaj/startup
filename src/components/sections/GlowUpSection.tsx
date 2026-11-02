@@ -32,7 +32,6 @@ export const GlowUpSection: React.FC = () => {
 
   const doneRef = useRef(false);
   const sliderValRef = useRef(0);
-  const goToStepRef = useRef<(step: number) => void>(() => {});
 
   const burst = useCallback(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !rvRef.current) return;
@@ -84,7 +83,16 @@ export const GlowUpSection: React.FC = () => {
   };
 
   const handleRailClick = (idx: number) => {
-    goToStepRef.current(idx);
+    const story = storyRef.current;
+    if (!story) return;
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const headerOffset = window.innerWidth <= 820 ? 60 : 62;
+    const storyTop = story.getBoundingClientRect().top + window.scrollY;
+    const travel = story.offsetHeight - window.innerHeight;
+    window.scrollTo({
+      top: storyTop - headerOffset + (idx / (CH - 1)) * travel * 0.96,
+      behavior: calm ? 'auto' : 'smooth',
+    });
   };
 
   useEffect(() => {
@@ -170,7 +178,6 @@ export const GlowUpSection: React.FC = () => {
     let lastS = window.scrollY;
     let rev = calm ? 1 : 0.05;
     let idx = 0;
-    let currentStep = 0;
     const col = hexToRgb(PAL[0][0]);
 
     let cx = -100;
@@ -179,166 +186,20 @@ export const GlowUpSection: React.FC = () => {
     let ry = -100;
     let isVisible = true;
     let isInside = false;
-    let isStepLocked = false;
-    let lockTimeout: any = null;
 
-    /* Step navigation function - strictly advances ONE step at a time */
-    function goToStep(nextStep: number) {
-      if (!story) return;
-      const clamped = Math.min(CH - 1, Math.max(0, nextStep));
-      currentStep = clamped;
-      target = clamped / (CH - 1);
-
-      // Immediately activate chapter, side rail, and mobile dot styles
-      chs.forEach((e, i) => e.classList.toggle('on', i === clamped));
-      rails.forEach((e, i) => e.classList.toggle('on', i === clamped));
-      mobileDots.forEach((e, i) => e.classList.toggle('on', i === clamped));
-      story.style.setProperty('--acc', PAL[clamped][1]);
-
-      // Lock to ensure the staggered letter reveal & canvas transition finishes completely (~700ms)
-      isStepLocked = true;
-      clearTimeout(lockTimeout);
-      lockTimeout = setTimeout(() => {
-        isStepLocked = false;
-      }, 700);
-    }
-    goToStepRef.current = goToStep;
-
-    /* Detect when user scrolls into the section from above or below */
-    let lastScrollY = window.scrollY;
+    /* Continuous natural scroll progress tracking */
     function readScroll() {
       if (!story) return;
-      const headerOffset = getHeaderOffset();
-      const rect = story.getBoundingClientRect();
-      const scrollDir = window.scrollY - lastScrollY;
-      lastScrollY = window.scrollY;
-
-      // If scrolling into section from bottom, start at last chapter
-      if (scrollDir < 0 && rect.bottom >= window.innerHeight - 60 && rect.top < 0 && !isStepLocked) {
-        if (currentStep === 0) {
-          goToStep(CH - 1);
-        }
-      }
+      const headerOffset = window.innerWidth <= 820 ? 60 : 62;
+      const travel = story.offsetHeight - window.innerHeight;
+      if (travel <= 0) return;
+      const progress = (headerOffset - story.getBoundingClientRect().top) / travel;
+      target = Math.min(1, Math.max(0, progress));
     }
 
     window.addEventListener('scroll', readScroll, { passive: true });
+    readScroll();
     cur = target;
-
-    /* Step-by-Step Wheel Interceptor - ONLY 1 STEP PER WHEEL GESTURE */
-    const onWheel = (e: WheelEvent) => {
-      if (!story) return;
-      const headerOffset = getHeaderOffset();
-      const rect = story.getBoundingClientRect();
-
-      // Check if section is currently active and occupying screen
-      const inView = rect.top <= headerOffset + 60 && rect.bottom >= window.innerHeight - 60;
-      if (!inView) return;
-
-      if (e.deltaY > 15) {
-        // Scrolling DOWN
-        if (currentStep < CH - 1) {
-          e.preventDefault();
-          if (isStepLocked) return;
-          goToStep(currentStep + 1);
-        }
-        // If on the last step (Skin), allow standard scroll downward to the next section
-      } else if (e.deltaY < -15) {
-        // Scrolling UP
-        if (currentStep > 0) {
-          e.preventDefault();
-          if (isStepLocked) return;
-          goToStep(currentStep - 1);
-        }
-        // If on the first step (Welcome), allow standard scroll upward to Hero
-      }
-    };
-    window.addEventListener('wheel', onWheel, { passive: false });
-
-    /* Step-by-Step Touch Swipe Interceptor (Mobile Devices) */
-    let touchStartY = 0;
-    let touchStartX = 0;
-
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
-      touchStartX = e.touches[0].clientX;
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (!story) return;
-      const headerOffset = getHeaderOffset();
-      const rect = story.getBoundingClientRect();
-      const inView = rect.top <= headerOffset + 80 && rect.bottom >= window.innerHeight - 80;
-      if (!inView) return;
-
-      const currentY = e.touches[0].clientY;
-      const currentX = e.touches[0].clientX;
-      const diffY = touchStartY - currentY;
-      const diffX = touchStartX - currentX;
-
-      // Lock mobile scroll while cycling through chapters
-      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 12) {
-        if (diffY > 0 && currentStep < CH - 1) {
-          e.preventDefault();
-        } else if (diffY < 0 && currentStep > 0) {
-          e.preventDefault();
-        }
-      }
-    };
-
-    const onTouchEnd = (e: TouchEvent) => {
-      if (!story) return;
-      const headerOffset = getHeaderOffset();
-      const rect = story.getBoundingClientRect();
-      const inView = rect.top <= headerOffset + 80 && rect.bottom >= window.innerHeight - 80;
-      if (!inView) return;
-
-      const endY = e.changedTouches[0].clientY;
-      const endX = e.changedTouches[0].clientX;
-      const diffY = touchStartY - endY;
-      const diffX = touchStartX - endX;
-
-      // Vertical swipe intent
-      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 30) {
-        if (diffY > 0) {
-          // Swipe up -> advance 1 step
-          if (currentStep < CH - 1) {
-            if (isStepLocked) return;
-            goToStep(currentStep + 1);
-          }
-        } else {
-          // Swipe down -> previous 1 step
-          if (currentStep > 0) {
-            if (isStepLocked) return;
-            goToStep(currentStep - 1);
-          }
-        }
-      }
-    };
-    window.addEventListener('touchstart', onTouchStart, { passive: true });
-    window.addEventListener('touchmove', onTouchMove, { passive: false });
-    window.addEventListener('touchend', onTouchEnd, { passive: true });
-
-    /* Keyboard navigation (Arrow keys / PageDown) */
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (!story) return;
-      const headerOffset = getHeaderOffset();
-      const rect = story.getBoundingClientRect();
-      const inView = rect.top <= headerOffset + 60 && rect.bottom >= window.innerHeight - 60;
-      if (!inView) return;
-
-      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-        if (currentStep < CH - 1) {
-          e.preventDefault();
-          if (!isStepLocked) goToStep(currentStep + 1);
-        }
-      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-        if (currentStep > 0) {
-          e.preventDefault();
-          if (!isStepLocked) goToStep(currentStep - 1);
-        }
-      }
-    };
-    window.addEventListener('keydown', onKeyDown, { passive: false });
 
     // Use IntersectionObserver to halt rendering loop when section is scrolled out of view
     const observer = new IntersectionObserver(
@@ -404,8 +265,8 @@ export const GlowUpSection: React.FC = () => {
       sv += (s - lastS - sv) * 0.15;
       lastS = s;
 
-      // Snappy, fluid interpolation
-      cur += (target - cur) * (calm ? 1 : 0.18);
+      // Fluid, natural interpolation tied smoothly to scroll
+      cur += (target - cur) * (calm ? 1 : 0.12);
 
       const pmx = mx;
       mx += (tmx - mx) * 0.08;
@@ -419,8 +280,8 @@ export const GlowUpSection: React.FC = () => {
 
       amp += ((calm ? 0 : Math.min(28, Math.abs(vel) * 1.2 + Math.abs(sv) * 1.1 + (isDone ? 0 : 3))) - amp) * 0.1;
 
-      // Clean round to step index
-      const c = Math.min(CH - 1, Math.max(0, Math.round(cur * (CH - 1))));
+      // Map continuous scroll progress smoothly across the 4 chapters
+      const c = Math.min(CH - 1, Math.floor(cur * CH * 0.999));
       if (c !== idx) {
         idx = c;
         chs.forEach((e, i) => e.classList.toggle('on', i === c));
@@ -538,14 +399,8 @@ export const GlowUpSection: React.FC = () => {
     return () => {
       cancelAnimationFrame(animId);
       observer.disconnect();
-      clearTimeout(lockTimeout);
       window.removeEventListener('resize', size);
       window.removeEventListener('scroll', readScroll);
-      window.removeEventListener('wheel', onWheel);
-      window.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onTouchEnd);
-      window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('pointermove', onPointerMove);
       document.removeEventListener('pointerover', onPointerOver);
     };
