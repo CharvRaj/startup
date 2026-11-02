@@ -11,9 +11,11 @@ export function FloatingHelpButton() {
   // Show only when account is signed in
   if (!user) return null;
 
-  // Hide on help-support page itself, or auth pages
+  // Hide on help-support page itself, virtual studio, or auth pages
+  const isStudioPage = ['/virtual-studio', '/beauty-studio', '/blindglow-ai', '/ai-glow'].some(p => location.pathname.startsWith(p));
   if (
     location.pathname === '/help-support' ||
+    isStudioPage ||
     location.pathname === '/login' ||
     location.pathname === '/signup' ||
     location.pathname === '/forgot-password'

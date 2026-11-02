@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { X, Gift, Sparkles } from 'lucide-react';
 
 export function FloatingCoupon() {
+  const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const isStudioPage = ['/virtual-studio', '/beauty-studio', '/blindglow-ai', '/ai-glow'].some(p => location.pathname.startsWith(p));
+    if (isStudioPage) return;
     const hasSeenCoupon = localStorage.getItem('coupon_seen');
 
     if (hasSeenCoupon) return; // Already shown once → never show again

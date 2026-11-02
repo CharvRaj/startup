@@ -1,6 +1,13 @@
 import { MessageCircle } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 export function FloatingWhatsApp() {
+  const location = useLocation();
+
+  // Hide on virtual studio to avoid covering shade palettes
+  const isStudioPage = ['/virtual-studio', '/beauty-studio', '/blindglow-ai', '/ai-glow'].some(p => location.pathname.startsWith(p));
+  if (isStudioPage) return null;
+
   const handleWhatsAppClick = () => {
     const phoneNumber = '919887196182';
     const message = encodeURIComponent('Hello! I would like to inquire about your beauty services.');

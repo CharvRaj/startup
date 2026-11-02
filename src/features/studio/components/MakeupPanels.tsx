@@ -122,134 +122,7 @@ function finishPreview(key: SectionKey, id: string, color: string) {
   return color;
 }
 
-/** Product Photo / Luxury SVG Visual Component */
-function ProductVisual({ defKey, color, finish }: { defKey: SectionKey; color: string; finish?: string }) {
-  if (defKey === 'lips') {
-    return (
-      <div className="relative flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-tr from-amber-950/10 via-amber-500/10 to-rose-500/10 border border-amber-500/20 shadow-inner flex-shrink-0">
-        <svg viewBox="0 0 100 100" className="w-16 h-16 drop-shadow-md">
-          {/* Base Casing - Gold & Obsidian */}
-          <rect x="36" y="52" width="28" height="38" rx="3" fill="#1C1819" />
-          <rect x="38" y="54" width="24" height="34" rx="2" fill="url(#goldGrad)" />
-          <rect x="42" y="46" width="16" height="8" rx="1" fill="#D4AF37" />
-          {/* Lipstick Bullet */}
-          <path
-            d="M 43,46 L 43,26 C 43,18 51,12 55,8 C 57,20 57,26 57,46 Z"
-            fill={color}
-          />
-          {finish === 'glossy' && (
-            <path
-              d="M 45,26 C 45,20 50,15 52,12"
-              stroke="#ffffff"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.75"
-            />
-          )}
-          {/* Gold Trim Gradients */}
-          <defs>
-            <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#C5A059" />
-              <stop offset="50%" stopColor="#EAD397" />
-              <stop offset="100%" stopColor="#8C6510" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-    );
-  }
-
-  if (defKey === 'eyeshadow') {
-    return (
-      <div className="relative flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-tr from-amber-950/10 via-amber-500/10 to-rose-500/10 border border-amber-500/20 shadow-inner flex-shrink-0">
-        <svg viewBox="0 0 100 100" className="w-16 h-16 drop-shadow-md">
-          {/* Palette Case */}
-          <rect x="20" y="24" width="60" height="56" rx="6" fill="#1F1B1C" stroke="#D4AF37" strokeWidth="1.5" />
-          {/* 4 Wells */}
-          <rect x="26" y="30" width="20" height="20" rx="3" fill={color} />
-          <rect x="54" y="30" width="20" height="20" rx="3" fill="#E8C37B" />
-          <rect x="26" y="54" width="20" height="20" rx="3" fill="#6A3B24" />
-          <rect x="54" y="54" width="20" height="20" rx="3" fill="#D9A5B3" />
-          {/* Shimmer Highlight */}
-          <circle cx="36" cy="40" r="4" fill="#ffffff" opacity="0.35" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (defKey === 'eyeliner') {
-    return (
-      <div className="relative flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-tr from-amber-950/10 via-amber-500/10 to-rose-500/10 border border-amber-500/20 shadow-inner flex-shrink-0">
-        <svg viewBox="0 0 100 100" className="w-16 h-16 drop-shadow-md">
-          {/* Eyeliner Wand */}
-          <path d="M 22,78 L 72,28" stroke="#181516" strokeWidth="8" strokeLinecap="round" />
-          <path d="M 44,56 L 48,52" stroke="#D4AF37" strokeWidth="8" />
-          <path d="M 72,28 L 84,16" stroke={color} strokeWidth="4.5" strokeLinecap="round" />
-          {/* Wing Stroke */}
-          <path d="M 24,84 Q 50,86 76,70" stroke={color} strokeWidth="3" fill="none" strokeLinecap="round" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (defKey === 'blush') {
-    return (
-      <div className="relative flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-tr from-amber-950/10 via-amber-500/10 to-rose-500/10 border border-amber-500/20 shadow-inner flex-shrink-0">
-        <svg viewBox="0 0 100 100" className="w-16 h-16 drop-shadow-md">
-          {/* Compact Case */}
-          <circle cx="50" cy="50" r="34" fill="#181516" stroke="#D4AF37" strokeWidth="2" />
-          {/* Powder Well with Marbled Texture */}
-          <circle cx="50" cy="50" r="26" fill={color} />
-          <circle cx="46" cy="46" r="18" fill="none" stroke="#ffffff" strokeWidth="1.5" opacity="0.25" />
-          <circle cx="52" cy="52" r="10" fill="none" stroke="#000000" strokeWidth="1" opacity="0.15" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (defKey === 'highlighter') {
-    return (
-      <div className="relative flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-tr from-amber-950/10 via-amber-500/10 to-rose-500/10 border border-amber-500/20 shadow-inner flex-shrink-0">
-        <svg viewBox="0 0 100 100" className="w-16 h-16 drop-shadow-md">
-          {/* Diamond Strobe Compact */}
-          <polygon points="50,16 84,50 50,84 16,50" fill="#1F1B1C" stroke="#D4AF37" strokeWidth="2" />
-          <polygon points="50,24 76,50 50,76 24,50" fill={color} />
-          <polygon points="50,32 68,50 50,68 32,50" fill="#ffffff" opacity="0.4" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (defKey === 'foundation') {
-    return (
-      <div className="relative flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-tr from-amber-950/10 via-amber-500/10 to-rose-500/10 border border-amber-500/20 shadow-inner flex-shrink-0">
-        <svg viewBox="0 0 100 100" className="w-16 h-16 drop-shadow-md">
-          {/* Dropper Bottle */}
-          <rect x="36" y="44" width="28" height="42" rx="6" fill={color} stroke="#D4AF37" strokeWidth="1.5" />
-          <rect x="42" y="34" width="16" height="10" rx="1" fill="#C5A059" />
-          <rect x="45" y="20" width="10" height="14" rx="2" fill="#1C1819" />
-          <circle cx="44" cy="54" r="3" fill="#ffffff" opacity="0.4" />
-        </svg>
-      </div>
-    );
-  }
-
-  // Hair
-  return (
-    <div className="relative flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-tr from-amber-950/10 via-amber-500/10 to-rose-500/10 border border-amber-500/20 shadow-inner flex-shrink-0">
-      <svg viewBox="0 0 100 100" className="w-16 h-16 drop-shadow-md">
-        {/* Hair Gloss Elixir Bottle */}
-        <rect x="36" y="42" width="28" height="44" rx="8" fill="#1F1A1B" stroke="#D4AF37" strokeWidth="1.5" />
-        <path d="M 44,42 Q 50,26 50,22 L 50,22 Q 50,26 56,42 Z" fill="#D4AF37" />
-        <rect x="40" y="50" width="20" height="28" rx="4" fill={color} />
-        <path d="M 43,54 L 43,72" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
-      </svg>
-    </div>
-  );
-}
-
-/** Individual Beauty Product Section with Real Visuals, Swatch Carousel & Intensity */
+/** Individual Beauty Product Section with Luxury Design, Responsive Grid Swatches & Depth */
 function Section({ def, disabledReason }: { def: SectionDef; disabledReason?: string }) {
   const sec = useLookStore((s) => s.look[def.key]) as any;
   const update = useLookStore((s) => s.update) as (k: SectionKey, p: any) => void;
@@ -259,11 +132,14 @@ function Section({ def, disabledReason }: { def: SectionDef; disabledReason?: st
   const currentSwatch = def.swatches.find((s) => same(s.color, sec.color)) || { name: 'Custom Shade', color: sec.color };
 
   return (
-    <div className="rounded-2xl border border-border/80 bg-card/90 backdrop-blur-md p-4 sm:p-5 shadow-sm transition-all hover:border-amber-500/30">
-      {/* Product Header & Toggle */}
-      <div className="flex items-center justify-between gap-3 mb-4">
+    <div className="rounded-2xl border border-border/80 bg-card/90 backdrop-blur-md p-4 sm:p-5 shadow-sm transition-all hover:border-[#C83E68]/30">
+      {/* Product Header & Toggle Switch */}
+      <div className="flex items-center justify-between gap-3 mb-3.5">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-amber-500 to-rose-500" />
+          <div
+            className="w-3.5 h-3.5 rounded-full flex-shrink-0 border border-white/60 shadow-xs ring-1 ring-black/10"
+            style={{ background: finishPreview(def.key, sec.finish || '', sec.color) }}
+          />
           <div>
             <h3 className="font-semibold text-sm sm:text-base text-foreground truncate">{def.title}</h3>
             <p className="text-[11px] text-muted-foreground">{def.categoryLabel}</p>
@@ -287,30 +163,34 @@ function Section({ def, disabledReason }: { def: SectionDef; disabledReason?: st
         </p>
       )}
 
-      {/* Hero Visual Card with Current Active Product Info */}
-      <div className="flex items-center gap-3.5 p-3 rounded-xl bg-muted/40 border border-border/60 mb-4">
-        <ProductVisual defKey={def.key} color={sec.color} finish={sec.finish} />
+      {/* Selected Shade Callout (Luxury Beauty Brand Style) */}
+      <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/40 border border-border/60 mb-4">
+        <div
+          className="relative w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border-2 border-white dark:border-zinc-800 ring-2 ring-primary/20"
+          style={{ background: finishPreview(def.key, sec.finish || '', sec.color) }}
+        >
+          <span className="w-3 h-3 rounded-full bg-white/40 shadow-xs" />
+        </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span
-              className="w-3.5 h-3.5 rounded-full border border-black/15 shadow-xs flex-shrink-0"
-              style={{ background: finishPreview(def.key, sec.finish || '', sec.color) }}
-            />
             <h4 className="font-bold text-sm text-foreground truncate">{currentSwatch.name}</h4>
+            <span className="text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+              {sec.finish || sec.style || 'Couture'}
+            </span>
           </div>
           <p className="text-[11px] text-muted-foreground mt-0.5">
-            {sec.finish ? `Finish: ${sec.finish.toUpperCase()}` : sec.style ? `Style: ${sec.style.toUpperCase()}` : 'Couture Pigment'} · {sec.intensity}% Depth
+            Depth: <span className="font-semibold text-foreground">{sec.intensity}%</span>
+            {def.note && ` · ${def.note}`}
           </p>
-          {def.note && <p className="text-[10px] text-muted-foreground/80 mt-1 line-clamp-1">{def.note}</p>}
         </div>
       </div>
 
       <fieldset disabled={dis} className={cn('space-y-4', dis && 'opacity-50 pointer-events-none')}>
-        {/* Style / Finish Selector Pills */}
+        {/* Style / Finish Selector Options */}
         {def.opts && (
           <div>
             <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Style &amp; Finish</div>
-            <div role="radiogroup" aria-label={`${def.title} style`} className="flex flex-wrap gap-1.5">
+            <div role="radiogroup" aria-label={`${def.title} style`} className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
               {def.opts.map((o) => (
                 <button
                   key={o.id}
@@ -319,35 +199,34 @@ function Section({ def, disabledReason }: { def: SectionDef; disabledReason?: st
                   aria-checked={sec[def.optKey!] === o.id}
                   onClick={() => update(def.key, { [def.optKey!]: o.id, enabled: true })}
                   className={cn(
-                    'flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all',
+                    'flex items-center justify-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-medium transition-all text-center',
                     sec[def.optKey!] === o.id
-                      ? 'border-primary bg-primary text-primary-foreground shadow-xs'
+                      ? 'border-[#C83E68] bg-[#C83E68] text-white shadow-xs font-semibold'
                       : 'border-border/80 bg-background/80 text-foreground hover:bg-muted'
                   )}
                 >
                   <span
                     aria-hidden
-                    className="h-2.5 w-2.5 rounded-full border border-black/20"
+                    className="h-2 w-2 rounded-full border border-black/20 flex-shrink-0"
                     style={{ background: finishPreview(def.key, o.id, sec.color) }}
                   />
-                  <span>{o.label}</span>
+                  <span className="truncate">{o.label}</span>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Horizontal Scroll Shade Carousel (NO vertical page scroll required!) */}
+        {/* Responsive Luxury Shade Grid - All shades clearly visible without horizontal cutoff */}
         <div>
           <div className="flex items-center justify-between text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-            <span>Select Shade</span>
-            <span className="text-[10px] font-normal lowercase">← Swipe to explore →</span>
+            <span>Select Shade ({def.swatches.length} Tones)</span>
           </div>
 
           <div
             role="radiogroup"
             aria-label={`${def.title} colour shades`}
-            className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none snap-x"
+            className="grid grid-cols-4 sm:grid-cols-6 gap-2"
           >
             {def.swatches.map((s) => {
               const isSelected = same(sec.color, s.color);
@@ -360,30 +239,31 @@ function Section({ def, disabledReason }: { def: SectionDef; disabledReason?: st
                   aria-label={s.name}
                   onClick={() => update(def.key, { color: s.color, enabled: true })}
                   className={cn(
-                    'group relative flex flex-col items-center justify-center p-2 rounded-xl border transition-all flex-shrink-0 snap-start min-w-[70px]',
+                    'group flex flex-col items-center justify-center p-2 rounded-xl border transition-all text-center',
                     isSelected
-                      ? 'border-primary bg-primary/10 shadow-xs ring-2 ring-primary/30 scale-102'
-                      : 'border-border/70 bg-card hover:bg-muted/60'
+                      ? 'border-[#C83E68] bg-rose-500/10 shadow-xs ring-2 ring-[#C83E68]/30 scale-102'
+                      : 'border-border/70 bg-card hover:border-border hover:bg-muted/50'
                   )}
                 >
                   <div
-                    className="relative w-8 h-8 rounded-full shadow-sm border-2 border-white ring-1 ring-black/10 flex items-center justify-center transition-transform group-hover:scale-105"
+                    className="relative w-8 h-8 rounded-full shadow-sm border-2 border-white dark:border-zinc-800 ring-1 ring-black/10 flex items-center justify-center transition-transform group-hover:scale-105"
                     style={{ background: s.color }}
                   >
                     {isSelected && <Check className="w-4 h-4 text-white drop-shadow-md stroke-[3]" />}
                   </div>
-                  <span className="text-[10.5px] font-medium text-foreground mt-1.5 text-center truncate max-w-[64px]">
+                  <span className="text-[10px] font-medium text-foreground mt-1.5 truncate w-full text-center">
                     {s.name}
                   </span>
                 </button>
               );
             })}
 
-            {/* Custom Shade Picker Pill */}
-            <div className="flex flex-col items-center justify-center p-2 rounded-xl border border-dashed border-border/80 flex-shrink-0 min-w-[70px]">
+            {/* Custom Shade Picker */}
+            <div className="flex flex-col items-center justify-center p-2 rounded-xl border border-dashed border-border/80 hover:border-primary/50 text-center transition-colors">
               <label
                 htmlFor={`c-${def.key}`}
-                className="relative w-8 h-8 rounded-full cursor-pointer flex items-center justify-center bg-gradient-to-tr from-rose-500 via-amber-400 to-indigo-500 shadow-sm"
+                className="relative w-8 h-8 rounded-full cursor-pointer flex items-center justify-center bg-gradient-to-tr from-rose-500 via-amber-400 to-indigo-500 shadow-sm hover:scale-105 transition-transform"
+                title="Choose custom shade"
               >
                 <Palette className="w-4 h-4 text-white drop-shadow" />
                 <input
@@ -394,7 +274,9 @@ function Section({ def, disabledReason }: { def: SectionDef; disabledReason?: st
                   className="opacity-0 absolute inset-0 cursor-pointer w-full h-full"
                 />
               </label>
-              <span className="text-[10px] text-muted-foreground mt-1.5">Custom</span>
+              <span className="text-[10px] text-muted-foreground mt-1.5 truncate w-full text-center">
+                Custom
+              </span>
             </div>
           </div>
         </div>

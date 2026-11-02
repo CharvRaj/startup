@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Sparkles, X, Send, Loader2, Heart, Calendar, ShoppingBag, TrendingUp, ListTodo, MessageCircle, Star, CheckCircle, Plus, Trash2, Clock, Gift, Zap, Bot, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +25,12 @@ type Panel = 'chat' | 'todos' | 'quick';
 
 export function FloatingAssistant() {
   const { user } = useAuthStore();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+
+  // Hide on virtual studio so it never obstructs makeup shade controls
+  const isStudioPage = ['/virtual-studio', '/beauty-studio', '/blindglow-ai', '/ai-glow'].some(p => location.pathname.startsWith(p));
+  if (isStudioPage) return null;
   const [panel, setPanel] = useState<Panel>('chat');
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
