@@ -36,7 +36,7 @@ import { QueryResolverDashboard } from './pages/QueryResolverDashboard';
 import { HelpSupport } from './pages/HelpSupport';
 import { BeautyStudio } from './pages/BeautyStudio';
 import { DiwaliLanding } from './pages/DiwaliLanding';
-const VirtualStudio = lazy(() => import('./pages/VirtualStudio').then((m) => ({ default: m.VirtualStudio })));
+import { VirtualStudio } from './pages/VirtualStudio';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Toaster } from '@/components/ui/toaster';
@@ -72,10 +72,10 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/diwali" element={<DiwaliLanding />} />
         <Route path="/diwali-mahotsav" element={<DiwaliLanding />} />
-        <Route path="/virtual-studio" element={<Suspense fallback={<div className="min-h-screen pt-32 text-center text-sm text-muted-foreground">Loading BlindGlow AI Studio…</div>}><VirtualStudio /></Suspense>} />
-        <Route path="/beauty-studio" element={<Suspense fallback={<div className="min-h-screen pt-32 text-center text-sm text-muted-foreground">Loading BlindGlow AI Studio…</div>}><VirtualStudio /></Suspense>} />
-        <Route path="/blindglow-ai" element={<Suspense fallback={<div className="min-h-screen pt-32 text-center text-sm text-muted-foreground">Loading BlindGlow AI Studio…</div>}><VirtualStudio /></Suspense>} />
-        <Route path="/ai-glow" element={<Suspense fallback={<div className="min-h-screen pt-32 text-center text-sm text-muted-foreground">Loading BlindGlow AI Studio…</div>}><VirtualStudio /></Suspense>} />
+        <Route path="/virtual-studio" element={<VirtualStudio />} />
+        <Route path="/beauty-studio" element={<VirtualStudio />} />
+        <Route path="/blindglow-ai" element={<VirtualStudio />} />
+        <Route path="/ai-glow" element={<VirtualStudio />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

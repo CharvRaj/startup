@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AlertTriangle, Camera, Download, Eye, Loader2, Redo2, RotateCcw, Sparkles, Trash2, Undo2, Upload, User } from 'lucide-react';
+import { AlertTriangle, Camera, Download, Eye, Loader2, Redo2, RotateCcw, Sparkles, Trash2, Undo2, Upload, User, ZoomIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { cn } from '@/lib/utils';
 import { useCamera } from '../hooks/useCamera';
 import { detectStill, detectVideoFrame, getFaceLandmarker, segmentHair } from '../lib/landmarker';
 import { ExportError, computeExportSize, downloadBlob, exportPng, releaseRenderResources, renderLook } from '../lib/render';
@@ -27,6 +28,7 @@ const DEMO_MODELS = [
 
 export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: ImageBitmap | null; onDiscarded?: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const loupeRef = useRef<HTMLCanvasElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const bitmapRef = useRef<ImageBitmap | null>(null);
   const lmRef = useRef<LM[] | null>(null);
@@ -42,6 +44,8 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
   const [sizeId, setSizeId] = useState('share');
   const [exporting, setExporting] = useState(false);
   const [flash, setFlash] = useState(false);
+  const [zoomEnabled, setZoomEnabled] = useState(true);
+  const [zoomPos, setZoomPos] = useState<{ x: number; y: number; normX: number; normY: number } | null>(null);
 
   const look = useLookStore((s) => s.look);
   const showOriginal = useLookStore((s) => s.showOriginal);
@@ -81,7 +85,12 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
     }
   }, [stopCam]);
 
-  useEffect(() => { if (initialBitmap) void adopt(initialBitmap); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [initialBitmap]);
+  useEffect(() => {
+    if (initialBitmap) {
+      void adopt(initialBitmap);
+    }
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [initialBitmap]);
 
   const onFile = async (f?: File | null) => {
     if (!f) return; setError(null);
@@ -105,6 +114,56 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
       setError('Could not load sample portrait. Please upload a photo or use your camera.');
       setStatus('idle');
     }
+  };
+
+  /* ----- interactive canvas zoom loupe tracking ----- */
+  const handleCanvasPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!zoomEnabled || source === 'none' || !canvasRef.current || !loupeRef.current) return;
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
+      setZoomPos(null);
+      return;
+    }
+
+    const normX = (clientX - rect.left) / rect.width;
+    const normY = (clientY - rect.top) / rect.height;
+
+    const containerRect = e.currentTarget.getBoundingClientRect();
+    setZoomPos({
+      x: clientX - containerRect.left,
+      y: clientY - containerRect.top,
+      normX,
+      normY,
+    });
+
+    // Draw magnified image onto loupe canvas
+    const loupe = loupeRef.current;
+    const lCtx = loupe.getContext('2d');
+    if (!lCtx) return;
+
+    const LOUPE_PX = 140;
+    if (loupe.width !== LOUPE_PX || loupe.height !== LOUPE_PX) {
+      loupe.width = LOUPE_PX;
+      loupe.height = LOUPE_PX;
+    }
+
+    const zoomFactor = 2.5;
+    const srcW = canvas.width / zoomFactor;
+    const srcH = canvas.height / zoomFactor;
+    const srcX = normX * canvas.width - srcW / 2;
+    const srcY = normY * canvas.height - srcH / 2;
+
+    lCtx.clearRect(0, 0, LOUPE_PX, LOUPE_PX);
+    lCtx.imageSmoothingQuality = 'high';
+    lCtx.drawImage(canvas, srcX, srcY, srcW, srcH, 0, 0, LOUPE_PX, LOUPE_PX);
+  };
+
+  const handleCanvasPointerLeave = () => {
+    setZoomPos(null);
   };
 
   /* ----- hair (lazy, photo only) ----- */
@@ -186,7 +245,11 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_460px] items-start">
       {/* Left: Interactive Canvas & Action Toolbar (Sticky on Desktop) */}
       <div className="space-y-3 lg:sticky lg:top-28">
-        <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-muted/60 shadow-lg">
+        <div
+          className="relative overflow-hidden rounded-3xl border border-border/80 bg-muted/60 shadow-lg min-h-[420px] flex items-center justify-center cursor-crosshair select-none"
+          onPointerMove={handleCanvasPointerMove}
+          onPointerLeave={handleCanvasPointerLeave}
+        >
           <video ref={videoRef} className="hidden" playsInline muted aria-hidden />
           <canvas
             ref={canvasRef}
@@ -194,6 +257,33 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
             aria-label="Makeup preview"
             className={`mx-auto block max-h-[65vh] w-auto max-w-full rounded-2xl ${source === 'none' ? 'hidden' : ''} ${source === 'live' ? '-scale-x-100' : ''}`}
           />
+
+          {/* Floating Zoom Loupe over Uploaded Face Canvas */}
+          {zoomEnabled && zoomPos && source !== 'none' && (
+            <div
+              className="pointer-events-none absolute z-30 w-36 h-36 rounded-full border-2 border-[#C83E68] shadow-2xl ring-4 ring-black/20 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-background flex items-center justify-center animate-in fade-in zoom-in-75 duration-75"
+              style={{
+                left: `${zoomPos.x}px`,
+                top: `${zoomPos.y}px`,
+              }}
+            >
+              <canvas
+                ref={loupeRef}
+                className="w-full h-full rounded-full object-cover"
+                width={140}
+                height={140}
+              />
+              {/* Target crosshair and 2.5x badge */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-3 h-3 rounded-full border border-white/90 shadow-xs" />
+                <div className="absolute w-full h-[1px] bg-white/25" />
+                <div className="absolute h-full w-[1px] bg-white/25" />
+              </div>
+              <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-black/75 text-[9px] font-bold text-white tracking-wider">
+                2.5x ZOOM
+              </div>
+            </div>
+          )}
 
           {/* Flash Shutter Animation */}
           {flash && <div className="absolute inset-0 bg-white z-40 animate-out fade-out duration-300 pointer-events-none" />}
@@ -257,6 +347,28 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
         </div>
         <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" aria-label="Upload a photo" onChange={(e) => onFile(e.target.files?.[0])} />
 
+        {/* Quick Demo Models Switcher strip so user can switch face anytime */}
+        {source !== 'none' && (
+          <div className="flex items-center justify-between p-2.5 rounded-2xl bg-card border border-border/70 shadow-xs">
+            <span className="text-[11px] font-semibold text-muted-foreground">
+              Try on Model:
+            </span>
+            <div className="flex items-center gap-2">
+              {DEMO_MODELS.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => loadDemoModel(m.src)}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border/80 hover:border-primary/50 text-xs font-semibold bg-muted/40 hover:bg-muted transition-all"
+                >
+                  <img src={m.src} alt={m.name} className="w-4 h-4 rounded-full object-cover" />
+                  <span>{m.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div aria-live="polite" className="space-y-2">
           {error && <Alert variant="destructive"><AlertTriangle className="h-4 w-4" /><AlertTitle>Notice</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>}
           {cam.message && source === 'none' && <Alert><AlertTriangle className="h-4 w-4" /><AlertTitle>Camera</AlertTitle><AlertDescription>{cam.message}</AlertDescription></Alert>}
@@ -264,7 +376,7 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
           {hairState === 'failed' && <Alert><AlertDescription>Hair color preview isn’t available for this angle.</AlertDescription></Alert>}
         </div>
 
-        {/* Quick Toolbar (Undo, Redo, Compare, New Photo) */}
+        {/* Quick Toolbar (Undo, Redo, Compare, Zoom Toggle, New Photo) */}
         <div className="flex flex-wrap items-center gap-2 p-2 rounded-2xl bg-card border border-border/70 shadow-xs">
           {source === 'live' && (
             <Button onClick={capture} disabled={cam.status !== 'active' || busy} className="bg-emerald-600 hover:bg-emerald-700 text-white">
@@ -276,6 +388,20 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
               <Upload className="mr-1.5 h-3.5 w-3.5" />New Photo
             </Button>
           )}
+          <Button
+            variant={zoomEnabled ? 'default' : 'outline'}
+            size="sm"
+            disabled={source === 'none'}
+            onClick={() => setZoomEnabled(!zoomEnabled)}
+            className={cn(
+              'text-xs font-semibold',
+              zoomEnabled && source !== 'none' ? 'bg-[#C83E68] text-white hover:bg-[#a63054]' : ''
+            )}
+            title="Hover photo to zoom in 2.5x on face features"
+          >
+            <ZoomIn className="mr-1.5 h-3.5 w-3.5" />
+            {zoomEnabled && source !== 'none' ? 'Zoom: ON' : 'Zoom: OFF'}
+          </Button>
           <Button variant="outline" size="icon" className="h-8 w-8" aria-label="Undo" onClick={undo} disabled={!canUndo}>
             <Undo2 className="h-3.5 w-3.5" />
           </Button>

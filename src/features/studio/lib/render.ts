@@ -166,6 +166,57 @@ export function renderLook(ctx: Ctx, W: number, H: number, source: CanvasImageSo
         blend(ctx, g, glossy ? 'screen' : 'soft-light', (glossy ? 0.55 : 0.4) * a);
       }
     }
+
+    if (look.eyebrows?.enabled) {
+      const { c, x } = layer(W, H);
+      const L = look.eyebrows;
+      const a = k(L.intensity);
+      for (const b of brows) {
+        feathered(x, W, L.color, f * 0.018, (cx) => {
+          cx.beginPath();
+          poly(cx, b);
+          cx.fill();
+        });
+      }
+      blend(ctx, c, 'multiply', 0.8 * a);
+      blend(ctx, c, 'source-over', 0.25 * a);
+    }
+
+    if (look.contour?.enabled) {
+      const { c, x } = layer(W, H);
+      const L = look.contour;
+      const a = k(L.intensity);
+      for (const s of sides) {
+        const pt = mean(px(lm!, s.cheek, W, H));
+        ellipse(x, { x: pt.x, y: pt.y + f * 0.055 }, f * 0.22, f * 0.09, fm.rollRad + s.tilt, L.color);
+      }
+      keepInside(x, W, oval, f * 0.03);
+      cutOut(x, W, [...openings, lipsOuter], f * 0.02);
+      blend(ctx, c, 'multiply', 0.65 * a);
+      blend(ctx, c, 'soft-light', 0.55 * a);
+    }
+
+    if (look.nose?.enabled) {
+      const { c, x } = layer(W, H);
+      const L = look.nose;
+      const a = k(L.intensity);
+      const [t, b] = px(lm!, IDX.noseBridge, W, H);
+      const offset = f * 0.032;
+      feathered(x, W, L.color, f * 0.022, (cx) => {
+        cx.lineWidth = f * 0.03;
+        cx.lineCap = 'round';
+        cx.beginPath();
+        cx.moveTo(t.x - offset, t.y);
+        cx.lineTo(b.x - offset, b.y + f * 0.04);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(t.x + offset, t.y);
+        cx.lineTo(b.x + offset, b.y + f * 0.04);
+        cx.stroke();
+      });
+      blend(ctx, c, 'multiply', 0.6 * a);
+      blend(ctx, c, 'soft-light', 0.5 * a);
+    }
   }
 
   if (look.hair.enabled && opts.hair) {

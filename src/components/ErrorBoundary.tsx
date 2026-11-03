@@ -49,6 +49,11 @@ export class ErrorBoundary extends Component<Props, State> {
               <p className="text-xs text-[#542337]/70 mt-1.5 leading-relaxed">
                 We encountered a small hiccup loading this screen. Tap below to reload or return home safely.
               </p>
+              {this.state.error?.message && (
+                <div className="mt-3 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-left text-[11px] text-rose-800 font-mono break-all max-h-24 overflow-y-auto">
+                  {this.state.error.message}
+                </div>
+              )}
             </div>
             <div className="space-y-2.5 pt-2">
               <Button

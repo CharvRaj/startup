@@ -192,11 +192,12 @@ export default function BlindGlowTryOn({
   const isDragging = useRef(false);
 
   const N = CHAPTERS.length;
-  const x = p * N;
-  const i = Math.min(N - 1, Math.floor(x));
-  const t = x - i;
-  const active = i === 5 ? picked : 0;
-  const th = THEMES[i];
+  const safeP = clamp(Number.isFinite(p) ? p : 0, 0, 0.9999);
+  const x = safeP * N;
+  const i = clamp(Math.floor(x), 0, N - 1);
+  const t = clamp(x - i, 0, 1);
+  const active = Math.min(looks.length - 1, Math.max(0, i === 5 ? picked : 0));
+  const th = THEMES[i] || THEMES[0];
 
   // Anatomically accurate 32-point facial landmark constellation (forehead, brows, eyes, nose, cheeks, lips, jaw)
   const mesh = useMemo(
