@@ -27,10 +27,6 @@ export function FloatingAssistant() {
   const { user } = useAuthStore();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-
-  // Hide on virtual studio so it never obstructs makeup shade controls
-  const isStudioPage = ['/virtual-studio', '/beauty-studio', '/blindglow-ai', '/ai-glow'].some(p => location.pathname.startsWith(p));
-  if (isStudioPage) return null;
   const [panel, setPanel] = useState<Panel>('chat');
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -47,6 +43,10 @@ export function FloatingAssistant() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Hide on virtual studio so it never obstructs makeup shade controls
+  const isStudioPage = ['/virtual-studio', '/beauty-studio', '/blindglow-ai', '/ai-glow'].some(p => location.pathname.startsWith(p));
+  if (isStudioPage) return null;
 
   const fetchTodos = async () => {
     if (!user) return;
