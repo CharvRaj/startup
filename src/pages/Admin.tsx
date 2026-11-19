@@ -1179,27 +1179,35 @@ export function Admin() {
     }
   };
 
-  const compressImageFile = async (file: File): Promise<string> => {
-    return new Promise((resolve) => {
+  const preserveOriginalImageFile = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      // 1. Files up to 8MB: Keep 100% original bit-for-bit file bytes!
+      // Preserves original color profile, full dynamic range, crisp sharpness and zero compression degradation
+      if (file.size <= 8 * 1024 * 1024) {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+        return;
+      }
+
+      // 2. Only for oversized camera RAW/DSLR files (> 8MB), gentle 4K high-fidelity preservation
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1400;
-          const MAX_HEIGHT = 1400;
+          const MAX_SIZE = 3200; // Ultra HD
           let width = img.width;
           let height = img.height;
 
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height = Math.round((height * MAX_WIDTH) / width);
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width = Math.round((width * MAX_HEIGHT) / height);
-              height = MAX_HEIGHT;
+          if (width > MAX_SIZE || height > MAX_SIZE) {
+            if (width > height) {
+              height = Math.round((height * MAX_SIZE) / width);
+              width = MAX_SIZE;
+            } else {
+              width = Math.round((width * MAX_SIZE) / height);
+              height = MAX_SIZE;
             }
           }
 
@@ -1207,14 +1215,17 @@ export function Admin() {
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           if (ctx) {
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
             ctx.drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL('image/jpeg', 0.84));
+            resolve(canvas.toDataURL(file.type || 'image/jpeg', 0.96));
           } else {
             resolve(e.target?.result as string);
           }
         };
         img.src = e.target?.result as string;
       };
+      reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   };
@@ -1228,17 +1239,17 @@ export function Admin() {
       const path = `gallery-${Date.now()}.${ext}`;
       let publicUrl = '';
 
-      // Try Supabase Storage first, fallback to compressed Data URL
+      // Try Supabase Storage first, fallback to 100% original data URL
       try {
         const { error: upErr } = await supabase.storage.from('gallery').upload(path, file, { upsert: true });
         if (!upErr) {
           const { data: { publicUrl: url } } = supabase.storage.from('gallery').getPublicUrl(path);
           publicUrl = url;
         } else {
-          publicUrl = await compressImageFile(file);
+          publicUrl = await preserveOriginalImageFile(file);
         }
       } catch {
-        publicUrl = await compressImageFile(file);
+        publicUrl = await preserveOriginalImageFile(file);
       }
 
       const newItem = {
@@ -1354,7 +1365,7 @@ export function Admin() {
         publicUrl = url;
       } else {
         console.warn('Story banner storage upload fallback:', upErr);
-        publicUrl = await compressImageFile(file);
+        publicUrl = await preserveOriginalImageFile(file);
       }
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + parseInt(newStory.expires_days || '7'));
@@ -3282,11 +3293,11 @@ export function Admin() {
                         #{idx + 1}
                       </div>
 
-                      {/* Always accessible action overlay / bottom panel */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-95 md:opacity-0 md:group-hover:opacity-100 flex flex-col justify-end p-2.5 transition-opacity duration-200">
-                        <p className="text-white text-xs font-semibold text-center truncate mb-2 drop-shadow">{img.title}</p>
+                      {/* Compact bottom action bar that leaves the image crystal clear */}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/75 to-transparent p-2 pt-6">
+                        <p className="text-white text-xs font-semibold text-center truncate mb-1.5 drop-shadow">{img.title}</p>
                         
-                        <div className="flex items-center justify-between gap-1.5 pt-1 border-t border-white/15">
+                        <div className="flex items-center justify-between gap-1.5">
                           <div className="flex items-center gap-1">
                             <Button
                               size="sm"

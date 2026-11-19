@@ -245,15 +245,15 @@ export function Gallery() {
                 blurPx = 0;
                 zIndex = 30;
               } else if (isImmediatePrev || isImmediateNext) {
-                scale = 0.84;
-                opacity = 0.68;
-                blurPx = 2.5;
+                scale = 0.88;
+                opacity = 0.88;
+                blurPx = 0;
                 zIndex = 20;
               } else {
                 // outer preview (diff === 2 or -2)
-                scale = 0.68;
-                opacity = 0.25;
-                blurPx = 4.5;
+                scale = 0.75;
+                opacity = 0.55;
+                blurPx = 0;
                 zIndex = 10;
               }
 
@@ -301,26 +301,10 @@ export function Gallery() {
                       loading={Math.abs(diff) <= 1 ? 'eager' : 'lazy'}
                     />
 
-                    {/* Gradient Overlay for Cinematic Depth & Text Contrast */}
+                    {/* Bottom-only Gradient Overlay for Text Readability — Photo itself stays 100% natural, crisp and vivid */}
                     <div
-                      className={`absolute inset-0 transition-opacity duration-700 ${
-                        isCenter
-                          ? 'bg-gradient-to-t from-black/85 via-black/20 to-black/10'
-                          : 'bg-gradient-to-t from-black/70 via-black/40 to-transparent'
-                      }`}
+                      className="absolute bottom-0 inset-x-0 h-44 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-opacity duration-500"
                     />
-
-                    {/* ── "ROYAL SPOTLIGHT SWEEP" SHIMMER BEAM (Only on Active Center Card) ── */}
-                    {isCenter && (
-                      <div
-                        key={sweepKey}
-                        className="pointer-events-none absolute inset-0 z-20 rounded-[24px] sm:rounded-[28px] overflow-hidden"
-                      >
-                        <div
-                          className="w-[50%] h-[250%] absolute -top-3/4 left-0 bg-gradient-to-r from-transparent via-amber-200/35 to-transparent animate-royal-sweep"
-                        />
-                      </div>
-                    )}
 
                     {/* Center Spotlight Badge */}
                     {isCenter && (
