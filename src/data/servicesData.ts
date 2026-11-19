@@ -33,12 +33,11 @@ export const ALL_DOORSTEP_SERVICES: ServiceDetailItem[] = [
     original_price: 1999,
     discount_percent: 25,
     duration_minutes: 60,
-    image_url: '/images/service-facial.png',
+    image_url: '/images/larana-promo-facial.jpg',
     banner_urls: [
-      '/images/service-facial.png',
-      '/images/banner-appointment.png',
-      '/images/service-skincare.png',
-      '/images/banner-relaxing.png',
+      '/images/larana-promo-facial.jpg',
+      '/images/larana-glow-refresh.png',
+      '/images/larana-hero-flower.jpg',
     ],
     inclusions: [
       'Double cleanse with botanical cleansing balm',
@@ -87,12 +86,11 @@ export const ALL_DOORSTEP_SERVICES: ServiceDetailItem[] = [
     original_price: 5499,
     discount_percent: 27,
     duration_minutes: 120,
-    image_url: '/images/category-bridal.jpg',
+    image_url: '/images/bridal-gallery/bridal-1.jpg',
     banner_urls: [
-      '/images/category-bridal.jpg',
-      '/images/banner-neutral.png',
-      '/images/service-face.png',
-      '/images/banner-appointment.png',
+      '/images/bridal-gallery/bridal-1.jpg',
+      '/images/bridal-gallery/bridal-4.jpg',
+      '/images/bridal-gallery/bridal-7.jpg',
     ],
     inclusions: [
       'Skin-prep hydrating serum & pore-blurring base',
@@ -138,11 +136,10 @@ export const ALL_DOORSTEP_SERVICES: ServiceDetailItem[] = [
     original_price: 1399,
     discount_percent: 29,
     duration_minutes: 45,
-    image_url: '/images/service-hair.png',
+    image_url: '/images/larana-promo-hair.jpg',
     banner_urls: [
-      '/images/service-hair.png',
-      '/images/banner-beauty-spa.png',
-      '/images/banner-service.png',
+      '/images/larana-promo-hair.jpg',
+      '/images/larana-promo-hair.jpg',
     ],
     inclusions: [
       'Sulfate-free clarifying scalp wash',
@@ -185,11 +182,10 @@ export const ALL_DOORSTEP_SERVICES: ServiceDetailItem[] = [
     original_price: 999,
     discount_percent: 30,
     duration_minutes: 35,
-    image_url: '/images/service-skincare.png',
+    image_url: '/images/larana-glow-refresh.png',
     banner_urls: [
-      '/images/service-skincare.png',
-      '/images/banner-sunscreen.png',
-      '/images/banner-neutral.png',
+      '/images/larana-glow-refresh.png',
+      '/images/larana-promo-facial.jpg',
     ],
     inclusions: [
       'Walnut & apricot micro-scrub exfoliation',
@@ -229,11 +225,10 @@ export const ALL_DOORSTEP_SERVICES: ServiceDetailItem[] = [
     original_price: 1199,
     discount_percent: 33,
     duration_minutes: 50,
-    image_url: '/images/category-nails.jpg',
+    image_url: '/images/larana-promo-nails.jpg',
     banner_urls: [
+      '/images/larana-promo-nails.jpg',
       '/images/category-nails.jpg',
-      '/images/banner-sunscreen.png',
-      '/images/banner-spa.png',
     ],
     inclusions: [
       'Disinfected disposable pedicure tub liner',
@@ -275,11 +270,10 @@ export const ALL_DOORSTEP_SERVICES: ServiceDetailItem[] = [
     original_price: 1200,
     discount_percent: 29,
     duration_minutes: 40,
-    image_url: '/images/category-waxing.jpg',
+    image_url: '/images/larana-cat-waxing.jpg',
     banner_urls: [
-      '/images/category-waxing.jpg',
-      '/images/banner-relaxing.png',
-      '/images/service-facial.png',
+      '/images/larana-cat-waxing.jpg',
+      '/images/larana-cat-waxing.jpg',
     ],
     inclusions: [
       'Full arms and full legs coverage',
@@ -320,11 +314,10 @@ export const ALL_DOORSTEP_SERVICES: ServiceDetailItem[] = [
     original_price: 699,
     discount_percent: 29,
     duration_minutes: 30,
-    image_url: '/images/service-face.png',
+    image_url: '/images/larana-promo-facial.jpg',
     banner_urls: [
-      '/images/service-face.png',
-      '/images/banner-service.png',
-      '/images/banner-spa.png',
+      '/images/larana-promo-facial.jpg',
+      '/images/larana-cat-waxing.jpg',
     ],
     inclusions: [
       'Papaya gentle skin brightening cleanser',
@@ -364,11 +357,11 @@ export const ALL_DOORSTEP_SERVICES: ServiceDetailItem[] = [
     original_price: 2500,
     discount_percent: 24,
     duration_minutes: 75,
-    image_url: '/images/banner-appointment.png',
+    image_url: '/images/bridal-gallery/bridal-19.jpg',
     banner_urls: [
-      '/images/banner-appointment.png',
-      '/images/service-hair.png',
-      '/images/banner-neutral.png',
+      '/images/bridal-gallery/bridal-19.jpg',
+      '/images/bridal-gallery/bridal-7.jpg',
+      '/images/larana-promo-hair.jpg',
     ],
     inclusions: [
       'Customized eye look & waterproof mascara',
@@ -628,14 +621,16 @@ export function formatServiceFromRaw(raw: any, explicitType?: 'doorstep' | 'mehn
     else if (nameL.includes('festiv') || catL.includes('family')) defaultImg = '/images/mehndi-festival.jpg';
     else defaultImg = '/images/mehndi-traditional.jpg';
   } else {
-    if (nameL.includes('thread') || nameL.includes('brow') || nameL.includes('lip')) defaultImg = '/images/service-face.png';
-    else if (nameL.includes('wax') || catL.includes('wax')) defaultImg = '/images/category-waxing.jpg';
-    else if (nameL.includes('nail') || nameL.includes('pedicure') || nameL.includes('manicure') || catL.includes('nail')) defaultImg = '/images/category-nails.jpg';
-    else if (nameL.includes('hair') || catL.includes('hair')) defaultImg = '/images/service-hair.png';
-    else if (nameL.includes('bridal') || catL.includes('bridal')) defaultImg = '/images/category-bridal.jpg';
-    else if (nameL.includes('tan') || nameL.includes('glow') || catL.includes('skin')) defaultImg = '/images/service-skincare.png';
-    else if (nameL.includes('clean') || catL.includes('face')) defaultImg = '/images/service-face.png';
-    else defaultImg = '/images/service-facial.png';
+    if (nameL.includes('thread') || nameL.includes('brow') || nameL.includes('lip')) defaultImg = '/images/larana-cat-waxing.jpg';
+    else if (nameL.includes('wax') || catL.includes('wax')) defaultImg = '/images/larana-cat-waxing.jpg';
+    else if (nameL.includes('nail') || nameL.includes('pedicure') || nameL.includes('manicure') || catL.includes('nail')) defaultImg = '/images/larana-promo-nails.jpg';
+    else if (nameL.includes('hair') || catL.includes('hair')) defaultImg = '/images/larana-promo-hair.jpg';
+    else if (nameL.includes('bridal') || catL.includes('bridal')) defaultImg = '/images/bridal-gallery/bridal-1.jpg';
+    else if (nameL.includes('makeup') || catL.includes('makeup')) defaultImg = '/images/bridal-gallery/bridal-19.jpg';
+    else if (nameL.includes('massage') || catL.includes('massage') || catL.includes('spa')) defaultImg = '/images/larana-cat-massage.jpg';
+    else if (nameL.includes('tan') || nameL.includes('glow') || catL.includes('skin')) defaultImg = '/images/larana-glow-refresh.png';
+    else if (nameL.includes('clean') || catL.includes('face')) defaultImg = '/images/larana-promo-facial.jpg';
+    else defaultImg = '/images/larana-promo-facial.jpg';
   }
 
   const origPrice = raw.original_price || Math.round((raw.price || 499) * 1.35);

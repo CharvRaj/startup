@@ -27,15 +27,15 @@ export function StudioMarqueeBanner() {
   return (
     <section
       aria-label="BlindGlow AI Couture Highlights"
-      className="relative overflow-hidden py-12 sm:py-16 my-8 border-y border-amber-500/20 bg-gradient-to-b from-card/60 via-muted/30 to-card/60 backdrop-blur-md select-none"
+      className="relative overflow-hidden py-8 sm:py-16 my-4 sm:my-8 border-y border-amber-500/20 bg-gradient-to-b from-card/60 via-muted/30 to-card/60 sm:backdrop-blur-md select-none"
     >
-      {/* Animated Ambient Light Blobs in Background */}
+      {/* Animated Ambient Light Blobs in Background (Desktop only to prevent mobile GPU throttling) */}
       <div
-        className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 rounded-full bg-rose-500/10 blur-3xl pointer-events-none animate-pulse"
+        className="hidden sm:block absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 rounded-full bg-rose-500/10 blur-3xl pointer-events-none animate-pulse"
         style={{ animationDuration: '8s' }}
       />
       <div
-        className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 rounded-full bg-amber-500/10 blur-3xl pointer-events-none animate-pulse"
+        className="hidden sm:block absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 rounded-full bg-amber-500/10 blur-3xl pointer-events-none animate-pulse"
         style={{ animationDuration: '10s', animationDelay: '-4s' }}
       />
 
@@ -69,9 +69,9 @@ export function StudioMarqueeBanner() {
       </div>
 
       {/* Decorative Cross Lines Watermark */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] dark:opacity-[0.06]">
-        <div className="w-[140vw] h-[1px] bg-gradient-to-r from-transparent via-amber-500 to-transparent rotate-12" />
-        <div className="w-[140vw] h-[1px] bg-gradient-to-r from-transparent via-rose-500 to-transparent -rotate-12 absolute" />
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] dark:opacity-[0.06] overflow-hidden">
+        <div className="w-[140%] max-w-none h-[1px] bg-gradient-to-r from-transparent via-amber-500 to-transparent rotate-12" />
+        <div className="w-[140%] max-w-none h-[1px] bg-gradient-to-r from-transparent via-rose-500 to-transparent -rotate-12 absolute" />
       </div>
 
       {/* Edge Gradient Masks for Smooth In/Out Fade */}
@@ -79,17 +79,17 @@ export function StudioMarqueeBanner() {
       <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-background via-background/80 to-transparent z-20 pointer-events-none" />
 
       {/* Crossing Marquee Ribbons Container with 3D Cross Perspective */}
-      <div className="relative py-4 space-y-4">
+      <div className="relative py-2 sm:py-4 space-y-3 sm:space-y-4">
         {/* RIBBON 1: Angled -1.5deg Moving Smoothly from RIGHT TO LEFT */}
-        <div className="relative transform -rotate-1 origin-center py-2.5 bg-gradient-to-r from-amber-950/80 via-neutral-900/90 to-amber-950/80 dark:from-neutral-950 dark:via-zinc-900 dark:to-neutral-950 text-white shadow-xl border-y border-amber-500/40 backdrop-blur-md">
-          <div className="flex w-max animate-marquee hover:[animation-play-state:paused] text-xs sm:text-sm font-semibold tracking-widest uppercase">
+        <div className="relative transform -rotate-1 origin-center py-2 sm:py-2.5 bg-gradient-to-r from-amber-950/80 via-neutral-900/90 to-amber-950/80 dark:from-neutral-950 dark:via-zinc-900 dark:to-neutral-950 text-white shadow-xl border-y border-amber-500/40 sm:backdrop-blur-md">
+          <div className="flex w-max animate-marquee will-change-transform hover:[animation-play-state:paused] text-xs sm:text-sm font-semibold tracking-wider sm:tracking-widest uppercase">
             {/* Duplicated for seamless infinite loop */}
             {[0, 1].map((copyIndex) => (
               <div key={copyIndex} className="flex items-center gap-6 sm:gap-10 shrink-0 pr-6 sm:pr-10">
                 {RIBBON_ITEMS_1.map((item, i) => (
-                  <span key={i} className="inline-flex items-center gap-3 shrink-0">
+                  <span key={i} className="inline-flex items-center gap-2 sm:gap-3 shrink-0">
                     <span className="text-[#C83E68] drop-shadow-[0_0_6px_rgba(200,62,104,0.6)]">✦</span>
-                    <span className="text-amber-100/90 tracking-[0.2em] font-medium font-sans">
+                    <span className="text-amber-100/90 tracking-[0.15em] sm:tracking-[0.2em] font-medium font-sans">
                       {item}
                     </span>
                     <Sparkles className="w-3 h-3 text-amber-400/80 inline shrink-0" />
@@ -101,15 +101,15 @@ export function StudioMarqueeBanner() {
         </div>
 
         {/* RIBBON 2: Cross Counter Ribbon Angled +1.5deg Moving Opposite or Offset */}
-        <div className="relative transform rotate-1 origin-center py-2.5 bg-gradient-to-r from-rose-950/80 via-neutral-900/90 to-rose-950/80 dark:from-zinc-950 dark:via-neutral-900 dark:to-zinc-950 text-white shadow-xl border-y border-rose-500/40 backdrop-blur-md">
-          <div className="flex w-max animate-marquee-reverse hover:[animation-play-state:paused] text-xs sm:text-sm font-semibold tracking-widest uppercase">
+        <div className="relative transform rotate-1 origin-center py-2 sm:py-2.5 bg-gradient-to-r from-rose-950/80 via-neutral-900/90 to-rose-950/80 dark:from-zinc-950 dark:via-neutral-900 dark:to-zinc-950 text-white shadow-xl border-y border-rose-500/40 sm:backdrop-blur-md">
+          <div className="flex w-max animate-marquee-reverse will-change-transform hover:[animation-play-state:paused] text-xs sm:text-sm font-semibold tracking-wider sm:tracking-widest uppercase">
             {/* Duplicated for seamless infinite loop */}
             {[0, 1].map((copyIndex) => (
               <div key={copyIndex} className="flex items-center gap-6 sm:gap-10 shrink-0 pr-6 sm:pr-10">
                 {RIBBON_ITEMS_2.map((item, i) => (
-                  <span key={i} className="inline-flex items-center gap-3 shrink-0">
+                  <span key={i} className="inline-flex items-center gap-2 sm:gap-3 shrink-0">
                     <span className="text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]">✧</span>
-                    <span className="text-rose-100/90 tracking-[0.2em] font-medium font-sans">
+                    <span className="text-rose-100/90 tracking-[0.15em] sm:tracking-[0.2em] font-medium font-sans">
                       {item}
                     </span>
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-400/70 inline shrink-0" />

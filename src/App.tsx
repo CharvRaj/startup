@@ -37,6 +37,7 @@ import { HelpSupport } from './pages/HelpSupport';
 import { BeautyStudio } from './pages/BeautyStudio';
 import { DiwaliLanding } from './pages/DiwaliLanding';
 import { VirtualStudio } from './pages/VirtualStudio';
+import { TrainingAcademy } from './pages/TrainingAcademy';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Toaster } from '@/components/ui/toaster';
@@ -53,6 +54,7 @@ const HIDE_HEADER_FOOTER_PATHS = [
   '/track-executive', '/admin',
   '/query-resolver-login', '/query-resolver-dashboard',
   '/profile', '/dashboard', '/help-support',
+  '/training-academy', '/academy',
 ];
 
 // These paths hide header/footer via startsWith
@@ -105,6 +107,8 @@ function AppContent() {
         <Route path="/referral" element={<Referral />} />
         <Route path="/member-dashboard" element={<MemberDashboard />} />
         <Route path="/associate-dashboard" element={<AssociateDashboard />} />
+        <Route path="/training-academy" element={<TrainingAcademy />} />
+        <Route path="/academy" element={<TrainingAcademy />} />
         <Route path="/partner-login" element={<PartnerLogin />} />
         <Route path="/admin/stylist/:id" element={<StylistProfile />} />
         <Route path="/complaints" element={<Complaints />} />

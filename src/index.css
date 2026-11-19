@@ -259,34 +259,32 @@ html {
   scrollbar-width: none !important;
 }
 
-/* Scroll Reveal Animations */
+/* Scroll Reveal Animations - Resilient for low-power and mobile devices */
 .scroll-reveal,
 .scroll-reveal-left,
 .scroll-reveal-right,
 .scroll-reveal-scale {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Only hide unrevealed elements when JS observer is actively running */
+html.js-ready .scroll-reveal:not(.revealed) {
   opacity: 0;
-  transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(28px);
 }
-
-/* stagger-children: revealed state only — does NOT hide children by default */
-.stagger-children.revealed > * {
-  animation: staggerFadeIn 0.7s ease-out backwards;
+html.js-ready .scroll-reveal-left:not(.revealed) {
+  opacity: 0;
+  transform: translateX(-28px);
 }
-
-.scroll-reveal {
-  transform: translateY(50px);
+html.js-ready .scroll-reveal-right:not(.revealed) {
+  opacity: 0;
+  transform: translateX(28px);
 }
-
-.scroll-reveal-left {
-  transform: translateX(-50px);
-}
-
-.scroll-reveal-right {
-  transform: translateX(50px);
-}
-
-.scroll-reveal-scale {
-  transform: scale(0.92);
+html.js-ready .scroll-reveal-scale:not(.revealed) {
+  opacity: 0;
+  transform: scale(0.96);
 }
 
 .scroll-reveal.revealed,
@@ -294,8 +292,8 @@ html {
 .scroll-reveal-right.revealed,
 .scroll-reveal-scale.revealed,
 .stagger-children.revealed > * {
-  opacity: 1;
-  transform: translateY(0) translateX(0) scale(1);
+  opacity: 1 !important;
+  transform: translateY(0) translateX(0) scale(1) !important;
 }
 
 .stagger-children.revealed > * {

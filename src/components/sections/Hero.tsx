@@ -22,6 +22,22 @@ interface PromoSlide {
 
 const PROMO_SLIDES: PromoSlide[] = [
   {
+    id: 'bridal-couture',
+    badge: 'Royal Indian Bridal Artistry',
+    title: 'Your Wedding Day Glow.',
+    titleHighlight: 'Bespoke Artistry.',
+    description: 'Bespoke bridal makeovers, royal velvet draping, and 16-hour sweatproof HD formulations customized for your sacred morning.',
+    primaryCta: 'Explore Bridal Services',
+    primaryLink: '/doorstep-service',
+    secondaryCta: 'Book Bridal Artist',
+    secondaryLink: '/#booking',
+    image: '/images/bridal-gallery/bridal-1.jpg',
+    imageAlt: 'Royal Indian bride adorned with handcrafted crimson velvet lehenga, kundan necklace and kaleere',
+    floatingTag: 'Satguru Bridal Signature',
+    floatingSubtag: 'Master artists at your venue',
+    ratingText: '5.0 (3,200+ Brides)',
+  },
+  {
     id: 'doorstep-promo',
     badge: 'Your Beauty Ritual, At Your Doorstep',
     title: 'Your Moment of Beauty.',

@@ -1,27 +1,39 @@
-// Intersection Observer for scroll animations
+// Intersection Observer for scroll animations - High performance & mobile optimized
 export const initScrollAnimations = () => {
-  const observerOptions = {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return null;
+
+  document.documentElement.classList.add('js-ready');
+
+  const observerOptions: IntersectionObserverInit = {
     root: null,
-    rootMargin: '0px',
-    threshold: 0.1,
+    rootMargin: '60px 0px 60px 0px',
+    threshold: 0.02,
   };
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add('revealed');
-        // Optional: Stop observing after reveal (comment out to allow re-animation on scroll up)
-        // observer.unobserve(entry.target);
+        // Unobserve to free up CPU cycles on mobile
+        observer.unobserve(entry.target);
       }
     });
   }, observerOptions);
 
   // Observe all elements with scroll-reveal classes
   const revealElements = document.querySelectorAll(
-    '.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale, .stagger-children'
+    '.scroll-reveal:not(.revealed), .scroll-reveal-left:not(.revealed), .scroll-reveal-right:not(.revealed), .scroll-reveal-scale:not(.revealed), .stagger-children:not(.revealed)'
   );
 
-  revealElements.forEach((el) => observer.observe(el));
+  revealElements.forEach((el) => {
+    // If already in viewport on load, reveal immediately
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 60 && rect.bottom > -60) {
+      el.classList.add('revealed');
+    } else {
+      observer.observe(el);
+    }
+  });
 
   return observer;
 };
@@ -29,13 +41,19 @@ export const initScrollAnimations = () => {
 // Call this function when the DOM is ready
 if (typeof window !== 'undefined') {
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initScrollAnimations);
+    document.addEventListener('DOMContentLoaded', () => initScrollAnimations());
   } else {
     initScrollAnimations();
   }
 
-  // Re-initialize on route changes (for SPAs)
+  // Safety fallback: reveal all elements after 1.8s so content is never hidden on slow devices
+  setTimeout(() => {
+    document.querySelectorAll('.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale, .stagger-children')
+      .forEach((el) => el.classList.add('revealed'));
+  }, 1800);
+
+  // Re-initialize on route changes
   window.addEventListener('popstate', () => {
-    setTimeout(initScrollAnimations, 100);
+    setTimeout(initScrollAnimations, 50);
   });
 }

@@ -60,7 +60,7 @@ const MEHNDI_PROMOS = [
     subtitle: 'Raja-Rani & Dhol Motifs',
     ctaText: 'View Packages',
     category: 'Bridal Mehndi',
-    image: '/images/larana-bridal-art.jpg',
+    image: '/images/mehndi-bridal.jpg',
   },
   {
     id: 'mp-2',

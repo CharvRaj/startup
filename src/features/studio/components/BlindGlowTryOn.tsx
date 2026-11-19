@@ -96,18 +96,21 @@ const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
 const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
 const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
-/** Scroll progress (0..1) through a tall section, smoothed. Autoplays until the visitor scrolls. */
+/** Scroll progress (0..1) through a tall section, smoothed. Autoplays only on desktop when idle. */
 function useStory(ref: { current: HTMLElement | null }) {
   const [p, setP] = useState(0);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     let tgt = 0, cur = 0, auto = false, hold = 0, visible = true, raf = 0;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let lastP = -1;
+    const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const read = () => {
       const r = el.getBoundingClientRect();
-      tgt = clamp(-r.top / Math.max(1, r.height - window.innerHeight), 0, 0.9999);
+      const denom = Math.max(1, r.height - window.innerHeight);
+      tgt = clamp(-r.top / denom, 0, 0.9999);
     };
     const onScroll = () => { auto = false; read(); };
     const onUser = (e: Event) => {
@@ -116,28 +119,39 @@ function useStory(ref: { current: HTMLElement | null }) {
     };
     const tick = () => {
       if (visible) {
-        if (auto) {
+        if (auto && !isTouch && !reduce) {
           if (hold > 0) { hold--; if (hold === 0) { tgt = 0; cur = 0; } }
-          else { tgt += 0.0007; if (tgt >= 0.9999) { tgt = 0.9999; hold = 170; } }
+          else { tgt += 0.0006; if (tgt >= 0.9999) { tgt = 0.9999; hold = 170; } }
         }
-        cur += (tgt - cur) * 0.16;
-        if (Math.abs(tgt - cur) < 0.0004) cur = tgt;
-        setP(cur);
+        const diff = tgt - cur;
+        if (Math.abs(diff) > 0.0003) {
+          cur += diff * 0.22;
+          if (Math.abs(cur - lastP) > 0.003) {
+            lastP = cur;
+            setP(cur);
+          }
+        } else if (cur !== tgt) {
+          cur = tgt;
+          if (Math.abs(cur - lastP) > 0.001) {
+            lastP = cur;
+            setP(cur);
+          }
+        }
       }
       raf = requestAnimationFrame(tick);
     };
 
-    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
+    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: 0.01 });
     io.observe(el);
-    read(); cur = tgt;
+    read(); cur = tgt; lastP = tgt; setP(tgt);
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', read);
+    window.addEventListener('resize', read, { passive: true });
     ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((ev) =>
       window.addEventListener(ev, onUser, { passive: true }));
     const timer = window.setTimeout(() => {
       const r = el.getBoundingClientRect();
-      if (!reduce && r.top > -10 && r.top < window.innerHeight * 0.5) auto = true;
-    }, 1600);
+      if (!reduce && !isTouch && r.top > -10 && r.top < window.innerHeight * 0.5) auto = true;
+    }, 2000);
     raf = requestAnimationFrame(tick);
 
     return () => {
@@ -282,7 +296,7 @@ export default function BlindGlowTryOn({
         <div className="blob bl1" /><div className="blob bl2" />
         <div className="brand">
           <i />
-          <span>BlindGlow AI · Virtual Try-On</span>
+          <span>BlindGlow AI<span className="hidden sm:inline"> · Virtual Try-On</span></span>
         </div>
 
         {onLaunchStudio && (

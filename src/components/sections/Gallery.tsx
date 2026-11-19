@@ -1,91 +1,19 @@
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Sparkles, X, ChevronLeft, ChevronRight, ZoomIn, Play, Pause, Crown } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-
-interface GalleryImage {
-  id: string;
-  url: string;
-  title: string;
-  subtitle?: string;
-  display_order: number;
-}
-
-// Curated high-resolution authentic Indian bridal portraits (No broken URLs)
-const defaultGalleryImages: GalleryImage[] = [
-  {
-    id: 'b1',
-    url: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1200&q=85',
-    title: 'Radiant Heritage Bridal Glam',
-    subtitle: 'Classic Royal Crimson & Kundan Art',
-    display_order: 1,
-  },
-  {
-    id: 'b2',
-    url: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&q=85',
-    title: 'Rajasthani Royal Bride',
-    subtitle: 'Heritage Matha Patti & Traditional Gold Nath',
-    display_order: 2,
-  },
-  {
-    id: 'b3',
-    url: 'https://images.unsplash.com/photo-1596704017254-9b121068ec31?w=1200&q=85',
-    title: 'Rose Gold & Pastel Reception Glam',
-    subtitle: 'Sculpted Luminous Contour & Soft Glam Eyes',
-    display_order: 3,
-  },
-  {
-    id: 'b4',
-    url: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=85',
-    title: 'Traditional Sindoor & Red Lehenga',
-    subtitle: 'Timeless Camera-Ready Velvet Elegance',
-    display_order: 4,
-  },
-  {
-    id: 'b5',
-    url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1200&q=85',
-    title: 'Flawless HD Airbrush Bridal Glow',
-    subtitle: '16-Hour Sweatproof Dewy Formulation',
-    display_order: 5,
-  },
-  {
-    id: 'b6',
-    url: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=1200&q=85',
-    title: 'Heritage Henna & Shringar',
-    subtitle: '100% Organic Henna Stains & Bridal Bangles',
-    display_order: 6,
-  },
-  {
-    id: 'b7',
-    url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&q=85',
-    title: 'Sangeet & Gala Evening Makeover',
-    subtitle: 'Smokey Kohl Eye Art & Voluminous Curls',
-    display_order: 7,
-  },
-  {
-    id: 'b8',
-    url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=85',
-    title: 'Golden Hour Wedding Ceremony Look',
-    subtitle: 'Subtle Highlight & Royal Velvet Draping',
-    display_order: 8,
-  },
-  {
-    id: 'b9',
-    url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=1200&q=85',
-    title: 'Minimalist Elegance & Nude Glam',
-    subtitle: 'Feathered Brows & Velvety Berry Lips',
-    display_order: 9,
-  },
-  {
-    id: 'b10',
-    url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=1200&q=85',
-    title: 'Regal Temple Jewelry Bridal Style',
-    subtitle: 'Traditional Antique Gold & Sculpted Look',
-    display_order: 10,
-  },
-];
+import {
+  GalleryImage,
+  DEFAULT_GALLERY_IMAGES,
+  loadUnifiedGallery,
+  getSavedGalleryItems,
+} from '@/lib/galleryStore';
 
 export function Gallery() {
-  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(defaultGalleryImages);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(() => {
+    const saved = getSavedGalleryItems();
+    return saved.length > 0 ? saved : DEFAULT_GALLERY_IMAGES;
+  });
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -96,32 +24,33 @@ export function Gallery() {
   const touchEndX = useRef<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fetch from Supabase while maintaining reliable fallback
+  const fetchGalleryImages = useCallback(async () => {
+    try {
+      const items = await loadUnifiedGallery();
+      if (items && items.length > 0) {
+        setGalleryImages(items);
+      }
+    } catch {
+      const saved = getSavedGalleryItems();
+      if (saved.length > 0) setGalleryImages(saved);
+    }
+  }, []);
+
+  // Fetch from unified gallery store while maintaining real-time updates
   useEffect(() => {
     fetchGalleryImages();
+    const handleLocalUpdate = () => fetchGalleryImages();
+    window.addEventListener('satguru_gallery_updated', handleLocalUpdate);
+
     const sub = supabase.channel('gallery_rt')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery_images' }, fetchGalleryImages)
       .subscribe();
 
     return () => {
+      window.removeEventListener('satguru_gallery_updated', handleLocalUpdate);
       sub.unsubscribe();
     };
-  }, []);
-
-  const fetchGalleryImages = async () => {
-    try {
-      const { data, error } = await supabase.from('gallery_images').select('*').order('display_order');
-      if (!error && data && data.length > 0) {
-        // Filter out any broken or empty URLs, replace with default if needed
-        const validData = data.filter(img => img.url && !img.url.includes('undefined') && !img.url.includes('null'));
-        if (validData.length >= 3) {
-          setGalleryImages(validData);
-        }
-      }
-    } catch {
-      // keep defaults
-    }
-  };
+  }, [fetchGalleryImages]);
 
   const total = galleryImages.length;
 

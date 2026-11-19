@@ -98,17 +98,19 @@
 .burst .sp{animation:pop 1.3s ease-out forwards}
 @keyframes pop{0%{opacity:0;transform:scale(0) rotate(0)}35%{opacity:1;transform:scale(1.5) rotate(40deg)}100%{opacity:0;transform:scale(.6) rotate(90deg)}}
 @media(max-width:860px){
-  .bgr{height:440vh}
-  .f1,.f2,.bl2{display:none}.f3{right:-4%}
+  .bgr{height:380vh}
+  .blob{display:none!important}
+  .stick::before,.stick::after{filter:none!important;opacity:.3}
+  .f1,.f2,.bl1,.bl2{display:none!important}.f3{right:-4%}
   .wrap{grid-template-columns:1fr;gap:18px;justify-items:center;padding-bottom:20px}
   .stick{padding-top:76px;height:100vh;height:100svh;height:100dvh}
-  .stage{height:min(42vh,340px);max-width:280px;aspect-ratio:4/5}
-  .texts{height:210px;width:100%;max-width:420px;text-align:center}
+  .stage{height:min(40vh,320px);max-width:260px;aspect-ratio:4/5}
+  .texts{height:200px;width:100%;max-width:420px;text-align:center}
   .tx{align-items:center;text-align:center}
-  .tx h2{font-size:clamp(1.8rem,6vw,2.3rem);line-height:1.06;margin:0 0 10px}
-  .tx p{font-size:.9rem;line-height:1.55;max-width:34ch}
-  .chips{justify-content:center;margin-top:12px;gap:6px}
-  .chips span{font-size:.72rem;padding:5px 11px}
+  .tx h2{font-size:clamp(1.7rem,6vw,2.2rem);line-height:1.06;margin:0 0 10px}
+  .tx p{font-size:.88rem;line-height:1.5;max-width:34ch}
+  .chips{justify-content:center;margin-top:10px;gap:6px}
+  .chips span{font-size:.72rem;padding:4px 10px}
   .num{justify-content:center;font-size:1.1rem;margin-bottom:8px}
   .num::after{width:36px}
   .pill{left:10px;top:12px;transform:none!important;font-size:.72rem;padding:5px 12px;white-space:normal;max-width:170px}
@@ -116,21 +118,21 @@
   .match b{font-size:1.4rem;line-height:1}
   .match small{font-size:.68rem}
   .tl button{font-size:0;padding-top:14px}
-  .cta{margin-top:14px;padding:12px 24px;font-size:.88rem}
+  .cta{margin-top:12px;padding:10px 22px;font-size:.85rem}
   .brand{top:72px;left:16px;font-size:1.05rem}
   .skip-btn{top:70px;right:16px;padding:6px 14px;font-size:.76rem}
   .tl{left:16px;right:16px;bottom:14px;gap:8px}
 }
 
 @media(max-width:480px){
-  .bgr{height:390vh}
-  .stage{height:min(38vh,300px);max-width:240px}
-  .texts{height:190px}
-  .tx h2{font-size:clamp(1.6rem,5.5vw,2rem)}
-  .tx p{font-size:.85rem;line-height:1.45}
+  .bgr{height:320vh}
+  .stage{height:min(36vh,280px);max-width:230px}
+  .texts{height:180px}
+  .tx h2{font-size:clamp(1.5rem,5.5vw,1.9rem)}
+  .tx p{font-size:.82rem;line-height:1.4}
   .chips{display:none}
-  .cta{margin-top:10px;padding:10px 20px;font-size:.82rem}
-  .hint{margin-top:8px;font-size:.76rem}
+  .cta{margin-top:8px;padding:9px 18px;font-size:.8rem}
+  .hint{margin-top:6px;font-size:.74rem}
   .pill{font-size:.66rem;padding:4px 9px;max-width:140px}
   .match{padding:5px 9px}
   .match b{font-size:1.2rem}

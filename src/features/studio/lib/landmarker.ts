@@ -33,23 +33,27 @@ export function getFaceLandmarker(): Promise<FaceLandmarker> {
         outputFaceBlendshapes: false, outputFacialTransformationMatrixes: false,
       });
 
+      const isMobile = typeof window !== 'undefined' && (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || navigator.maxTouchPoints > 0);
+      const firstDelegate: 'GPU' | 'CPU' = isMobile ? 'CPU' : 'GPU';
+      const fallbackDelegate: 'GPU' | 'CPU' = isMobile ? 'GPU' : 'CPU';
+
       try {
-        const l = await make(FACE_MODEL, 'GPU');
+        const l = await make(FACE_MODEL, firstDelegate);
         faceMode = 'IMAGE';
         return l;
       } catch {
         try {
-          const l = await make(FACE_MODEL, 'CPU');
+          const l = await make(FACE_MODEL, fallbackDelegate);
           faceMode = 'IMAGE';
           return l;
         } catch {
           // CDN fallback if local asset is unavailable or corrupt
           try {
-            const l = await make(cdnModel, 'GPU');
+            const l = await make(cdnModel, firstDelegate);
             faceMode = 'IMAGE';
             return l;
           } catch {
-            const l = await make(cdnModel, 'CPU');
+            const l = await make(cdnModel, fallbackDelegate);
             faceMode = 'IMAGE';
             return l;
           }

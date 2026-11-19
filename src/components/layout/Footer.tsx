@@ -1,6 +1,7 @@
 import {
   Phone, Mail, MapPin, Instagram, Facebook, Twitter, Users,
-  ArrowUpRight, Heart, Moon, Sun, ShieldCheck, Sparkles, Gift, Lock, Ticket
+  ArrowUpRight, Heart, Moon, Sun, ShieldCheck, Sparkles, Gift, Lock, Ticket,
+  GraduationCap
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@/context/ThemeContext';
@@ -140,6 +141,7 @@ export function Footer() {
             <ul className="space-y-3">
               {[
                 { label: 'Meet Our Certified Stylists', action: () => navigate('/stylists') },
+                { label: 'Training Academy', action: () => navigate('/training-academy'), icon: GraduationCap },
                 { label: 'Partner Portal Login', action: () => navigate('/partner-login'), icon: Lock },
                 { label: 'My Bookings & Query Desk', action: () => navigate('/profile'), icon: Ticket },
                 { label: 'Join Our Artist Team', action: () => navigate('/join-team') },

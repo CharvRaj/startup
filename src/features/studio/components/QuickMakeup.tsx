@@ -105,19 +105,33 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
     setError(null);
     setStatus('loading-model');
     try {
-      const res = await fetch(src);
-      if (!res.ok) throw new Error('Fetch failed');
-      const blob = await res.blob();
-      const bmp = await createImageBitmap(blob);
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('Image load failed'));
+        img.src = src;
+      });
+      const bmp = await createImageBitmap(img);
       await adopt(bmp);
     } catch {
-      setError('Could not load sample portrait. Please upload a photo or use your camera.');
-      setStatus('idle');
+      try {
+        const res = await fetch(src);
+        if (!res.ok) throw new Error('Fetch failed');
+        const blob = await res.blob();
+        const bmp = await createImageBitmap(blob);
+        await adopt(bmp);
+      } catch {
+        setError('Could not load sample portrait. Please upload a photo or use your camera.');
+        setStatus('idle');
+      }
     }
   };
 
   /* ----- interactive canvas zoom loupe tracking ----- */
   const handleCanvasPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Disable zoom loupe tracking on touch devices so page scrolling never lags or jitters
+    if (e.pointerType === 'touch') return;
     if (!zoomEnabled || source === 'none' || !canvasRef.current || !loupeRef.current) return;
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
@@ -246,7 +260,7 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
       {/* Left: Interactive Canvas & Action Toolbar (Sticky on Desktop) */}
       <div className="space-y-3 lg:sticky lg:top-28">
         <div
-          className="relative overflow-hidden rounded-3xl border border-border/80 bg-muted/60 shadow-lg min-h-[420px] flex items-center justify-center cursor-crosshair select-none"
+          className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border/80 bg-muted/60 shadow-lg min-h-[300px] xs:min-h-[360px] sm:min-h-[420px] flex items-center justify-center cursor-crosshair select-none"
           onPointerMove={handleCanvasPointerMove}
           onPointerLeave={handleCanvasPointerLeave}
         >
@@ -255,13 +269,13 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
             ref={canvasRef}
             role="img"
             aria-label="Makeup preview"
-            className={`mx-auto block max-h-[65vh] w-auto max-w-full rounded-2xl ${source === 'none' ? 'hidden' : ''} ${source === 'live' ? '-scale-x-100' : ''}`}
+            className={`mx-auto block max-h-[50vh] sm:max-h-[60vh] lg:max-h-[65vh] w-auto max-w-full rounded-xl sm:rounded-2xl ${source === 'none' ? 'hidden' : ''} ${source === 'live' ? '-scale-x-100' : ''}`}
           />
 
           {/* Floating Zoom Loupe over Uploaded Face Canvas */}
           {zoomEnabled && zoomPos && source !== 'none' && (
             <div
-              className="pointer-events-none absolute z-30 w-36 h-36 rounded-full border-2 border-[#C83E68] shadow-2xl ring-4 ring-black/20 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-background flex items-center justify-center animate-in fade-in zoom-in-75 duration-75"
+              className="pointer-events-none absolute z-30 w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 border-[#C83E68] shadow-2xl ring-4 ring-black/20 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-background flex items-center justify-center animate-in fade-in zoom-in-75 duration-75"
               style={{
                 left: `${zoomPos.x}px`,
                 top: `${zoomPos.y}px`,
@@ -289,33 +303,33 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
           {flash && <div className="absolute inset-0 bg-white z-40 animate-out fade-out duration-300 pointer-events-none" />}
 
           {source === 'none' && (
-            <div className="flex min-h-[380px] flex-col items-center justify-center gap-6 p-6 sm:p-8 text-center bg-card/60 backdrop-blur-sm">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-rose-500/20 to-purple-500/20 border border-amber-500/30 flex items-center justify-center text-primary shadow-sm">
-                <Sparkles className="w-7 h-7 text-[#C83E68]" />
+            <div className="flex min-h-[280px] xs:min-h-[320px] sm:min-h-[380px] flex-col items-center justify-center gap-4 sm:gap-6 p-4 sm:p-8 text-center bg-card/60 backdrop-blur-sm">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-rose-500/20 to-purple-500/20 border border-amber-500/30 flex items-center justify-center text-primary shadow-sm">
+                <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-[#C83E68]" />
               </div>
 
               <div className="max-w-md">
-                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
+                <h2 className="font-display text-xl xs:text-2xl sm:text-3xl font-bold text-foreground">
                   Try Luxury Makeup on Your Face
                 </h2>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed px-1">
                   Upload a photo, turn on your camera, or instantly test on one of our Indian demo models below.
                 </p>
               </div>
 
               {/* Main Upload / Camera Action Buttons */}
-              <div className="flex flex-wrap justify-center gap-3">
-                <Button size="lg" onClick={() => fileRef.current?.click()} className="shadow-md">
+              <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3 w-full">
+                <Button size="default" onClick={() => fileRef.current?.click()} className="h-10 sm:h-11 px-4 sm:px-6 shadow-md text-xs sm:text-sm font-semibold">
                   <Upload className="mr-2 h-4 w-4" />Upload Photo
                 </Button>
-                <Button size="lg" variant="outline" onClick={goLive} className="border-primary/30 hover:border-primary">
+                <Button size="default" variant="outline" onClick={goLive} className="h-10 sm:h-11 px-4 sm:px-6 border-primary/30 hover:border-primary text-xs sm:text-sm font-semibold">
                   <Camera className="mr-2 h-4 w-4" />Use Live Camera
                 </Button>
               </div>
 
               {/* 1-Tap Demo Models Section */}
-              <div className="w-full max-w-sm pt-4 border-t border-border/60">
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+              <div className="w-full max-w-sm pt-3 sm:pt-4 border-t border-border/60">
+                <div className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 sm:mb-3">
                   Or Try Instantly on Demo Models
                 </div>
                 <div className="grid grid-cols-3 gap-2 sm:gap-3">
@@ -324,13 +338,13 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
                       key={m.id}
                       type="button"
                       onClick={() => loadDemoModel(m.src)}
-                      className="group flex flex-col items-center p-2 rounded-2xl border border-border/70 bg-card/80 hover:border-primary/50 hover:shadow-md transition-all text-center"
+                      className="group flex flex-col items-center p-1.5 sm:p-2 rounded-2xl border border-border/70 bg-card/80 hover:border-primary/50 hover:shadow-md transition-all text-center"
                     >
-                      <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-amber-500/30 group-hover:scale-105 group-hover:border-primary transition-all shadow-sm">
+                      <div className="relative w-11 h-11 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-amber-500/30 group-hover:scale-105 group-hover:border-primary transition-all shadow-sm">
                         <img src={m.src} alt={m.name} className="w-full h-full object-cover" />
                       </div>
-                      <span className="font-bold text-xs text-foreground mt-2">{m.name}</span>
-                      <span className="text-[9.5px] text-muted-foreground">{m.tone}</span>
+                      <span className="font-bold text-[11px] sm:text-xs text-foreground mt-1.5 sm:mt-2 truncate w-full">{m.name}</span>
+                      <span className="text-[9px] sm:text-[9.5px] text-muted-foreground truncate w-full">{m.tone}</span>
                     </button>
                   ))}
                 </div>
@@ -339,8 +353,8 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
           )}
 
           {busy && (
-            <div role="status" className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-xs text-sm">
-              <Loader2 className="h-8 w-8 animate-spin text-[#C83E68]" />
+            <div role="status" className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-xs text-xs sm:text-sm">
+              <Loader2 className="h-7 w-7 sm:h-8 sm:w-8 animate-spin text-[#C83E68]" />
               <p className="font-medium text-foreground">{status === 'loading-model' ? 'Loading AI face model…' : 'Detecting facial contours…'}</p>
             </div>
           )}
@@ -349,19 +363,19 @@ export function QuickMakeup({ initialBitmap, onDiscarded }: { initialBitmap?: Im
 
         {/* Quick Demo Models Switcher strip so user can switch face anytime */}
         {source !== 'none' && (
-          <div className="flex items-center justify-between p-2.5 rounded-2xl bg-card border border-border/70 shadow-xs">
-            <span className="text-[11px] font-semibold text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-between gap-2 p-2 sm:p-2.5 rounded-2xl bg-card border border-border/70 shadow-xs">
+            <span className="text-[10.5px] sm:text-[11px] font-semibold text-muted-foreground">
               Try on Model:
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               {DEMO_MODELS.map((m) => (
                 <button
                   key={m.id}
                   type="button"
                   onClick={() => loadDemoModel(m.src)}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border/80 hover:border-primary/50 text-xs font-semibold bg-muted/40 hover:bg-muted transition-all"
+                  className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-border/80 hover:border-primary/50 text-[11px] sm:text-xs font-semibold bg-muted/40 hover:bg-muted transition-all"
                 >
-                  <img src={m.src} alt={m.name} className="w-4 h-4 rounded-full object-cover" />
+                  <img src={m.src} alt={m.name} className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full object-cover" />
                   <span>{m.name}</span>
                 </button>
               ))}

@@ -252,12 +252,6 @@ export function Header() {
       ],
     },
     {
-      name: 'Diwali Offer',
-      href: '/diwali',
-      isRoute: true,
-      badge: '45% OFF',
-    },
-    {
       name: 'BlindGlow AI',
       href: '/virtual-studio',
       isRoute: true,
@@ -774,17 +768,6 @@ export function Header() {
                 >
                   <Crown className="w-3.5 h-3.5 text-[#B8860B]" />
                   <span className="flex items-center gap-2">VIP Club <Star className="w-3 h-3 fill-amber-400 text-amber-400" /></span>
-                </button>
-
-                <button
-                  onClick={() => { navigate('/diwali'); setIsMenuOpen(false); }}
-                  className="text-foreground hover:text-[#B8860B] font-medium py-2 px-3 rounded-xl hover:bg-[#FAF3E3] dark:hover:bg-[#2A2318] text-left text-xs flex items-center gap-2.5"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-[#B8860B]" />
-                  <span className="flex items-center gap-2">
-                    Diwali Utsav
-                    <span className="text-[8.5px] px-1.5 py-0.2 rounded-full font-bold bg-[#FAF3E3] dark:bg-[#2A2318] text-[#B8860B] border border-[#E0CDA9]">45% OFF</span>
-                  </span>
                 </button>
 
                 <button
