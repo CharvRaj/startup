@@ -52,7 +52,7 @@ const PROMO_CAROUSEL_ITEMS = [
     subtitle: 'Luxury HD Artistry',
     ctaText: 'Explore Now',
     category: 'Makeup & Bridal',
-    image: '/images/bridal-gallery/bridal-1.jpg',
+    image: '/images/category-bridal.jpg',
   },
 ];
 
@@ -110,7 +110,7 @@ const POPULAR_FEATURED_SERVICES = [
     price: 2499,
     originalPrice: 3999,
     discountPercent: 29,
-    image: '/images/bridal-gallery/bridal-1.jpg',
+    image: '/images/category-bridal.jpg',
   },
 ];
 

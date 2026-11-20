@@ -22,6 +22,22 @@ interface PromoSlide {
 
 const PROMO_SLIDES: PromoSlide[] = [
   {
+    id: 'doorstep-luxury',
+    badge: 'Luxury Doorstep Beauty & Wellness',
+    title: '5-Star Salon Care,',
+    titleHighlight: 'Delivered at Home.',
+    description: 'Experience professional salon care in the comfort of your home. From revitalizing facials and hair spa to celebratory glam by certified aestheticians.',
+    primaryCta: 'Explore Home Services',
+    primaryLink: '/doorstep-service',
+    secondaryCta: 'Book Appointment',
+    secondaryLink: '/#booking',
+    image: '/images/luxury-hero-girl-hd.jpg',
+    imageAlt: 'Radiant model with glowing luminous skin and elegant luxury styling',
+    floatingTag: 'Verified Master Stylists',
+    floatingSubtag: 'Single-use sealed hygiene kits',
+    ratingText: '4.9★ (4,800+ Happy Clients)',
+  },
+  {
     id: 'bridal-couture',
     badge: 'Royal Indian Bridal Artistry',
     title: 'Your Wedding Day Glow.',

@@ -71,17 +71,17 @@ export const CATEGORY_MAP: Record<string, { label: string; image: string; tag: s
   },
   'Makeup': {
     label: 'Makeup & Bridal',
-    image: '/images/bridal-gallery/bridal-1.jpg',
+    image: '/images/service-face.png',
     tag: 'Makeup & Bridal',
   },
   'Bridal Artistry': {
     label: 'Makeup & Bridal',
-    image: '/images/bridal-gallery/bridal-1.jpg',
+    image: '/images/category-bridal.jpg',
     tag: 'Makeup & Bridal',
   },
   'Bridal Beauty': {
     label: 'Makeup & Bridal',
-    image: '/images/bridal-gallery/bridal-1.jpg',
+    image: '/images/category-bridal.jpg',
     tag: 'Makeup & Bridal',
   },
   'Nails': {
@@ -117,7 +117,7 @@ export const DISPLAY_CATEGORIES = [
   { id: 'waxing', label: 'Waxing', image: '/images/larana-cat-waxing.jpg', filterTag: 'Waxing & Threading' },
   { id: 'hair-care', label: 'Hair Care', image: '/images/larana-promo-hair.jpg', filterTag: 'Hair Care & Styling' },
   { id: 'hair-styling', label: 'Hair Styling', image: '/images/larana-promo-hair.jpg', filterTag: 'Hair Care & Styling' },
-  { id: 'makeup', label: 'Makeup', image: '/images/bridal-gallery/bridal-19.jpg', filterTag: 'Makeup & Bridal' },
+  { id: 'makeup', label: 'Makeup', image: '/images/service-face.png', filterTag: 'Makeup & Bridal' },
   { id: 'nails', label: 'Manicure & Pedicure', image: '/images/larana-promo-nails.jpg', filterTag: 'Manicure & Pedicure' },
   { id: 'massage', label: 'Massage', image: '/images/larana-cat-massage.jpg', filterTag: 'Massage & Spa' },
   { id: 'skincare', label: 'Skin Care', image: '/images/larana-glow-refresh.png', filterTag: 'Skin Care & Detan' },
