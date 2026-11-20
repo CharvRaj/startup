@@ -299,6 +299,13 @@ export function Gallery() {
                         isCenter ? 'scale-100 hover:scale-105' : 'scale-100'
                       }`}
                       loading={Math.abs(diff) <= 1 ? 'eager' : 'lazy'}
+                      decoding="async"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (target.src !== '/images/bridal-gallery/bridal-1.jpg') {
+                          target.src = '/images/bridal-gallery/bridal-1.jpg';
+                        }
+                      }}
                     />
 
                     {/* Bottom-only Gradient Overlay for Text Readability — Photo itself stays 100% natural, crisp and vivid */}

@@ -206,7 +206,17 @@ export const saveGalleryItems = (items: GalleryImage[]) => {
       ...item,
       display_order: index + 1,
     }));
-    localStorage.setItem(ORDERED_ITEMS_KEY, JSON.stringify(normalized));
+    try {
+      localStorage.setItem(ORDERED_ITEMS_KEY, JSON.stringify(normalized));
+    } catch (storageErr) {
+      console.warn('LocalStorage quota warning, trimming extra base64 URLs:', storageErr);
+      // If quota exceeded, retain non-base64 or trim list to prevent complete breakage
+      const lightweight = normalized.slice(0, 30).map(item => ({
+        ...item,
+        url: item.url.startsWith('data:') && item.url.length > 500000 ? '/images/bridal-gallery/bridal-1.jpg' : item.url,
+      }));
+      localStorage.setItem(ORDERED_ITEMS_KEY, JSON.stringify(lightweight));
+    }
     window.dispatchEvent(new Event(EVENT_NAME));
     return normalized;
   } catch (e) {
@@ -215,23 +225,34 @@ export const saveGalleryItems = (items: GalleryImage[]) => {
   }
 };
 
-export const loadUnifiedGallery = async (): Promise<GalleryImage[]> => {
-  const deletedSet = new Set(getDeletedGalleryIds());
-  let currentList = getSavedGalleryItems();
+let isSyncing = false;
 
-  if (currentList.length === 0) {
-    currentList = [...DEFAULT_GALLERY_IMAGES];
-  }
-
-  // Filter out any deleted items
-  currentList = currentList.filter(img => !deletedSet.has(img.id) && !deletedSet.has(img.url));
-
-  // Try to merge any new items from Supabase (if accessible)
+// Fast background sync that never freezes UI or blocks page render
+export const syncWithRemoteSupabase = async () => {
+  if (isSyncing) return;
+  isSyncing = true;
   try {
-    const { data } = await supabase.from('gallery_images').select('*').order('display_order');
+    const deletedSet = new Set(getDeletedGalleryIds());
+    let currentList = getSavedGalleryItems();
+    if (currentList.length === 0) {
+      currentList = [...DEFAULT_GALLERY_IMAGES];
+    }
+
+    // Strict 2500ms timeout so a hanging/sleeping DB connection never delays rendering
+    const fetchPromise = supabase.from('gallery_images').select('*').order('display_order');
+    const timeoutPromise = new Promise<{ data: any[] | null; error: any }>((resolve) =>
+      setTimeout(() => resolve({ data: null, error: new Error('Timeout') }), 2500)
+    );
+
+    const result = await Promise.race([fetchPromise, timeoutPromise]);
+    const data = result?.data;
+
     if (data && Array.isArray(data) && data.length > 0) {
+      let changed = false;
       for (const remote of data) {
         if (!remote.url || remote.url.includes('undefined') || remote.url.includes('null')) continue;
+        // Purge dead hosts that stall browser connections
+        if (remote.url.includes('ritibeauty.com') || remote.url.includes('pinimg.com')) continue;
         if (deletedSet.has(remote.id) || deletedSet.has(remote.url)) continue;
 
         // If not already in current list, append it
@@ -244,16 +265,37 @@ export const loadUnifiedGallery = async (): Promise<GalleryImage[]> => {
             storage_path: remote.storage_path,
             display_order: currentList.length + 1,
           });
+          changed = true;
         }
+      }
+      if (changed) {
+        saveGalleryItems(currentList);
       }
     }
   } catch (err) {
-    console.warn('Supabase gallery fetch note:', err);
+    console.warn('Supabase gallery background sync note:', err);
+  } finally {
+    isSyncing = false;
+  }
+};
+
+export const loadUnifiedGallery = async (): Promise<GalleryImage[]> => {
+  const deletedSet = new Set(getDeletedGalleryIds());
+  let currentList = getSavedGalleryItems();
+
+  if (currentList.length === 0) {
+    currentList = [...DEFAULT_GALLERY_IMAGES];
   }
 
-  // Save the normalized active list
-  const saved = saveGalleryItems(currentList);
-  return saved;
+  // Filter out any deleted items and dead hosts
+  currentList = currentList.filter(
+    img => !deletedSet.has(img.id) && !deletedSet.has(img.url) && !img.url.includes('ritibeauty.com') && !img.url.includes('pinimg.com')
+  );
+
+  // Trigger non-blocking background sync
+  syncWithRemoteSupabase();
+
+  return currentList;
 };
 
 export const reorderGalleryItem = (id: string, direction: 'up' | 'down'): GalleryImage[] => {

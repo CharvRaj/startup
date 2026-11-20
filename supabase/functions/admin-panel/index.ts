@@ -147,6 +147,40 @@ Deno.serve(async (req) => {
         }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
       }
 
+      case 'insert_gallery_image': {
+        const { title, url, storage_path, display_order } = body;
+        const { data, error } = await supabaseAdmin.from('gallery_images').insert({
+          title,
+          url,
+          storage_path,
+          display_order: display_order || 1,
+        }).select().single();
+        if (error) throw error;
+        return new Response(JSON.stringify({ data }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      case 'delete_gallery_image': {
+        const { id, storage_path } = body;
+        if (storage_path) {
+          try {
+            await supabaseAdmin.storage.from('gallery').remove([storage_path]);
+          } catch {}
+        }
+        const { error } = await supabaseAdmin.from('gallery_images').delete().eq('id', id);
+        if (error) throw error;
+        return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      case 'reorder_gallery_images': {
+        const { items } = body;
+        if (Array.isArray(items)) {
+          for (const item of items) {
+            await supabaseAdmin.from('gallery_images').update({ display_order: item.display_order }).eq('id', item.id);
+          }
+        }
+        return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
       default:
         return new Response(JSON.stringify({ error: 'Unknown action' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
