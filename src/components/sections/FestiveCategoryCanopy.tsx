@@ -287,6 +287,7 @@ export function FestiveCategoryCanopy() {
                         className="w-full h-full object-cover object-center group-hover:scale-106 transition-transform duration-500"
                         style={{ filter: 'none', opacity: 1 }}
                         loading="lazy"
+                        decoding="async"
                       />
 
                       {/* Wishlist Heart Icon (Top Right) */}
@@ -379,6 +380,7 @@ export function FestiveCategoryCanopy() {
                         className="w-full h-full object-cover object-center group-hover:scale-106 transition-transform duration-500"
                         style={{ filter: 'none', opacity: 1 }}
                         loading="lazy"
+                        decoding="async"
                       />
 
                       {/* Wishlist Heart Icon (Top Right) */}

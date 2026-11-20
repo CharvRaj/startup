@@ -109,6 +109,12 @@ export function Hero() {
   const slideTimer = useRef<ReturnType<typeof setInterval>>();
 
   useEffect(() => {
+    // Preload all promotional slide images for 0ms instant transitions
+    PROMO_SLIDES.forEach((s) => {
+      const img = new Image();
+      img.src = s.image;
+    });
+
     slideTimer.current = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % PROMO_SLIDES.length);
     }, 7000);
@@ -312,6 +318,8 @@ export function Hero() {
                   <img
                     src={slide.image}
                     alt={slide.imageAlt}
+                    loading="eager"
+                    decoding="async"
                     className="w-full h-[260px] xs:h-[320px] sm:h-[400px] md:h-[480px] lg:h-[520px] object-cover object-center transition-transform duration-700 hover:scale-102"
                     style={{
                       // Natural realistic colors, no purple or pink filter overlay
