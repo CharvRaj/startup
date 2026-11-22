@@ -116,11 +116,32 @@ export const DEFAULT_GALLERY_IMAGES: GalleryImage[] = [
     subtitle: 'Twinned in Heritage Red & Wine Bridal Grandeur',
     display_order: 15,
   },
+  {
+    id: 'satguru-b16',
+    url: '/images/bridal-gallery/satguru-bride-16.jpg',
+    title: 'Imperial Kundan Bridal Shringar',
+    subtitle: 'Signature Velvet Crimson Silhouette & Polki Nath',
+    display_order: 16,
+  },
+  {
+    id: 'satguru-b17',
+    url: '/images/bridal-gallery/satguru-bride-17.jpg',
+    title: 'Regal Velvet Heritage Gown',
+    subtitle: 'High-Definition Glamour with Traditional Kundan Ensemble',
+    display_order: 17,
+  },
+  {
+    id: 'satguru-b18',
+    url: '/images/bridal-gallery/satguru-bride-18.jpg',
+    title: 'Satguru Studio Royal Masterpiece',
+    subtitle: 'Exquisite Dual Dupatta Draping & Heritage Jewelry',
+    display_order: 18,
+  },
 ];
 
-const ORDERED_ITEMS_KEY = 'satguru_gallery_ordered_items_v3';
-const DELETED_IDS_KEY = 'satguru_deleted_gallery_ids_v3';
-const GALLERY_USER_INIT_KEY = 'satguru_gallery_user_initialized_v3';
+const ORDERED_ITEMS_KEY = 'satguru_gallery_ordered_items_v4';
+const DELETED_IDS_KEY = 'satguru_deleted_gallery_ids_v4';
+const GALLERY_USER_INIT_KEY = 'satguru_gallery_user_initialized_v4';
 const EVENT_NAME = 'satguru_gallery_updated';
 
 // ── IN-MEMORY MODULE CACHE ──────────────────────────────────────────────────
@@ -129,7 +150,7 @@ const EVENT_NAME = 'satguru_gallery_updated';
 let inMemoryGalleryCache: GalleryImage[] | null = null;
 
 // ── INDEXEDDB AS PRIMARY BULLETPROOF LOCAL STORE (1GB+ Quota) ───────────────
-const IDB_NAME = 'SatguruGalleryDB_v3';
+const IDB_NAME = 'SatguruGalleryDB_v4';
 const IDB_VERSION = 1;
 const IDB_STORE = 'gallery_records';
 
