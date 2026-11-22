@@ -1,192 +1,140 @@
-import { useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface FallingPetal {
-  id: number;
-  left: number; // percentage 0-100
-  size: number; // in px
-  startDelay: number; // negative delay so they are already falling on load
-  duration: number; // seconds
-  drift: number; // horizontal sway distance in px
-  initialRot: number; // deg
-  spinSpeed: number; // deg per cycle
-  opacity: number;
-}
+// Petal shape data — position, size, rotation, animation timing
+const PETALS = [
+  { left: '4%',   top: '12%', size: 18, rot: -30, delay: 0,    dur: 4.2 },
+  { left: '10%',  top: '55%', size: 13, rot: 20,  delay: 0.6,  dur: 3.8 },
+  { left: '18%',  top: '25%', size: 22, rot: -15, delay: 1.2,  dur: 5.0 },
+  { left: '28%',  top: '70%', size: 11, rot: 45,  delay: 0.3,  dur: 4.5 },
+  { left: '38%',  top: '8%',  size: 15, rot: -40, delay: 1.8,  dur: 3.6 },
+  { left: '48%',  top: '60%', size: 19, rot: 10,  delay: 0.9,  dur: 4.8 },
+  { left: '58%',  top: '20%', size: 12, rot: -25, delay: 2.1,  dur: 3.9 },
+  { left: '65%',  top: '75%', size: 16, rot: 35,  delay: 0.4,  dur: 5.2 },
+  { left: '74%',  top: '15%', size: 20, rot: -50, delay: 1.5,  dur: 4.1 },
+  { left: '82%',  top: '50%', size: 14, rot: 60,  delay: 0.7,  dur: 3.7 },
+  { left: '90%',  top: '30%', size: 17, rot: -20, delay: 2.4,  dur: 4.6 },
+  { left: '96%',  top: '65%', size: 10, rot: 15,  delay: 1.1,  dur: 5.1 },
+  { left: '22%',  top: '85%', size: 13, rot: -60, delay: 1.6,  dur: 4.3 },
+  { left: '52%',  top: '88%', size: 16, rot: 30,  delay: 0.2,  dur: 3.5 },
+  { left: '78%',  top: '82%', size: 11, rot: -45, delay: 2.0,  dur: 4.9 },
+];
 
 export function GlowUpCTA() {
   const navigate = useNavigate();
-
-  // 38 falling leaves/petals distributed across the width with staggered continuous fall
-  const petals: FallingPetal[] = useMemo(() => {
-    const list: FallingPetal[] = [];
-    const count = 38;
-    for (let i = 0; i < count; i++) {
-      const duration = 4.5 + ((i * 17) % 35) / 10; // 4.5s to 8.0s
-      list.push({
-        id: i,
-        left: ((i * 100) / count) + (((i * 13) % 7) - 3), // nicely dispersed 0-100%
-        size: 14 + ((i * 19) % 18), // 14px to 32px
-        startDelay: -((i * 1.3) % duration), // pre-fills the screen immediately!
-        duration,
-        drift: ((i % 2 === 0 ? 1 : -1) * (20 + ((i * 23) % 45))), // sway -65px to +65px
-        initialRot: (i * 37) % 360,
-        spinSpeed: (i % 2 === 0 ? 1 : -1) * (180 + ((i * 47) % 200)),
-        opacity: 0.7 + ((i * 11) % 30) / 100, // 0.70 to 0.99
-      });
-    }
-    return list;
-  }, []);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   return (
     <section
-      aria-label="Ready for your glow up"
-      className="relative w-full overflow-hidden select-none border-t border-rose-100"
+      ref={sectionRef}
+      className="relative w-full overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, #FFF8F5 0%, #FEECE5 35%, #FCDFD6 75%, #F9D5CA 100%)',
-        paddingTop: 'clamp(3.5rem, 7vw, 6rem)',
-        paddingBottom: 'clamp(4rem, 8vw, 6.5rem)',
+        minHeight: '340px',
+        background: 'linear-gradient(160deg, #FDE8EE 0%, #FBD6E2 40%, #F8C8D8 100%)',
       }}
     >
-      {/* Dynamic Keyframes for falling leaves / petals */}
+      {/* Inline keyframes */}
       <style>{`
-        @keyframes leafFall {
-          0% {
-            transform: translate3d(0, -60px, 0) rotate(var(--rot-start)) scale(var(--s, 1));
-            opacity: 0;
-          }
-          8% {
-            opacity: var(--op, 0.9);
-          }
-          50% {
-            transform: translate3d(var(--drift), 260px, 0) rotate(calc(var(--rot-start) + var(--spin) * 0.5)) scale(var(--s, 1));
-          }
-          90% {
-            opacity: var(--op, 0.9);
-          }
-          100% {
-            transform: translate3d(calc(var(--drift) * 0.4), 540px, 0) rotate(calc(var(--rot-start) + var(--spin))) scale(var(--s, 1));
-            opacity: 0;
-          }
+        @keyframes petalFloat {
+          0%   { transform: translateY(0px)   rotate(var(--r)) scale(1);    opacity: 0.85; }
+          25%  { transform: translateY(-18px) rotate(calc(var(--r) + 15deg)) scale(1.05); opacity: 1; }
+          50%  { transform: translateY(-8px)  rotate(calc(var(--r) - 10deg)) scale(0.95); opacity: 0.9; }
+          75%  { transform: translateY(-22px) rotate(calc(var(--r) + 20deg)) scale(1.08); opacity: 1; }
+          100% { transform: translateY(0px)   rotate(var(--r)) scale(1);    opacity: 0.85; }
         }
-
-        .falling-leaf {
-          position: absolute;
-          top: 0;
-          pointer-events: none;
-          animation-name: leafFall;
-          animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          animation-iteration-count: infinite;
-          will-change: transform, opacity;
+        @keyframes glowUpPulse {
+          0%, 100% { text-shadow: 0 0 0px transparent; }
+          50%       { text-shadow: 0 4px 32px rgba(180,20,70,0.18); }
         }
-
-        /* Impact / Bebas-style condensed typography */
-        .glowup-headline {
-          font-family: Impact, "Bebas Neue", "Arial Narrow", -apple-system, sans-serif;
-          font-stretch: ultra-condensed;
-          font-weight: 900;
-          text-transform: uppercase;
-          letter-spacing: -0.015em;
-          color: #350A22;
+        .glow-up-title {
+          animation: glowUpPulse 3.5s ease-in-out infinite;
         }
       `}</style>
 
-      {/* ── CONTINUOUS FALLING LEAVES / PETALS ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {petals.map((p) => (
-          <span
-            key={p.id}
-            className="falling-leaf"
-            style={{
-              left: `${p.left}%`,
-              width: `${p.size}px`,
-              height: `${p.size * 1.55}px`,
-              ['--rot-start' as string]: `${p.initialRot}deg`,
-              ['--spin' as string]: `${p.spinSpeed}deg`,
-              ['--drift' as string]: `${p.drift}px`,
-              ['--op' as string]: `${p.opacity}`,
-              ['--s' as string]: `${(p.size / 22).toFixed(2)}`,
-              animationDuration: `${p.duration}s`,
-              animationDelay: `${p.startDelay}s`,
-              zIndex: 2,
-            }}
-          >
-            {/* Elegant curved rose petal / leaf SVG matching screenshot */}
-            <svg
-              viewBox="0 0 24 38"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-full h-full drop-shadow-[0_2px_4px_rgba(217,101,139,0.25)]"
-            >
-              <path
-                d="M12 37 C3 29 -1 19 1 10 C3 3 9.5 0 12 0 C14.5 0 21 3 23 10 C25 19 21 29 12 37Z"
-                fill="#DE457E"
-                fillOpacity="0.85"
-              />
-              {/* Petal highlight & inner leaf contour */}
-              <path
-                d="M12 2 C13.5 10 18 18 12 34"
-                stroke="#F9B3CC"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeOpacity="0.75"
-              />
-            </svg>
-          </span>
-        ))}
-      </div>
-
-      {/* ── MAIN CONTENT CONTAINER ── */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center">
-
-        {/* READY FOR YOUR GLOW UP? — matches image style 1:1 */}
-        <h2
-          className="glowup-headline leading-[0.92] text-center"
+      {/* ── Falling Petals (absolutely positioned, pointer-events-none) ── */}
+      {PETALS.map((p, i) => (
+        <span
+          key={i}
+          className="pointer-events-none absolute select-none"
           style={{
-            fontSize: 'clamp(3.4rem, 11vw, 7.8rem)',
+            left: p.left,
+            top: p.top,
+            width: `${p.size}px`,
+            height: `${p.size * 1.6}px`,
+            ['--r' as string]: `${p.rot}deg`,
+            animation: `petalFloat ${p.dur}s ease-in-out ${p.delay}s infinite`,
+            willChange: 'transform',
+            zIndex: 1,
           }}
         >
-          READY FOR YOUR<br />GLOW UP?
+          {/* SVG petal — teardrop / leaf shape matching the reference image */}
+          <svg
+            viewBox="0 0 24 38"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ width: '100%', height: '100%' }}
+          >
+            <path
+              d="M12 36 C4 28 0 20 2 11 C4 4 10 0 12 0 C14 0 20 4 22 11 C24 20 20 28 12 36Z"
+              fill="#E8629A"
+              fillOpacity="0.75"
+            />
+            {/* Central vein line for a real petal look */}
+            <line x1="12" y1="2" x2="12" y2="34" stroke="#D04A82" strokeWidth="0.8" strokeOpacity="0.5" />
+          </svg>
+        </span>
+      ))}
+
+      {/* ── Main Content ── */}
+      <div
+        className="relative flex flex-col items-center justify-center text-center px-6 py-16 sm:py-20"
+        style={{ zIndex: 2 }}
+      >
+        {/* Headline */}
+        <h2
+          className="glow-up-title font-black uppercase leading-none tracking-tight text-[#2D0A1F]"
+          style={{
+            fontSize: 'clamp(2.8rem, 9vw, 7rem)',
+            lineHeight: 1.05,
+            letterSpacing: '-0.02em',
+          }}
+        >
+          Ready for your<br />glow up?
         </h2>
 
         {/* Subtitle */}
         <p
-          className="mt-4 sm:mt-5 font-normal tracking-normal text-[#4A1A2F]/80"
-          style={{
-            fontSize: 'clamp(0.95rem, 2.2vw, 1.25rem)',
-          }}
+          className="mt-4 sm:mt-5 text-[#7A3050]/80 font-medium"
+          style={{ fontSize: 'clamp(0.85rem, 2vw, 1.05rem)' }}
         >
           Same-day slots across Jaipur.
         </p>
 
-        {/* Action Button */}
-        <div className="mt-6 sm:mt-8">
-          <button
-            onClick={() => navigate('/doorstep')}
-            className="inline-flex items-center justify-center font-bold text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-md hover:shadow-xl"
-            style={{
-              backgroundColor: '#DE1B76',
-              padding: '12px 34px',
-              borderRadius: '9999px',
-              fontSize: 'clamp(0.88rem, 1.6vw, 1.05rem)',
-              boxShadow: '0 8px 24px -4px rgba(222, 27, 118, 0.45)',
-            }}
-          >
-            Book your artist
-          </button>
-        </div>
-
-        {/* Pink Outline Circle Accent — matching reference image on the right */}
-        <div
-          className="absolute pointer-events-none hidden sm:block"
+        {/* CTA Button */}
+        <button
+          onClick={() => navigate('/doorstep')}
+          className="mt-7 sm:mt-8 font-bold text-white rounded-full px-8 py-3 text-sm sm:text-base shadow-lg transition-all hover:scale-105 active:scale-95"
           style={{
-            right: '12%',
-            bottom: '22%',
-            width: '42px',
-            height: '42px',
-            borderRadius: '50%',
-            border: '2px solid rgba(222, 27, 118, 0.45)',
+            background: 'linear-gradient(135deg, #E0366E 0%, #C02860 100%)',
+            boxShadow: '0 6px 28px rgba(200,40,90,0.35)',
           }}
-          aria-hidden="true"
+        >
+          Book your artist
+        </button>
+
+        {/* Small floating circle decoration — matching reference */}
+        <span
+          className="absolute pointer-events-none"
+          style={{
+            right: '5%',
+            bottom: '20%',
+            width: 36,
+            height: 36,
+            borderRadius: '50%',
+            border: '2px solid #E0729A',
+            opacity: 0.5,
+            zIndex: 1,
+          }}
         />
       </div>
     </section>

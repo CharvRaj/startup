@@ -13,156 +13,114 @@ export interface GalleryImage {
 export const DEFAULT_GALLERY_IMAGES: GalleryImage[] = [
   {
     id: 'satguru-b1',
-    url: '/images/bridal-gallery/bridal-1.jpg',
-    title: 'Royal Velvet Crimson Glam',
-    subtitle: 'Handcrafted Kundan, Matha Patti & Statement Kaleere',
+    url: '/images/bridal-gallery/satguru-bride-1.jpg',
+    title: 'Heritage Velvet Crimson Bride',
+    subtitle: 'Signature Velvet Lehenga with Antique Kundan Ensemble',
     display_order: 1,
   },
   {
     id: 'satguru-b2',
-    url: '/images/bridal-gallery/bridal-2.jpg',
-    title: 'Heritage Maroon & Pastel Zari Lehenga',
-    subtitle: 'Regal Bridal Silhouette with Sheer Dupatta Draping',
+    url: '/images/bridal-gallery/satguru-bride-2.jpg',
+    title: 'Royal Crimson Shringar Portrait',
+    subtitle: 'Handcrafted Kundan, Matha Patti & Statement Kaleere',
     display_order: 2,
   },
   {
     id: 'satguru-b3',
-    url: '/images/bridal-gallery/bridal-3.jpg',
-    title: 'Vibrant Vermilion Bridal Shringar',
-    subtitle: 'Mint Polki Choker & Traditional Rajasthani Gold Nath',
+    url: '/images/bridal-gallery/satguru-bride-3.jpg',
+    title: 'Regal Rajasthani Red Lehenga',
+    subtitle: 'Royal Nath, Choker & Sculpted Airbrush Finish',
     display_order: 3,
   },
   {
     id: 'satguru-b4',
-    url: '/images/bridal-gallery/bridal-4.jpg',
-    title: 'Deep Wine Zardosi Splendor',
-    subtitle: 'Intricate Dual Dupatta & Antique Kundan Craftsmanship',
+    url: '/images/bridal-gallery/satguru-bride-4.jpg',
+    title: 'Rajputi Royal Saffron Poshak',
+    subtitle: 'Heritage Aad, Borla & Traditional Golden Bangles',
     display_order: 4,
   },
   {
     id: 'satguru-b5',
-    url: '/images/bridal-gallery/bridal-5.jpg',
-    title: 'Regal Emerald & Kundan Fusion',
-    subtitle: 'Velvet Bridal Draping with Cascading Chooda & Gold Kaleere',
+    url: '/images/bridal-gallery/satguru-bride-5.jpg',
+    title: 'Deep Wine Zardosi Splendor',
+    subtitle: 'Intricate Dual Dupatta & Cascading Gold Kaleere',
     display_order: 5,
   },
   {
     id: 'satguru-b6',
-    url: '/images/bridal-gallery/bridal-6.jpg',
-    title: 'Classic Rajasthani Royal Bride',
-    subtitle: 'Traditional Matha Patti & Velvet Bridal Draping',
+    url: '/images/bridal-gallery/satguru-bride-6.jpg',
+    title: 'Emerald Mala & Royal Velvet Glam',
+    subtitle: 'Multi-layer Polki Choker with Luminous Studio Finish',
     display_order: 6,
   },
   {
     id: 'satguru-b7',
-    url: '/images/bridal-gallery/bridal-7.jpg',
-    title: 'Ethereal Side-Profile Velvet Veil',
-    subtitle: 'Delicate Floral Border & HD Airbrush Soft Glam',
+    url: '/images/bridal-gallery/satguru-bride-7.jpg',
+    title: 'Heritage Red & Gold Embroidered Lehenga',
+    subtitle: 'Royal Velvet Silhouette with Sheer Dupatta Draping',
     display_order: 7,
   },
   {
     id: 'satguru-b8',
-    url: '/images/bridal-gallery/bridal-8.jpg',
-    title: 'Traditional Red & Gold Perfection',
-    subtitle: 'Embroidered Royal Waistband & Luminous Matte Finish',
+    url: '/images/bridal-gallery/satguru-bride-8.jpg',
+    title: 'Ethereal Side-Profile Velvet Veil',
+    subtitle: 'Classic Rajasthani Royal Bridal Shringar',
     display_order: 8,
   },
   {
     id: 'satguru-b9',
-    url: '/images/bridal-gallery/bridal-9.jpg',
-    title: 'Grand Emerald Mala & Velvet Veil',
-    subtitle: 'Luminous Glow with Sculpted Contour & Velvety Berry Lips',
+    url: '/images/bridal-gallery/satguru-bride-9.jpg',
+    title: 'Velvet Veil Heritage Portrait',
+    subtitle: 'Smokey Kohl Eye Art & Antique Gold Jewelry',
     display_order: 9,
   },
   {
     id: 'satguru-b10',
-    url: '/images/bridal-gallery/bridal-10.jpg',
-    title: 'The Royal Trio Bridal Glam',
-    subtitle: 'Harmonious Crimson, Maroon & Pastel Bridal Ensembles',
+    url: '/images/bridal-gallery/satguru-bride-10.jpg',
+    title: 'The Royal Trio Bridal Ensembles',
+    subtitle: 'Harmonious Crimson, Maroon & Pastel Grandeur',
     display_order: 10,
   },
   {
     id: 'satguru-b11',
-    url: '/images/bridal-gallery/bridal-11.jpg',
-    title: 'Velvet Veil Heritage Portrait',
-    subtitle: 'Smokey Kohl Eye Art, Gold Nath & Maang Tikka Shringar',
+    url: '/images/bridal-gallery/satguru-bride-11.jpg',
+    title: 'Classic Rajasthani Royal Bride',
+    subtitle: 'Traditional Matha Patti & Velvet Bridal Draping',
     display_order: 11,
   },
   {
     id: 'satguru-b12',
-    url: '/images/bridal-gallery/bridal-12.jpg',
-    title: 'Sunset Crimson & Peach Velvet Lehenga',
-    subtitle: 'Exquisite Dual Veil Draping & Heritage Jewelry',
+    url: '/images/bridal-gallery/satguru-bride-12.jpg',
+    title: 'Dark Wine Velvet Majesty',
+    subtitle: 'Hand-Embroidered Zari Border & Traditional Kaleere',
     display_order: 12,
   },
   {
     id: 'satguru-b13',
-    url: '/images/bridal-gallery/bridal-13.jpg',
-    title: 'Magenta Velvet & Baby Pink Dupatta',
-    subtitle: 'Traditional Heavy Gota Patti & Handcrafted Jewelry',
+    url: '/images/bridal-gallery/satguru-bride-13.jpg',
+    title: 'Sunset Crimson & Velvet Splendor',
+    subtitle: 'Exquisite Dual Veil Draping & Heritage Jewelry',
     display_order: 13,
   },
   {
     id: 'satguru-b14',
-    url: '/images/bridal-gallery/bridal-14.jpg',
-    title: 'Double Royal Celebration',
-    subtitle: 'Twinned in Heritage Red & Wine Bridal Grandeur',
+    url: '/images/bridal-gallery/satguru-bride-14.jpg',
+    title: 'Studio Masterpiece Trio Glam',
+    subtitle: 'Salon Ready Bridal Elegance in Crimson & Antique Gold',
     display_order: 14,
   },
   {
     id: 'satguru-b15',
-    url: '/images/bridal-gallery/bridal-15.jpg',
-    title: 'Floral Sanctuary Bridal Grace',
-    subtitle: 'Deep Wine Lehenga with Statement Gold Nath & Chooda',
+    url: '/images/bridal-gallery/satguru-bride-15.jpg',
+    title: 'Double Royal Celebration',
+    subtitle: 'Twinned in Heritage Red & Wine Bridal Grandeur',
     display_order: 15,
-  },
-  {
-    id: 'satguru-b16',
-    url: '/images/bridal-gallery/bridal-16.jpg',
-    title: 'Ruby Velvet Veil Shringar',
-    subtitle: 'Close-Up Portrait with Layered Polki & Emerald Choker',
-    display_order: 16,
-  },
-  {
-    id: 'satguru-b17',
-    url: '/images/bridal-gallery/bridal-17.jpg',
-    title: 'Grand Floral Gher Royal Silhouette',
-    subtitle: 'Heritage Velvet Draping with Sculpted Golden Embroidery',
-    display_order: 17,
-  },
-  {
-    id: 'satguru-b18',
-    url: '/images/bridal-gallery/bridal-18.jpg',
-    title: 'Deep Burgundy Velvet & Zardosi Art',
-    subtitle: 'Classic Bridal Posture with Heavy Gold Border Lehenga',
-    display_order: 18,
-  },
-  {
-    id: 'satguru-b19',
-    url: '/images/bridal-gallery/bridal-19.jpg',
-    title: 'Luminous Bridal Contour & Kohl Eyes',
-    subtitle: 'High-Definition Glamour with Traditional Kundan Ensemble',
-    display_order: 19,
-  },
-  {
-    id: 'satguru-b20',
-    url: '/images/bridal-gallery/bridal-20.jpg',
-    title: 'Timeless Royal Red Carpet Gown',
-    subtitle: 'Flared Velvet Gher with Delicate Traditional Chooda',
-    display_order: 20,
-  },
-  {
-    id: 'satguru-b21',
-    url: '/images/bridal-gallery/bridal-21.jpg',
-    title: 'Satguru Studio Masterpiece',
-    subtitle: 'Salon Ready Bridal Elegance in Crimson & Antique Gold',
-    display_order: 21,
   },
 ];
 
-const ORDERED_ITEMS_KEY = 'satguru_gallery_ordered_items';
-const DELETED_IDS_KEY = 'satguru_deleted_gallery_ids';
-const GALLERY_USER_INIT_KEY = 'satguru_gallery_user_initialized';
+const ORDERED_ITEMS_KEY = 'satguru_gallery_ordered_items_v3';
+const DELETED_IDS_KEY = 'satguru_deleted_gallery_ids_v3';
+const GALLERY_USER_INIT_KEY = 'satguru_gallery_user_initialized_v3';
 const EVENT_NAME = 'satguru_gallery_updated';
 
 // ── IN-MEMORY MODULE CACHE ──────────────────────────────────────────────────
@@ -171,7 +129,7 @@ const EVENT_NAME = 'satguru_gallery_updated';
 let inMemoryGalleryCache: GalleryImage[] | null = null;
 
 // ── INDEXEDDB AS PRIMARY BULLETPROOF LOCAL STORE (1GB+ Quota) ───────────────
-const IDB_NAME = 'SatguruGalleryDB_v2';
+const IDB_NAME = 'SatguruGalleryDB_v3';
 const IDB_VERSION = 1;
 const IDB_STORE = 'gallery_records';
 
