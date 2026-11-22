@@ -163,69 +163,17 @@ export const DEFAULT_GALLERY_IMAGES: GalleryImage[] = [
 const ORDERED_ITEMS_KEY = 'satguru_gallery_ordered_items';
 const DELETED_IDS_KEY = 'satguru_deleted_gallery_ids';
 const GALLERY_USER_INIT_KEY = 'satguru_gallery_user_initialized';
-const GALLERY_MIGRATION_KEY = 'satguru_gallery_migrated_v2';
 const EVENT_NAME = 'satguru_gallery_updated';
 
-// ── One-Time Startup Migration ──────────────────────────────────────────────
-// Runs once per browser session: wipes corrupted localStorage data where all
-// images were saved as the placeholder '/images/luxury-hero-girl-hd.jpg' or
-// as empty-string URLs with no matching IndexedDB entry.
-// After migration, the gallery reloads cleanly from defaults or stays empty.
-function runGalleryMigrationIfNeeded(): void {
-  if (typeof window === 'undefined') return;
-  try {
-    // Only run once per install
-    if (localStorage.getItem(GALLERY_MIGRATION_KEY) === 'true') return;
+// ── IN-MEMORY MODULE CACHE ──────────────────────────────────────────────────
+// Holds the current live gallery items in memory so synchronous getters can
+// immediately return high-res data without waiting for disk/db.
+let inMemoryGalleryCache: GalleryImage[] | null = null;
 
-    const raw = localStorage.getItem(ORDERED_ITEMS_KEY);
-    if (!raw) {
-      localStorage.setItem(GALLERY_MIGRATION_KEY, 'true');
-      return;
-    }
-
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      localStorage.setItem(GALLERY_MIGRATION_KEY, 'true');
-      return;
-    }
-
-    // Check how many items are corrupted (placeholder or empty URL)
-    const PLACEHOLDER = '/images/luxury-hero-girl-hd.jpg';
-    const badCount = parsed.filter(
-      (item: any) => !item.url || item.url === PLACEHOLDER || item.url === ''
-    ).length;
-
-    // If more than half the items are corrupted → wipe and reset gallery
-    if (badCount > 0 && badCount >= Math.ceil(parsed.length / 2)) {
-      console.info(`[GalleryStore] Migration v2: detected ${badCount}/${parsed.length} corrupted items. Resetting gallery.`);
-      // Remove the corrupted localStorage data
-      localStorage.removeItem(ORDERED_ITEMS_KEY);
-      // Reset user-init flag so defaults load fresh on next gallery open
-      localStorage.removeItem(GALLERY_USER_INIT_KEY);
-      // Clear deleted IDs too so defaults can show up again
-      localStorage.removeItem(DELETED_IDS_KEY);
-    } else if (badCount > 0) {
-      // Partial corruption: strip out only the bad items
-      const clean = parsed.filter(
-        (item: any) => item.url && item.url !== PLACEHOLDER && item.url !== ''
-      );
-      console.info(`[GalleryStore] Migration v2: removed ${badCount} corrupted items, keeping ${clean.length} good ones.`);
-      try {
-        localStorage.setItem(ORDERED_ITEMS_KEY, JSON.stringify(clean));
-      } catch {}
-    }
-
-    localStorage.setItem(GALLERY_MIGRATION_KEY, 'true');
-  } catch {}
-}
-
-// Run immediately when this module loads
-runGalleryMigrationIfNeeded();
-
-// Robust client IndexedDB store for high-res images to bypass 5MB localStorage limits
-const IDB_NAME = 'SatguruGalleryDB';
+// ── INDEXEDDB AS PRIMARY BULLETPROOF LOCAL STORE (1GB+ Quota) ───────────────
+const IDB_NAME = 'SatguruGalleryDB_v2';
 const IDB_VERSION = 1;
-const IDB_STORE = 'gallery_blobs';
+const IDB_STORE = 'gallery_records';
 
 function openGalleryDB(): Promise<IDBDatabase | null> {
   if (typeof window === 'undefined' || !window.indexedDB) return Promise.resolve(null);
@@ -246,16 +194,21 @@ function openGalleryDB(): Promise<IDBDatabase | null> {
   });
 }
 
-export async function saveImagesToIndexedDB(items: GalleryImage[]): Promise<void> {
+/**
+ * Saves all full gallery items directly to IndexedDB (no 5MB size limit).
+ */
+export async function saveAllToIndexedDB(items: GalleryImage[]): Promise<void> {
   const db = await openGalleryDB();
   if (!db) return;
   return new Promise((resolve) => {
     try {
       const tx = db.transaction(IDB_STORE, 'readwrite');
       const store = tx.objectStore(IDB_STORE);
+      // Clear existing records and rewrite with normalized order
+      store.clear();
       for (const item of items) {
-        if (item.url && item.url.startsWith('data:')) {
-          store.put({ id: item.id, url: item.url });
+        if (item.url && item.url !== '/images/luxury-hero-girl-hd.jpg') {
+          store.put(item);
         }
       }
       tx.oncomplete = () => resolve();
@@ -266,47 +219,30 @@ export async function saveImagesToIndexedDB(items: GalleryImage[]): Promise<void
   });
 }
 
-export async function loadImagesFromIndexedDB(): Promise<Record<string, string>> {
+/**
+ * Reads all full gallery items from IndexedDB.
+ */
+export async function loadAllFromIndexedDB(): Promise<GalleryImage[]> {
   const db = await openGalleryDB();
-  if (!db) return {};
+  if (!db) return [];
   return new Promise((resolve) => {
     try {
       const tx = db.transaction(IDB_STORE, 'readonly');
       const store = tx.objectStore(IDB_STORE);
       const request = store.getAll();
       request.onsuccess = () => {
-        const result: Record<string, string> = {};
-        for (const entry of request.result || []) {
-          if (entry.id && entry.url) {
-            result[entry.id] = entry.url;
-          }
-        }
-        resolve(result);
+        const items: GalleryImage[] = request.result || [];
+        items.sort((a, b) => a.display_order - b.display_order);
+        resolve(items);
       };
-      request.onerror = () => resolve({});
+      request.onerror = () => resolve([]);
     } catch {
-      resolve({});
+      resolve([]);
     }
   });
 }
 
-export async function removeImageFromIndexedDB(id: string): Promise<void> {
-  const db = await openGalleryDB();
-  if (!db) return;
-  return new Promise((resolve) => {
-    try {
-      const tx = db.transaction(IDB_STORE, 'readwrite');
-      const store = tx.objectStore(IDB_STORE);
-      store.delete(id);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => resolve();
-    } catch {
-      resolve();
-    }
-  });
-}
-
-export async function clearIndexedDBImages(): Promise<void> {
+export async function clearAllIndexedDB(): Promise<void> {
   const db = await openGalleryDB();
   if (!db) return;
   return new Promise((resolve) => {
@@ -322,6 +258,23 @@ export async function clearIndexedDBImages(): Promise<void> {
   });
 }
 
+export async function removeSingleFromIndexedDB(id: string): Promise<void> {
+  const db = await openGalleryDB();
+  if (!db) return;
+  return new Promise((resolve) => {
+    try {
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_STORE);
+      store.delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    } catch {
+      resolve();
+    }
+  });
+}
+
+// ── USER INITIALIZED & DELETED BLACKLIST ─────────────────────────────────────
 export const isGalleryUserInitialized = (): boolean => {
   try {
     return localStorage.getItem(GALLERY_USER_INIT_KEY) === 'true';
@@ -352,145 +305,132 @@ export const saveDeletedGalleryId = (id: string, url?: string, storagePath?: str
   }
 };
 
+// ── SYNCHRONOUS GETTER ──────────────────────────────────────────────────────
 export const getSavedGalleryItems = (): GalleryImage[] => {
+  if (inMemoryGalleryCache !== null) {
+    return inMemoryGalleryCache;
+  }
+
   try {
     const raw = localStorage.getItem(ORDERED_ITEMS_KEY);
     if (raw !== null) {
       const parsed: GalleryImage[] = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        // Strip out any placeholder copies of luxury-hero-girl-hd.jpg
-        return parsed.filter(item => item.url !== '/images/luxury-hero-girl-hd.jpg');
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const filtered = parsed.filter(item => item.url && item.url !== '/images/luxury-hero-girl-hd.jpg');
+        if (filtered.length > 0) {
+          inMemoryGalleryCache = filtered;
+          return filtered;
+        }
       }
     }
   } catch {}
-  // Only before user has ever interacted with or deleted from the gallery
-  if (!isGalleryUserInitialized()) {
-    return [...DEFAULT_GALLERY_IMAGES];
+
+  // If user has ever initialized / deleted / uploaded, do NOT bring back defaults
+  if (isGalleryUserInitialized()) {
+    return [];
   }
-  return [];
+
+  // Brand new session: return defaults
+  return [...DEFAULT_GALLERY_IMAGES];
 };
 
-export const saveGalleryItems = (items: GalleryImage[]) => {
+// ── PERSISTENCE ENGINE ──────────────────────────────────────────────────────
+export const saveGalleryItems = (items: GalleryImage[]): GalleryImage[] => {
   try {
-    // Mark as user-managed so old default photos NEVER respawn automatically
+    // 1. Mark as permanently user-managed so default photos NEVER automatically respawn
     localStorage.setItem(GALLERY_USER_INIT_KEY, 'true');
 
-    // Never save or allow the placeholder image into gallery
-    const cleaned = items.filter(it => it.url !== '/images/luxury-hero-girl-hd.jpg');
+    // 2. Strip out invalid/placeholder items
+    const cleaned = items.filter(it => it.url && it.url !== '/images/luxury-hero-girl-hd.jpg');
 
-    // Normalize display_order explicitly 1..N
-    const normalized = cleaned.map((item, index) => ({
+    // 3. Normalize display orders (1..N)
+    const normalized: GalleryImage[] = cleaned.map((item, index) => ({
       ...item,
       display_order: index + 1,
     }));
 
-    // Save full image data to IndexedDB (which has hundreds of megabytes of quota)
-    saveImagesToIndexedDB(normalized);
+    // 4. Update in-memory cache immediately
+    inMemoryGalleryCache = normalized;
 
-    // Save metadata to localStorage without risk of QuotaExceededError
+    // 5. Save FULL high-res data to IndexedDB asynchronously
+    saveAllToIndexedDB(normalized).catch(() => {});
+
+    // 6. Save metadata to localStorage (safely handles QuotaExceededError without crashing)
     try {
       localStorage.setItem(ORDERED_ITEMS_KEY, JSON.stringify(normalized));
-    } catch (storageErr) {
-      console.warn('LocalStorage quota limit reached, saving metadata only and keeping full data in IndexedDB:', storageErr);
-      // Strip large data URLs from localStorage so it never fails
-      const metaOnly = normalized.map(item => ({
-        ...item,
-        url: item.url.startsWith('data:') ? '' : item.url,
-      }));
+    } catch {
+      // If base64 URLs overflow 5MB localStorage, strip only data URLs from localStorage
+      // while keeping the full image in IndexedDB
       try {
+        const metaOnly = normalized.map(item => ({
+          ...item,
+          url: item.url.startsWith('data:') ? '' : item.url,
+        }));
         localStorage.setItem(ORDERED_ITEMS_KEY, JSON.stringify(metaOnly));
       } catch {}
     }
 
-    window.dispatchEvent(new Event(EVENT_NAME));
+    // 7. Notify all active tabs & components
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event(EVENT_NAME));
+    }
+
     return normalized;
   } catch (e) {
-    console.error('Error saving gallery items:', e);
+    console.error('Error in saveGalleryItems:', e);
     return items;
   }
 };
 
-let isSyncing = false;
+// ── UNIFIED GALLERY LOADER (PRIMARY SOURCE OF TRUTH ON RELOAD) ──────────────
+export const loadUnifiedGallery = async (): Promise<GalleryImage[]> => {
+  const deletedSet = new Set(getDeletedGalleryIds());
 
-// Fast background sync that never freezes UI or blocks page render
-export const syncWithRemoteSupabase = async () => {
-  if (isSyncing) return;
-  isSyncing = true;
+  // 1. First, attempt to load all full images from IndexedDB
   try {
-    const deletedSet = new Set(getDeletedGalleryIds());
-    let currentList = getSavedGalleryItems();
-
-    // Strict 2500ms timeout so a hanging/sleeping DB connection never delays rendering
-    const fetchPromise = supabase.from('gallery_images').select('*').order('display_order');
-    const timeoutPromise = new Promise<{ data: any[] | null; error: any }>((resolve) =>
-      setTimeout(() => resolve({ data: null, error: new Error('Timeout') }), 2500)
-    );
-
-    const result = await Promise.race([fetchPromise, timeoutPromise]);
-    const data = result?.data;
-
-    if (data && Array.isArray(data) && data.length > 0) {
-      let changed = false;
-      for (const remote of data) {
-        if (!remote.url || remote.url.includes('undefined') || remote.url.includes('null')) continue;
-        // Purge dead hosts that stall browser connections
-        if (remote.url.includes('ritibeauty.com') || remote.url.includes('pinimg.com')) continue;
-        if (deletedSet.has(remote.id) || deletedSet.has(remote.url)) continue;
-
-        // If not already in current list, append it
-        if (!currentList.some(item => item.id === remote.id || item.url === remote.url)) {
-          currentList.push({
-            id: remote.id,
-            url: remote.url,
-            title: remote.title || 'Satguru Bridal Creation',
-            subtitle: remote.subtitle || '',
-            storage_path: remote.storage_path,
-            display_order: currentList.length + 1,
-          });
-          changed = true;
-        }
-      }
-      if (changed) {
-        saveGalleryItems(currentList);
+    const idbItems = await loadAllFromIndexedDB();
+    if (idbItems && idbItems.length > 0) {
+      const valid = idbItems.filter(
+        img => !deletedSet.has(img.id) &&
+               !deletedSet.has(img.url) &&
+               img.url &&
+               img.url !== '/images/luxury-hero-girl-hd.jpg'
+      );
+      if (valid.length > 0) {
+        inMemoryGalleryCache = valid;
+        // Keep localStorage metadata in sync
+        try {
+          localStorage.setItem(ORDERED_ITEMS_KEY, JSON.stringify(valid));
+        } catch {}
+        return valid;
       }
     }
   } catch (err) {
-    console.warn('Supabase gallery background sync note:', err);
-  } finally {
-    isSyncing = false;
+    console.warn('IndexedDB read note:', err);
   }
-};
 
-export const loadUnifiedGallery = async (): Promise<GalleryImage[]> => {
-  const deletedSet = new Set(getDeletedGalleryIds());
+  // 2. Fallback to localStorage / in-memory cache
   let currentList = getSavedGalleryItems();
 
-  // Filter out any deleted items, dead hosts, and the old placeholder
+  // Filter out deleted items and placeholders
   currentList = currentList.filter(
     img => !deletedSet.has(img.id) &&
            !deletedSet.has(img.url) &&
-           img.url !== '/images/luxury-hero-girl-hd.jpg' &&
-           !img.url.includes('ritibeauty.com') &&
-           !img.url.includes('pinimg.com')
+           img.url &&
+           img.url !== '/images/luxury-hero-girl-hd.jpg'
   );
 
-  // Restore high-res data URLs from IndexedDB if url was stripped in localStorage
-  try {
-    const idbMap = await loadImagesFromIndexedDB();
-    currentList = currentList.map(item => {
-      if ((!item.url || item.url === '') && idbMap[item.id]) {
-        return { ...item, url: idbMap[item.id] };
-      }
-      return item;
-    });
-  } catch {}
+  // If user never touched the gallery at all, seed IndexedDB with defaults
+  if (!isGalleryUserInitialized() && currentList.length === 0) {
+    currentList = [...DEFAULT_GALLERY_IMAGES];
+    saveAllToIndexedDB(currentList).catch(() => {});
+  }
 
-  // Trigger non-blocking background sync
-  syncWithRemoteSupabase();
-
+  inMemoryGalleryCache = currentList;
   return currentList;
 };
 
+// ── REORDER ITEM ────────────────────────────────────────────────────────────
 export const reorderGalleryItem = (id: string, direction: 'up' | 'down'): GalleryImage[] => {
   const currentList = getSavedGalleryItems();
   const list = [...currentList];
@@ -505,37 +445,28 @@ export const reorderGalleryItem = (id: string, direction: 'up' | 'down'): Galler
   const [removed] = list.splice(idx, 1);
   list.splice(targetIdx, 0, removed);
 
-  // Normalize display_orders and persist
-  const updated = saveGalleryItems(list);
-
-  // Background attempt to update Supabase without blocking UI
-  try {
-    const a = updated[idx];
-    const b = updated[targetIdx];
-    if (a && b) {
-      supabase.from('gallery_images').update({ display_order: a.display_order }).eq('id', a.id).then(() => {});
-      supabase.from('gallery_images').update({ display_order: b.display_order }).eq('id', b.id).then(() => {});
-    }
-  } catch {}
-
-  return updated;
+  // Persist updated order
+  return saveGalleryItems(list);
 };
 
+// ── DELETE SINGLE ITEM ──────────────────────────────────────────────────────
 export const deleteGalleryItem = async (img: GalleryImage): Promise<GalleryImage[]> => {
-  // 1. Add to deleted IDs/URLs blacklist so it NEVER resurfaces
+  // 1. Blacklist the ID and URL permanently so it NEVER respawns
   saveDeletedGalleryId(img.id, img.url, img.storage_path);
 
-  // Remove from IndexedDB
-  removeImageFromIndexedDB(img.id);
+  // 2. Remove from IndexedDB
+  await removeSingleFromIndexedDB(img.id);
 
-  // 2. Remove from active saved list
+  // 3. Remove from active list
   const currentList = getSavedGalleryItems();
-  const filtered = currentList.filter(item => item.id !== img.id && item.url !== img.url && item.title !== img.title);
+  const filtered = currentList.filter(
+    item => item.id !== img.id && item.url !== img.url && item.title !== img.title
+  );
 
-  // 3. Save normalized list (marks gallery as user-managed so defaults never return)
+  // 4. Save and return updated list
   const updated = saveGalleryItems(filtered);
 
-  // 4. Background cleanup on Supabase
+  // 5. Background cleanup on Supabase storage if storage_path exists
   try {
     if (img.storage_path) {
       supabase.storage.from('gallery').remove([img.storage_path]).then(() => {});
@@ -546,30 +477,36 @@ export const deleteGalleryItem = async (img: GalleryImage): Promise<GalleryImage
   return updated;
 };
 
+// ── DELETE ALL ITEMS ────────────────────────────────────────────────────────
 export const deleteAllGalleryItems = async (): Promise<GalleryImage[]> => {
   // 1. Mark as user-managed so defaults NEVER come back
   try {
     localStorage.setItem(GALLERY_USER_INIT_KEY, 'true');
   } catch {}
 
-  // 2. Blacklist all existing items so remote sync never resurrects them
+  // 2. Blacklist all existing items and all default items
   const currentList = getSavedGalleryItems();
   currentList.forEach(img => {
     saveDeletedGalleryId(img.id, img.url, img.storage_path);
   });
-
-  // Also blacklist all default images so they never respawn on reload
   DEFAULT_GALLERY_IMAGES.forEach(img => {
     saveDeletedGalleryId(img.id, img.url);
   });
 
-  // Clear IndexedDB completely
-  await clearIndexedDBImages();
+  // 3. Clear IndexedDB completely
+  await clearAllIndexedDB();
 
-  // 3. Save empty array
-  saveGalleryItems([]);
+  // 4. Clear in-memory cache and localStorage
+  inMemoryGalleryCache = [];
+  try {
+    localStorage.setItem(ORDERED_ITEMS_KEY, JSON.stringify([]));
+  } catch {}
 
-  // 4. Background delete in Supabase
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(EVENT_NAME));
+  }
+
+  // 5. Background delete in Supabase
   try {
     supabase.from('gallery_images').delete().neq('id', 'placeholder_never_matches').then(() => {});
   } catch {}
@@ -577,7 +514,11 @@ export const deleteAllGalleryItems = async (): Promise<GalleryImage[]> => {
   return [];
 };
 
-export const addGalleryItem = (newImage: Omit<GalleryImage, 'display_order'>, position: 'top' | 'bottom' = 'top'): GalleryImage[] => {
+// ── ADD SINGLE ITEM ─────────────────────────────────────────────────────────
+export const addGalleryItem = (
+  newImage: Omit<GalleryImage, 'display_order'>,
+  position: 'top' | 'bottom' = 'top'
+): GalleryImage[] => {
   const currentList = getSavedGalleryItems();
   const base = [...currentList];
 
@@ -595,6 +536,7 @@ export const addGalleryItem = (newImage: Omit<GalleryImage, 'display_order'>, po
   return saveGalleryItems(base);
 };
 
+// ── ADD MULTIPLE ITEMS (GROUP / BULK UPLOAD) ────────────────────────────────
 export const addMultipleGalleryItems = (
   newImages: Array<Omit<GalleryImage, 'display_order'>>,
   position: 'top' | 'bottom' = 'top'

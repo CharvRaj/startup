@@ -144,7 +144,7 @@ export function Admin() {
   const [requestFilter, setRequestFilter] = useState<'all' | 'pending' | 'training' | 'completed' | 'approved'>('all');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  // Load analytics when tab is activated
+  // Load data when tabs are activated
   useEffect(() => {
     if (activeTab === 'analytics' && analyticsData.daily.length === 0) {
       loadAnalytics();
@@ -152,7 +152,20 @@ export function Admin() {
     if (activeTab === 'wallet' && walletUsers.length === 0) {
       loadWalletData();
     }
+    if (activeTab === 'gallery') {
+      loadGallery();
+    }
   }, [activeTab]);
+
+  useEffect(() => {
+    const handleGalleryUpdate = () => {
+      loadGallery();
+    };
+    window.addEventListener('satguru_gallery_updated', handleGalleryUpdate);
+    return () => {
+      window.removeEventListener('satguru_gallery_updated', handleGalleryUpdate);
+    };
+  }, []);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [stylistRequests, setStylistRequests] = useState<StylistRequest[]>([]);
