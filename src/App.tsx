@@ -38,6 +38,7 @@ import { BeautyStudio } from './pages/BeautyStudio';
 import { DiwaliLanding } from './pages/DiwaliLanding';
 import { VirtualStudio } from './pages/VirtualStudio';
 import { TrainingAcademy } from './pages/TrainingAcademy';
+import { GetReady } from './pages/GetReady';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { GlowUpCTA } from '@/components/sections/GlowUpCTA';
@@ -75,6 +76,9 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/diwali" element={<DiwaliLanding />} />
         <Route path="/diwali-mahotsav" element={<DiwaliLanding />} />
+        <Route path="/get-ready" element={<GetReady />} />
+        <Route path="/bridals" element={<GetReady />} />
+        <Route path="/bridal-studio" element={<GetReady />} />
         <Route path="/virtual-studio" element={<VirtualStudio />} />
         <Route path="/beauty-studio" element={<VirtualStudio />} />
         <Route path="/blindglow-ai" element={<VirtualStudio />} />

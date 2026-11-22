@@ -205,8 +205,22 @@ export function Header() {
   // Luxury curated navigation items (Clean, Spacious, No overcrowding)
   const navItems: NavItem[] = [
     {
+      name: 'Get Ready',
+      href: '/get-ready',
+      isRoute: true,
+      badge: 'BRIDAL',
+    },
+    {
       name: 'Services',
       dropdown: [
+        {
+          label: 'Bridal Packages',
+          href: '/get-ready',
+          isRoute: true,
+          icon: Crown,
+          badge: 'ROYAL',
+          description: 'Couture bridal transformations & trials',
+        },
         {
           label: 'Doorstep Salon',
           href: '/doorstep-service',
@@ -220,13 +234,6 @@ export function Header() {
           isRoute: true,
           icon: Palette,
           description: 'Organic bridal & festive mehndi designs',
-        },
-        {
-          label: 'Bridal Packages',
-          href: '/doorstep-service',
-          isRoute: true,
-          icon: Crown,
-          description: 'Complete royal wedding makeovers',
         },
         {
           label: 'Hair Spa & Cuts',
@@ -733,6 +740,17 @@ export function Header() {
                 >
                   <Home className="w-3.5 h-3.5 text-[#B8860B]" />
                   <span>Home</span>
+                </button>
+
+                <button
+                  onClick={() => { navigate('/get-ready'); setIsMenuOpen(false); }}
+                  className="text-foreground hover:text-[#B8860B] font-medium py-2 px-3 rounded-xl hover:bg-[#FAF3E3] dark:hover:bg-[#2A2318] text-left text-xs flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Crown className="w-3.5 h-3.5 text-[#B8860B]" />
+                    <span className="font-semibold text-[#9C7228] dark:text-[#E8C37B]">Get Ready</span>
+                  </div>
+                  <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold bg-[#B8860B] text-white tracking-wider">BRIDAL</span>
                 </button>
 
                 <button
