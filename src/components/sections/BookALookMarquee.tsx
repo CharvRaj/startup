@@ -175,7 +175,7 @@ export function BookALookMarquee() {
                 <div
                   key={look.id}
                   ref={el => { cardRefs.current[i] = el; }}
-                  onClick={() => navigate('/doorstep')}
+                  onClick={() => navigate('/get-ready')}
                   className="cursor-pointer flex flex-col items-center text-center group"
                   style={{
                     opacity: visibleCards[i] ? 1 : 0,

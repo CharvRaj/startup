@@ -337,6 +337,48 @@ const STEPS = [
   },
 ];
 
+const BRIDAL_TICKER_ROW_1 = [
+  'Royal Bridal Makeup',
+  'Airbrush & Ultra HD Base',
+  'Rajputana Poshak Styling',
+  'Double Dupatta Setting',
+  '24K Gold Pre-Bridal Radiance',
+  'Hair Volume Extensions',
+  'Mehendi Day Floral Look',
+  'Sangeet Soft Glam',
+  'Reception Velvet Diva',
+  '18-Hour Waterproof Hold',
+  'Cryo Skin Tightening Prep',
+];
+
+const BRIDAL_TICKER_ROW_2 = [
+  'Singhana Studio & On-Location',
+  '1,200+ Royal Brides',
+  '100% Genuine MAC & Huda Beauty',
+  'Certified Senior Bridal Artists',
+  'Complimentary Mandap Touch-Up Kit',
+  'Mother & Sister Family Makeup',
+  'Razor-Sharp Saree Pleats',
+  'Rajasthan & Haryana Doorstep',
+  'Precision Brow & Lash Styling',
+  '10+ Years Trust & Elegance',
+];
+
+const BRIDAL_PETALS = [
+  { left: '4%', top: '15%', size: 16, rot: -25, delay: 0, dur: 5.5, color: '#b8863b' },
+  { left: '12%', top: '65%', size: 12, rot: 30, delay: 1.2, dur: 4.8, color: '#e0558b' },
+  { left: '20%', top: '28%', size: 18, rot: -15, delay: 0.5, dur: 6.0, color: '#7c1724' },
+  { left: '30%', top: '75%', size: 10, rot: 40, delay: 2.1, dur: 5.2, color: '#b8863b' },
+  { left: '42%', top: '12%', size: 14, rot: -35, delay: 1.8, dur: 4.5, color: '#e0558b' },
+  { left: '55%', top: '68%', size: 16, rot: 20, delay: 0.3, dur: 5.8, color: '#b8863b' },
+  { left: '68%', top: '22%', size: 11, rot: -45, delay: 2.5, dur: 4.9, color: '#7c1724' },
+  { left: '78%', top: '82%', size: 15, rot: 50, delay: 0.8, dur: 5.4, color: '#e0558b' },
+  { left: '88%', top: '18%', size: 13, rot: -20, delay: 1.5, dur: 6.2, color: '#b8863b' },
+  { left: '94%', top: '60%', size: 17, rot: 35, delay: 2.0, dur: 5.0, color: '#7c1724' },
+  { left: '26%', top: '88%', size: 12, rot: -50, delay: 1.1, dur: 4.7, color: '#b8863b' },
+  { left: '62%', top: '85%', size: 14, rot: 25, delay: 1.7, dur: 5.3, color: '#e0558b' },
+];
+
 const FAQS = [
   {
     q: 'How early should I book my bridal makeup date?',
@@ -383,13 +425,79 @@ export function GetReady() {
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#0f0b0d] text-[#fdf8f4]' : 'bg-[#fffdfa] text-[#2d1b22]'}`}>
       
+      {/* Inline Keyframes & Animations */}
+      <style>{`
+        @keyframes bridalPetalFloat {
+          0%   { transform: translateY(0px) rotate(var(--r)) scale(1); opacity: 0.75; }
+          25%  { transform: translateY(-16px) rotate(calc(var(--r) + 12deg)) scale(1.04); opacity: 0.95; }
+          50%  { transform: translateY(-6px) rotate(calc(var(--r) - 8deg)) scale(0.96); opacity: 0.8; }
+          75%  { transform: translateY(-20px) rotate(calc(var(--r) + 16deg)) scale(1.06); opacity: 0.95; }
+          100% { transform: translateY(0px) rotate(var(--r)) scale(1); opacity: 0.75; }
+        }
+        @keyframes marqueeScrollLeft {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes marqueeScrollRight {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0%); }
+        }
+        @keyframes sparklePulse {
+          0%, 100% { transform: scale(1); filter: drop-shadow(0 0 1px #e0558b); }
+          50% { transform: scale(1.25); filter: drop-shadow(0 0 5px #e0558b); }
+        }
+        .bridal-marquee-left {
+          display: flex;
+          width: max-content;
+          animation: marqueeScrollLeft 32s linear infinite;
+        }
+        .bridal-marquee-right {
+          display: flex;
+          width: max-content;
+          animation: marqueeScrollRight 34s linear infinite;
+        }
+        .bridal-marquee-left:hover, .bridal-marquee-right:hover {
+          animation-play-state: paused;
+        }
+        .sparkle-icon {
+          animation: sparklePulse 2.8s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* 1. ROYAL HERO SECTION */}
-      <section className="relative overflow-hidden pt-28 pb-20 md:pt-36 md:pb-28">
+      <section className="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">
         {/* Subtle decorative background gradients */}
         <div className="absolute inset-0 pointer-events-none opacity-40">
           <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-gradient-to-br from-[#9C7228]/30 via-[#b8863b]/10 to-transparent blur-3xl" />
           <div className="absolute top-1/2 -right-32 w-[32rem] h-[32rem] rounded-full bg-gradient-to-bl from-[#7c1724]/25 via-[#9C7228]/15 to-transparent blur-3xl" />
         </div>
+
+        {/* Floating Delicate Bridal Petals & Shimmer Specks */}
+        {BRIDAL_PETALS.map((p, i) => (
+          <span
+            key={i}
+            className="pointer-events-none absolute select-none hidden sm:block"
+            style={{
+              left: p.left,
+              top: p.top,
+              width: `${p.size}px`,
+              height: `${p.size * 1.6}px`,
+              ['--r' as string]: `${p.rot}deg`,
+              animation: `bridalPetalFloat ${p.dur}s ease-in-out ${p.delay}s infinite`,
+              willChange: 'transform',
+              zIndex: 1,
+            }}
+          >
+            <svg viewBox="0 0 24 38" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+              <path
+                d="M12 36 C4 28 0 20 2 11 C4 4 10 0 12 0 C14 0 20 4 22 11 C24 20 20 28 12 36Z"
+                fill={p.color}
+                fillOpacity="0.45"
+              />
+              <line x1="12" y1="2" x2="12" y2="34" stroke={p.color} strokeWidth="0.8" strokeOpacity="0.6" />
+            </svg>
+          </span>
+        ))}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -513,8 +621,45 @@ export function GetReady() {
         </div>
       </section>
 
-      {/* 2. LIVE BRIDAL STATS BAR */}
-      <section className="py-8 border-y border-[#b8863b]/20 bg-[#b8863b]/5 backdrop-blur-sm">
+      {/* 2. DUAL-ROW BRIDAL TICKER MARQUEE (HIGH FASHION RUNWAY STRIP) */}
+      <section className="relative overflow-hidden py-4 sm:py-5 border-y border-[#b8863b]/30 bg-gradient-to-r from-[#fff9f4] via-[#fffdfa] to-[#fff9f4] dark:from-[#150f13] dark:via-[#1a1217] dark:to-[#150f13] select-none">
+        {/* Subtle Edge Vignettes for smooth infinite emergence */}
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-28 bg-gradient-to-r from-[#fff9f4] dark:from-[#150f13] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-28 bg-gradient-to-l from-[#fff9f4] dark:from-[#150f13] to-transparent z-10 pointer-events-none" />
+
+        <div className="space-y-2 sm:space-y-2.5">
+          {/* Row 1: Leftward Scrolling Deep Maroon / Wine Ribbon */}
+          <div className="overflow-hidden flex">
+            <div className="bridal-marquee-left gap-8 sm:gap-12 items-center">
+              {[...BRIDAL_TICKER_ROW_1, ...BRIDAL_TICKER_ROW_1].map((text, idx) => (
+                <div key={idx} className="flex items-center gap-4 sm:gap-6 whitespace-nowrap">
+                  <span className="font-serif font-semibold text-sm sm:text-base tracking-wide text-[#5e0a14] dark:text-[#f8d7dc]">
+                    {text}
+                  </span>
+                  <span className="sparkle-icon text-[#e0558b] text-xs sm:text-sm">✦</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Row 2: Rightward Scrolling Antique Imperial Gold Ribbon */}
+          <div className="overflow-hidden flex">
+            <div className="bridal-marquee-right gap-8 sm:gap-12 items-center">
+              {[...BRIDAL_TICKER_ROW_2, ...BRIDAL_TICKER_ROW_2].map((text, idx) => (
+                <div key={idx} className="flex items-center gap-4 sm:gap-6 whitespace-nowrap">
+                  <span className="font-serif font-bold text-xs sm:text-sm tracking-wider uppercase text-[#a67c2e] dark:text-[#e8c37b]">
+                    {text}
+                  </span>
+                  <span className="sparkle-icon text-[#e0558b] text-xs sm:text-sm">✦</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. LIVE BRIDAL STATS BAR */}
+      <section className="py-8 border-b border-[#b8863b]/20 bg-[#b8863b]/5 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div className="space-y-1">
