@@ -76,12 +76,12 @@ export const CATEGORY_MAP: Record<string, { label: string; image: string; tag: s
   },
   'Bridal Artistry': {
     label: 'Makeup & Bridal',
-    image: '/images/category-bridal.jpg',
+    image: '/images/service-face.png',
     tag: 'Makeup & Bridal',
   },
   'Bridal Beauty': {
     label: 'Makeup & Bridal',
-    image: '/images/category-bridal.jpg',
+    image: '/images/service-face.png',
     tag: 'Makeup & Bridal',
   },
   'Nails': {
@@ -132,14 +132,14 @@ export function getServiceImage(name: string, category: string): { image: string
 
   if (n.includes('bridal') || n.includes('bride')) {
     return {
-      image: '/images/bridal-gallery/bridal-1.jpg',
-      banners: ['/images/bridal-gallery/bridal-1.jpg', '/images/bridal-gallery/bridal-4.jpg', '/images/bridal-gallery/bridal-7.jpg'],
+      image: '/images/service-face.png',
+      banners: ['/images/service-face.png', '/images/larana-hero-portrait.png', '/images/larana-promo-hair.jpg'],
     };
   }
   if (n.includes('party makeup') || n.includes('engagement') || c.includes('makeup')) {
     return {
-      image: '/images/bridal-gallery/bridal-19.jpg',
-      banners: ['/images/bridal-gallery/bridal-19.jpg', '/images/bridal-gallery/bridal-7.jpg', '/images/bridal-gallery/bridal-1.jpg'],
+      image: '/images/service-face.png',
+      banners: ['/images/service-face.png', '/images/larana-promo-hair.jpg', '/images/larana-glow-refresh.png'],
     };
   }
   if (n.includes('threading') || n.includes('eyebrow') || n.includes('upper lip') || n.includes('forehead')) {

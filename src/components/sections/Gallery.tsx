@@ -11,8 +11,7 @@ import {
 
 export function Gallery() {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(() => {
-    const saved = getSavedGalleryItems();
-    return saved.length > 0 ? saved : DEFAULT_GALLERY_IMAGES;
+    return getSavedGalleryItems();
   });
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -27,12 +26,10 @@ export function Gallery() {
   const fetchGalleryImages = useCallback(async () => {
     try {
       const items = await loadUnifiedGallery();
-      if (items && items.length > 0) {
-        setGalleryImages(items);
-      }
+      setGalleryImages(items || []);
     } catch {
       const saved = getSavedGalleryItems();
-      if (saved.length > 0) setGalleryImages(saved);
+      setGalleryImages(saved || []);
     }
   }, []);
 
@@ -53,6 +50,10 @@ export function Gallery() {
   }, [fetchGalleryImages]);
 
   const total = galleryImages.length;
+
+  if (total === 0) {
+    return null;
+  }
 
   // Navigation handlers
   const goToNext = useCallback(() => {
@@ -155,7 +156,7 @@ export function Gallery() {
         background: 'linear-gradient(180deg, var(--background) 0%, hsl(var(--secondary) / 0.25) 100%)',
       }}
     >
-      {/* Signature Royal Spotlight Sweep Keyframe Definition */}
+      {/* Signature Royal Spotlight Sweep & Dual Lights Keyframe Definition */}
       <style>{`
         @keyframes royalSpotlightSweep {
           0% {
@@ -171,6 +172,26 @@ export function Gallery() {
           100% {
             transform: translateX(250%) skewX(-20deg);
             opacity: 0;
+          }
+        }
+        @keyframes spotlightRayLeft {
+          0%, 100% {
+            opacity: 0.55;
+            filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.45));
+          }
+          50% {
+            opacity: 0.85;
+            filter: drop-shadow(0 0 28px rgba(251, 191, 36, 0.7));
+          }
+        }
+        @keyframes spotlightRayRight {
+          0%, 100% {
+            opacity: 0.55;
+            filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.45));
+          }
+          50% {
+            opacity: 0.85;
+            filter: drop-shadow(0 0 28px rgba(251, 191, 36, 0.7));
           }
         }
         .animate-royal-sweep {
@@ -217,6 +238,52 @@ export function Gallery() {
           {/* Edge Gradient Fades for depth */}
           <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-28 md:w-40 bg-gradient-to-r from-background via-background/60 to-transparent z-40" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-28 md:w-40 bg-gradient-to-l from-background via-background/60 to-transparent z-40" />
+
+          {/* ── TWO THEATRICAL DUAL STUDIO LIGHTS FOCUSING ON THE CURRENT DISPLAY PHOTO ── */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-full z-25 overflow-hidden">
+            {/* Left Spotlight Fixture & Angled Downward Beam */}
+            <div className="absolute top-1 sm:top-2 left-[18%] sm:left-[24%] md:left-[28%] -translate-x-1/2 flex flex-col items-center">
+              {/* Studio Metallic Light Fixture Head */}
+              <div className="relative z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-amber-100 via-amber-300 to-amber-700 p-0.5 shadow-[0_0_28px_8px_rgba(251,191,36,0.65)]">
+                <div className="w-full h-full rounded-full bg-gradient-to-tr from-amber-400 to-amber-100 flex items-center justify-center">
+                  <div className="w-3.5 h-3.5 rounded-full bg-white shadow-[0_0_12px_6px_rgba(255,255,255,0.95)]" />
+                </div>
+                {/* Mounting bracket */}
+                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-2 bg-stone-700 rounded-t-sm" />
+              </div>
+              {/* Left Volumetric Light Beam Angling Down into Center Photo */}
+              <div
+                className="w-48 sm:w-64 md:w-80 h-[480px] sm:h-[560px] md:h-[640px] origin-top bg-gradient-to-b from-amber-300/40 via-amber-200/12 to-transparent blur-[2px] sm:blur-sm transform -rotate-[15deg] translate-x-12 sm:translate-x-16"
+                style={{
+                  clipPath: 'polygon(46% 0%, 54% 0%, 100% 100%, 0% 100%)',
+                  animation: 'spotlightRayLeft 4s ease-in-out infinite',
+                }}
+              />
+            </div>
+
+            {/* Right Spotlight Fixture & Angled Downward Beam */}
+            <div className="absolute top-1 sm:top-2 right-[18%] sm:right-[24%] md:right-[28%] translate-x-1/2 flex flex-col items-center">
+              {/* Studio Metallic Light Fixture Head */}
+              <div className="relative z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-bl from-amber-100 via-amber-300 to-amber-700 p-0.5 shadow-[0_0_28px_8px_rgba(251,191,36,0.65)]">
+                <div className="w-full h-full rounded-full bg-gradient-to-tl from-amber-400 to-amber-100 flex items-center justify-center">
+                  <div className="w-3.5 h-3.5 rounded-full bg-white shadow-[0_0_12px_6px_rgba(255,255,255,0.95)]" />
+                </div>
+                {/* Mounting bracket */}
+                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-2 bg-stone-700 rounded-t-sm" />
+              </div>
+              {/* Right Volumetric Light Beam Angling Down into Center Photo */}
+              <div
+                className="w-48 sm:w-64 md:w-80 h-[480px] sm:h-[560px] md:h-[640px] origin-top bg-gradient-to-b from-amber-300/40 via-amber-200/12 to-transparent blur-[2px] sm:blur-sm transform rotate-[15deg] -translate-x-12 sm:-translate-x-16"
+                style={{
+                  clipPath: 'polygon(46% 0%, 54% 0%, 100% 100%, 0% 100%)',
+                  animation: 'spotlightRayRight 4s ease-in-out infinite 0.7s',
+                }}
+              />
+            </div>
+
+            {/* Central Stage Illumination Halo */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 sm:w-[450px] md:w-[580px] h-80 sm:h-[450px] md:h-[580px] rounded-full bg-radial from-amber-300/20 via-amber-100/5 to-transparent blur-3xl pointer-events-none" />
+          </div>
 
           {/* Carousel Stage / Track */}
           <div className="relative w-full h-[460px] sm:h-[530px] md:h-[610px] lg:h-[650px] flex items-center justify-center">
@@ -286,11 +353,16 @@ export function Gallery() {
                   <div
                     className={`relative w-full h-full rounded-[24px] sm:rounded-[28px] overflow-hidden transition-all duration-700 ${
                       isCenter
-                        ? 'shadow-[0_25px_60px_-15px_rgba(201,149,108,0.35),0_15px_30px_-10px_rgba(42,24,16,0.3)] ring-2 ring-[#E27D6B]/40 dark:ring-amber-400/30'
+                        ? 'shadow-[0_25px_60px_-15px_rgba(201,149,108,0.35),0_15px_30px_-10px_rgba(42,24,16,0.3)] ring-2 ring-[#E27D6B]/50 dark:ring-amber-400/50'
                         : 'shadow-lg border border-border/40'
                     }`}
                     style={{ background: '#1C1512' }}
                   >
+                    {/* Top Center Spotlight Halo on Active Card */}
+                    {isCenter && (
+                      <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 w-48 sm:w-64 h-24 bg-amber-200/35 blur-xl rounded-full z-20" />
+                    )}
+
                     {/* The Bridal Image */}
                     <img
                       src={image.url}

@@ -147,6 +147,23 @@ Deno.serve(async (req) => {
         }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
       }
 
+      case 'upload_gallery_image': {
+        const { path, base64Data, contentType } = body;
+        const cleanBase64 = (base64Data || '').replace(/^data:image\/\w+;base64,/, '');
+        const binaryStr = atob(cleanBase64);
+        const bytes = new Uint8Array(binaryStr.length);
+        for (let i = 0; i < binaryStr.length; i++) {
+          bytes[i] = binaryStr.charCodeAt(i);
+        }
+        const { error: upErr } = await supabaseAdmin.storage.from('gallery').upload(path, bytes, {
+          contentType: contentType || 'image/jpeg',
+          upsert: true,
+        });
+        if (upErr) throw upErr;
+        const { data: { publicUrl } } = supabaseAdmin.storage.from('gallery').getPublicUrl(path);
+        return new Response(JSON.stringify({ publicUrl }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
       case 'insert_gallery_image': {
         const { title, url, storage_path, display_order } = body;
         const { data, error } = await supabaseAdmin.from('gallery_images').insert({
@@ -178,6 +195,12 @@ Deno.serve(async (req) => {
             await supabaseAdmin.from('gallery_images').update({ display_order: item.display_order }).eq('id', item.id);
           }
         }
+        return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      case 'delete_all_gallery_images': {
+        const { error } = await supabaseAdmin.from('gallery_images').delete().neq('id', 'placeholder_never_matches');
+        if (error) throw error;
         return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
       }
 

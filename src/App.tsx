@@ -40,6 +40,7 @@ import { VirtualStudio } from './pages/VirtualStudio';
 import { TrainingAcademy } from './pages/TrainingAcademy';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { GlowUpCTA } from '@/components/sections/GlowUpCTA';
 import { Toaster } from '@/components/ui/toaster';
 import { FloatingAssistant } from '@/components/FloatingAssistant';
 import { FloatingWhatsApp } from '@/components/FloatingWhatsApp';
@@ -116,6 +117,7 @@ function AppContent() {
         <Route path="/query-resolver-dashboard" element={<QueryResolverDashboard />} />
       </Routes>
       {!hideHeaderFooter && <Footer />}
+      {location.pathname === '/' && <GlowUpCTA />}
       <FloatingHelpButton />
     </div>
   );

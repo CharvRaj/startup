@@ -48,10 +48,10 @@ const QUICK_GLOW_ITEMS: QuickGlowItem[] = [
   },
   {
     id: 'qg-5',
-    title: 'Bridal Shringar HD Glow',
+    title: 'Party & Festive HD Glow',
     discount: 'SAVE ₹1,500',
-    image: '/images/category-bridal.jpg',
-    filterName: 'Bridal Beauty',
+    image: '/images/service-face.png',
+    filterName: 'Makeup Services',
     badge: 'Royal HD',
   },
   {

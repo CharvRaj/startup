@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { GlowUpSection } from '@/components/sections/GlowUpSection';
 import { Hero } from '@/components/sections/Hero';
 import { FestiveCategoryCanopy } from '@/components/sections/FestiveCategoryCanopy';
+import { BookALookMarquee } from '@/components/sections/BookALookMarquee';
 import { QuickGlowBanner } from '@/components/sections/QuickGlowBanner';
 import { Services } from '@/components/sections/Services';
 import { Gallery } from '@/components/sections/Gallery';
@@ -114,6 +115,7 @@ export function Home() {
       <GlowUpSection />
       <Hero />
       <FestiveCategoryCanopy />
+      <BookALookMarquee />
       <DoorstepBanner />
       <QuickGlowBanner />
 

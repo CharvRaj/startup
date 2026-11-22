@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Sparkles, Calendar, CheckCircle, XCircle, Clock, Mail, Phone,
   ArrowLeft, Upload, Image as ImageIcon, Trash2, Loader2, RefreshCw,
-  TrendingUp, Star, Package, Users, ShoppingBag, BarChart3,
+  TrendingUp, Star, Package, Users, ShoppingBag, BarChart3, Images,
   Bell, MapPin, QrCode, Award, Store, Camera, ScanLine, X as XIcon, MoveUp, MoveDown,
   Download, FileSpreadsheet, BookOpen, Plus, Link as LinkIcon, Activity, HelpCircle, MessageSquare, Eye, Copy, Key, User, Phone as PhoneIcon,
   Megaphone, AlertTriangle, UserCheck, Send, Power,
@@ -39,8 +39,9 @@ import {
   loadUnifiedGallery,
   reorderGalleryItem,
   deleteGalleryItem,
+  deleteAllGalleryItems,
   addGalleryItem,
-  resetGalleryToBridalCollection,
+  addMultipleGalleryItems,
 } from '@/lib/galleryStore';
 
 const ADMIN_EMAIL = 'charvraj2006@gmail.com';
@@ -162,6 +163,16 @@ export function Admin() {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{
+    active: boolean;
+    total: number;
+    completed: number;
+    remaining: number;
+    percent: number;
+    currentFileName: string;
+    speed: string;
+    eta: string;
+  } | null>(null);
   const [newImageTitle, setNewImageTitle] = useState('');
   const [storyBanners, setStoryBanners] = useState<StoryBanner[]>([]);
   const [newStory, setNewStory] = useState({ title: '', link_url: '', expires_days: '7' });
@@ -1186,8 +1197,8 @@ export function Admin() {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1800; // Ultra HD Sharpness for Retina/4K
-          const MAX_HEIGHT = 2400;
+          const MAX_WIDTH = 1200; // Optimal HD Sharpness for retina web/mobile displays
+          const MAX_HEIGHT = 1600;
           let width = img.width;
           let height = img.height;
 
@@ -1204,8 +1215,8 @@ export function Admin() {
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
             ctx.drawImage(img, 0, 0, width, height);
-            // 0.88 delivers crystal-clear studio detail with a lightweight ~200-350KB payload
-            resolve(canvas.toDataURL('image/jpeg', 0.88));
+            // 0.82 delivers crisp studio detail with a lightweight ~80-140KB payload
+            resolve(canvas.toDataURL('image/jpeg', 0.82));
           } else {
             resolve(e.target?.result as string);
           }
@@ -1224,15 +1235,31 @@ export function Admin() {
       toast({ title: 'Enter title first', description: 'Please provide a title before uploading.', variant: 'destructive' });
       return;
     }
+    const startTime = Date.now();
     setUploading(true);
+    setUploadProgress({
+      active: true,
+      total: 1,
+      completed: 0,
+      remaining: 1,
+      percent: 15,
+      currentFileName: file.name,
+      speed: 'Calculating...',
+      eta: 'Preparing...',
+    });
+
     try {
       const ext = file.name.split('.').pop() || 'jpg';
       const path = `gallery-${Date.now()}.${ext}`;
       let publicUrl = '';
 
+      setUploadProgress(prev => prev ? { ...prev, percent: 35, eta: 'Processing image...' } : null);
+
       // 1. First optimize image to crisp WebP/JPEG format for high performance and sub-second load times
       const optimizedDataUrl = await preserveOriginalImageFile(file);
       publicUrl = optimizedDataUrl;
+
+      setUploadProgress(prev => prev ? { ...prev, percent: 70, eta: 'Saving to cloud...' } : null);
 
       // 2. Try Supabase Storage upload, catching any RLS restrictions without failing
       try {
@@ -1241,11 +1268,40 @@ export function Admin() {
           const { data: { publicUrl: url } } = supabase.storage.from('gallery').getPublicUrl(path);
           if (url) publicUrl = url;
         } else {
-          console.warn('Supabase storage note (falling back to high-res local store):', upErr.message);
+          try {
+            const res = await adminCall('upload_gallery_image', {
+              path,
+              base64Data: optimizedDataUrl,
+              contentType: file.type || 'image/jpeg',
+            });
+            if (res?.publicUrl) publicUrl = res.publicUrl;
+          } catch {}
         }
       } catch (storageErr: any) {
-        console.warn('Storage upload note:', storageErr?.message);
+        try {
+          const res = await adminCall('upload_gallery_image', {
+            path,
+            base64Data: optimizedDataUrl,
+            contentType: file.type || 'image/jpeg',
+          });
+          if (res?.publicUrl) publicUrl = res.publicUrl;
+        } catch {}
       }
+
+      const elapsedSec = Math.max(0.1, (Date.now() - startTime) / 1000);
+      const speedKbps = (file.size / elapsedSec) / 1024;
+      const speedStr = speedKbps > 1024 ? `${(speedKbps / 1024).toFixed(1)} MB/s` : `${Math.round(speedKbps)} KB/s`;
+
+      setUploadProgress({
+        active: true,
+        total: 1,
+        completed: 1,
+        remaining: 0,
+        percent: 100,
+        currentFileName: file.name,
+        speed: speedStr,
+        eta: 'Done!',
+      });
 
       // 3. Save into local-first unified gallery store immediately
       const newItem = {
@@ -1286,20 +1342,177 @@ export function Admin() {
     } catch (e: any) {
       toast({ title: 'Upload Failed', description: e.message, variant: 'destructive' });
     } finally {
+      setTimeout(() => {
+        setUploadProgress(null);
+        setUploading(false);
+      }, 1000);
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    if (!confirm('Are you sure you want to permanently delete ALL photos from the gallery? This cannot be undone.')) return;
+    setUploading(true);
+    try {
+      await deleteAllGalleryItems();
+      setGalleryImages([]);
+      try {
+        await adminCall('delete_all_gallery_images');
+      } catch {}
+      toast({ title: 'Gallery Cleared', description: 'All images deleted permanently.' });
+    } catch (e: any) {
+      toast({ title: 'Delete Failed', description: e.message, variant: 'destructive' });
+    } finally {
       setUploading(false);
     }
   };
 
-  const syncNewBridalCollection = async () => {
+  const handleBulkImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
     setUploading(true);
+    const totalFiles = files.length;
+    const totalBytes = files.reduce((acc, f) => acc + f.size, 0);
+    let bytesProcessed = 0;
+    const startTime = Date.now();
+
+    setUploadProgress({
+      active: true,
+      total: totalFiles,
+      completed: 0,
+      remaining: totalFiles,
+      percent: 2,
+      currentFileName: files[0]?.name || '',
+      speed: 'Calculating...',
+      eta: 'Estimating...',
+    });
+
     try {
-      const updated = resetGalleryToBridalCollection();
+      const newItems: Array<{ id: string; title: string; url: string; storage_path?: string }> = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const ext = file.name.split('.').pop() || 'jpg';
+        const path = `gallery-${Date.now()}-${i}.${ext}`;
+        const itemTitle = newImageTitle
+          ? (files.length > 1 ? `${newImageTitle} #${i + 1}` : newImageTitle)
+          : file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+
+        const elapsedAtStart = Math.max(0.1, (Date.now() - startTime) / 1000);
+        const currentSpeedKbps = bytesProcessed > 0 ? (bytesProcessed / elapsedAtStart) / 1024 : 0;
+        const speedFormatted = currentSpeedKbps > 1024 
+          ? `${(currentSpeedKbps / 1024).toFixed(1)} MB/s` 
+          : currentSpeedKbps > 0 
+            ? `${Math.round(currentSpeedKbps)} KB/s` 
+            : 'Calculating...';
+
+        const remainingBytes = Math.max(0, totalBytes - bytesProcessed);
+        const remainingSec = currentSpeedKbps > 0 ? Math.ceil(remainingBytes / (currentSpeedKbps * 1024)) : 0;
+        const etaFormatted = remainingSec > 60
+          ? `~${Math.floor(remainingSec / 60)}m ${remainingSec % 60}s remaining`
+          : remainingSec > 0
+            ? `~${remainingSec}s remaining`
+            : 'Uploading...';
+
+        setUploadProgress({
+          active: true,
+          total: totalFiles,
+          completed: i,
+          remaining: totalFiles - i,
+          percent: Math.max(2, Math.round((bytesProcessed / Math.max(totalBytes, 1)) * 100)),
+          currentFileName: file.name,
+          speed: speedFormatted,
+          eta: etaFormatted,
+        });
+
+        const optimizedDataUrl = await preserveOriginalImageFile(file);
+        let publicUrl = optimizedDataUrl;
+
+        try {
+          const { error: upErr } = await supabase.storage.from('gallery').upload(path, file, { upsert: true });
+          if (!upErr) {
+            const { data: { publicUrl: url } } = supabase.storage.from('gallery').getPublicUrl(path);
+            if (url) publicUrl = url;
+          } else {
+            try {
+              const res = await adminCall('upload_gallery_image', {
+                path,
+                base64Data: optimizedDataUrl,
+                contentType: file.type || 'image/jpeg',
+              });
+              if (res?.publicUrl) publicUrl = res.publicUrl;
+            } catch {}
+          }
+        } catch {
+          try {
+            const res = await adminCall('upload_gallery_image', {
+              path,
+              base64Data: optimizedDataUrl,
+              contentType: file.type || 'image/jpeg',
+            });
+            if (res?.publicUrl) publicUrl = res.publicUrl;
+          } catch {}
+        }
+
+        newItems.push({
+          id: `custom-${Date.now()}-${i}`,
+          title: itemTitle,
+          url: publicUrl,
+          storage_path: path,
+        });
+
+        // Background sync to database
+        try {
+          supabase
+            .from('gallery_images')
+            .insert({
+              title: itemTitle,
+              url: publicUrl.startsWith('data:') && publicUrl.length > 200000 ? '' : publicUrl,
+              storage_path: path,
+              display_order: i + 1,
+            })
+            .then(() => {});
+        } catch {}
+
+        bytesProcessed += file.size;
+
+        const elapsedAfter = Math.max(0.1, (Date.now() - startTime) / 1000);
+        const finalSpeedKbps = (bytesProcessed / elapsedAfter) / 1024;
+        const finalSpeedFormatted = finalSpeedKbps > 1024 
+          ? `${(finalSpeedKbps / 1024).toFixed(1)} MB/s` 
+          : `${Math.round(finalSpeedKbps)} KB/s`;
+
+        const remBytesAfter = Math.max(0, totalBytes - bytesProcessed);
+        const remSecAfter = finalSpeedKbps > 0 ? Math.ceil(remBytesAfter / (finalSpeedKbps * 1024)) : 0;
+        const etaAfter = i + 1 === totalFiles 
+          ? 'Done!'
+          : remSecAfter > 60 
+            ? `~${Math.floor(remSecAfter / 60)}m ${remSecAfter % 60}s remaining`
+            : `~${remSecAfter}s remaining`;
+
+        setUploadProgress({
+          active: true,
+          total: totalFiles,
+          completed: i + 1,
+          remaining: totalFiles - (i + 1),
+          percent: Math.min(100, Math.round((bytesProcessed / Math.max(totalBytes, 1)) * 100)),
+          currentFileName: file.name,
+          speed: finalSpeedFormatted,
+          eta: etaAfter,
+        });
+      }
+
+      const updated = addMultipleGalleryItems(newItems, 'top');
       setGalleryImages(updated);
-      toast({ title: '21 Bridal Photos Restored & Synced!' });
-    } catch (e: any) {
-      toast({ title: 'Collection Updated', description: 'Loaded authentic bridal photos.' });
+      toast({ title: 'Group Uploaded Successfully!', description: `Added ${newItems.length} photos to the gallery.` });
+      setNewImageTitle('');
+      e.target.value = '';
+    } catch (err: any) {
+      toast({ title: 'Group Upload Error', description: err.message, variant: 'destructive' });
     } finally {
-      setUploading(false);
+      setTimeout(() => {
+        setUploadProgress(null);
+        setUploading(false);
+      }, 1000);
     }
   };
 
@@ -3271,34 +3484,130 @@ export function Admin() {
                 <div className="flex items-center gap-2">
                   <Button
                     size="sm"
-                    variant="outline"
-                    onClick={syncNewBridalCollection}
-                    disabled={uploading}
-                    className="gap-2 border-primary/30 text-primary hover:bg-primary/10 text-xs font-semibold"
+                    variant="destructive"
+                    onClick={handleDeleteAll}
+                    disabled={uploading || galleryImages.length === 0}
+                    className="gap-1.5 text-xs font-semibold bg-red-600 hover:bg-red-700 shadow-sm"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-primary" />
-                    Reset & Sync 21 Bridal Photos
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete All
                   </Button>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-3 mb-6">
-                <Input placeholder="Image title..." value={newImageTitle} onChange={(e) => setNewImageTitle(e.target.value)} className="flex-1" />
-                <label className="cursor-pointer">
-                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading || !newImageTitle} />
-                  <Button type="button" disabled={uploading || !newImageTitle} asChild>
-                    <span>{uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Upload className="w-4 h-4 mr-2" />Upload</>}</span>
-                  </Button>
-                </label>
+              <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                <Input
+                  placeholder="Image title (or group title prefix)..."
+                  value={newImageTitle}
+                  onChange={(e) => setNewImageTitle(e.target.value)}
+                  className="flex-1"
+                />
+                <div className="flex items-center gap-2">
+                  {/* Single Photo Upload */}
+                  <label className="cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      disabled={uploading}
+                    />
+                    <Button type="button" variant="outline" disabled={uploading} asChild>
+                      <span>
+                        {uploading ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <><Upload className="w-4 h-4 mr-1.5" /> Upload Single</>
+                        )}
+                      </span>
+                    </Button>
+                  </label>
+
+                  {/* Add in Group (Bulk Multiple Files) */}
+                  <label className="cursor-pointer">
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleBulkImageUpload}
+                      className="hidden"
+                      disabled={uploading}
+                    />
+                    <Button type="button" disabled={uploading} className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-sm" asChild>
+                      <span>
+                        {uploading ? (
+                          <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Processing...</>
+                        ) : (
+                          <><Images className="w-4 h-4 mr-1.5" /> Add in Group</>
+                        )}
+                      </span>
+                    </Button>
+                  </label>
+                </div>
               </div>
+
+              {/* Real-time Upload Progress Card */}
+              {uploadProgress?.active && (
+                <div className="mb-6 p-4 rounded-xl border border-primary/40 bg-gradient-to-r from-primary/10 via-amber-500/10 to-primary/5 shadow-md backdrop-blur-sm animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-2 rounded-lg bg-primary/20 text-primary">
+                        <Upload className="w-4 h-4 animate-bounce" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm text-foreground">
+                            Uploading {uploadProgress.completed} of {uploadProgress.total} images
+                          </span>
+                          <Badge variant="outline" className="text-xs bg-primary/15 text-primary border-primary/30 font-semibold px-2 py-0.5">
+                            {uploadProgress.percent}%
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate max-w-xs sm:max-w-md mt-0.5">
+                          Current: <span className="text-foreground font-medium">{uploadProgress.currentFileName}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Stats pills: Remaining, Speed, ETA */}
+                    <div className="flex items-center gap-2 text-xs flex-wrap">
+                      <div className="flex items-center gap-1.5 bg-background/80 px-2.5 py-1 rounded-md border border-border/60 shadow-xs">
+                        <Clock className="w-3.5 h-3.5 text-amber-500" />
+                        <span className="text-muted-foreground">Remaining:</span>
+                        <span className="font-bold text-foreground font-mono">{uploadProgress.remaining}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-background/80 px-2.5 py-1 rounded-md border border-border/60 shadow-xs">
+                        <Activity className="w-3.5 h-3.5 text-emerald-500" />
+                        <span className="text-muted-foreground">Speed:</span>
+                        <span className="font-bold text-foreground font-mono">{uploadProgress.speed}</span>
+                      </div>
+                      {uploadProgress.eta && (
+                        <div className="flex items-center gap-1.5 bg-background/80 px-2.5 py-1 rounded-md border border-border/60 shadow-xs">
+                          <span className="text-muted-foreground">ETA:</span>
+                          <span className="font-bold text-amber-400 font-mono">{uploadProgress.eta}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Dynamic Progress Bar */}
+                  <div className="w-full bg-secondary/80 h-2.5 rounded-full overflow-hidden p-0.5 border border-border/40">
+                    <div
+                      className="bg-gradient-to-r from-primary via-amber-500 to-amber-400 h-full rounded-full transition-all duration-300 shadow-sm"
+                      style={{ width: `${Math.min(100, Math.max(3, uploadProgress.percent))}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
               {galleryImages.length === 0 ? (
-                <div className="text-center py-12">
-                  <ImageIcon className="w-16 h-16 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-muted-foreground">No images in gallery</p>
-                  <Button variant="outline" size="sm" onClick={syncNewBridalCollection} className="mt-4 gap-2">
-                    <Sparkles className="w-4 h-4 text-primary" /> Restore 21 Bridal Masterpieces
-                  </Button>
+                <div className="text-center py-14 border border-dashed border-border/60 rounded-2xl bg-card/20">
+                  <ImageIcon className="w-16 h-16 text-muted-foreground/60 mx-auto mb-3" />
+                  <p className="text-base font-semibold text-foreground">Gallery is empty</p>
+                  <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+                    No images in gallery. Use "Upload Single" or "Add in Group" to add your photos.
+                  </p>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

@@ -81,7 +81,7 @@ const DOORSTEP_CATEGORIES: CategoryItem[] = [
     name: 'Bridal Beauty',
     tagline: 'Complete HD pre-bridal packages',
     startingPrice: '₹3,999',
-    image: '/images/category-bridal.jpg',
+    image: '/images/larana-hero-portrait.png',
     alt: 'Royal Indian bridal beauty and shringar',
     targetCategory: 'Bridal Artistry',
     section: 'doorstep',

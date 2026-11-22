@@ -86,11 +86,11 @@ export const ALL_DOORSTEP_SERVICES: ServiceDetailItem[] = [
     original_price: 5499,
     discount_percent: 27,
     duration_minutes: 120,
-    image_url: '/images/bridal-gallery/bridal-1.jpg',
+    image_url: '/images/service-face.png',
     banner_urls: [
-      '/images/bridal-gallery/bridal-1.jpg',
-      '/images/bridal-gallery/bridal-4.jpg',
-      '/images/bridal-gallery/bridal-7.jpg',
+      '/images/service-face.png',
+      '/images/larana-hero-portrait.png',
+      '/images/larana-promo-hair.jpg',
     ],
     inclusions: [
       'Skin-prep hydrating serum & pore-blurring base',
@@ -357,11 +357,11 @@ export const ALL_DOORSTEP_SERVICES: ServiceDetailItem[] = [
     original_price: 2500,
     discount_percent: 24,
     duration_minutes: 75,
-    image_url: '/images/bridal-gallery/bridal-19.jpg',
+    image_url: '/images/service-face.png',
     banner_urls: [
-      '/images/bridal-gallery/bridal-19.jpg',
-      '/images/bridal-gallery/bridal-7.jpg',
+      '/images/service-face.png',
       '/images/larana-promo-hair.jpg',
+      '/images/larana-glow-refresh.png',
     ],
     inclusions: [
       'Customized eye look & waterproof mascara',
@@ -625,8 +625,8 @@ export function formatServiceFromRaw(raw: any, explicitType?: 'doorstep' | 'mehn
     else if (nameL.includes('wax') || catL.includes('wax')) defaultImg = '/images/larana-cat-waxing.jpg';
     else if (nameL.includes('nail') || nameL.includes('pedicure') || nameL.includes('manicure') || catL.includes('nail')) defaultImg = '/images/larana-promo-nails.jpg';
     else if (nameL.includes('hair') || catL.includes('hair')) defaultImg = '/images/larana-promo-hair.jpg';
-    else if (nameL.includes('bridal') || catL.includes('bridal')) defaultImg = '/images/bridal-gallery/bridal-1.jpg';
-    else if (nameL.includes('makeup') || catL.includes('makeup')) defaultImg = '/images/bridal-gallery/bridal-19.jpg';
+    else if (nameL.includes('bridal') || catL.includes('bridal')) defaultImg = '/images/service-face.png';
+    else if (nameL.includes('makeup') || catL.includes('makeup')) defaultImg = '/images/service-face.png';
     else if (nameL.includes('massage') || catL.includes('massage') || catL.includes('spa')) defaultImg = '/images/larana-cat-massage.jpg';
     else if (nameL.includes('tan') || nameL.includes('glow') || catL.includes('skin')) defaultImg = '/images/larana-glow-refresh.png';
     else if (nameL.includes('clean') || catL.includes('face')) defaultImg = '/images/larana-promo-facial.jpg';

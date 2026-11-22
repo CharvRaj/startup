@@ -23,7 +23,7 @@ export const PRESET_BANNER_IMAGES = [
   { label: 'Relaxing Spa & Stones', url: '/images/larana-relaxing-spa.png' },
   { label: 'Swedish Massage & Care', url: '/images/larana-spa-massage.png' },
   { label: 'Deep Pore Cleansing', url: '/images/larana-facial-cleansing.png' },
-  { label: 'Luxe Bridal Glow', url: '/images/category-bridal.jpg' },
+  { label: 'Party & Festive Glam', url: '/images/service-face.png' },
   { label: 'Radiant Natural Beauty', url: '/images/larana-hero-portrait.png' },
 ];
 

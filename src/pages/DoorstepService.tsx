@@ -48,11 +48,11 @@ const PROMO_CAROUSEL_ITEMS = [
   },
   {
     id: 'promo-4',
-    title: 'Royal Bridal Glow',
+    title: 'Royal Glow & Glam',
     subtitle: 'Luxury HD Artistry',
     ctaText: 'Explore Now',
     category: 'Makeup & Bridal',
-    image: '/images/category-bridal.jpg',
+    image: '/images/larana-hero-portrait.png',
   },
 ];
 
@@ -100,17 +100,17 @@ const POPULAR_FEATURED_SERVICES = [
   },
   {
     id: 'feat-bridal-makeup',
-    name: 'Bridal Makeup',
+    name: 'Party & Occasion Glam',
     tag: 'Trending',
     category: 'Makeup & Bridal',
-    description: 'Traditional to modern bridal look.',
+    description: 'Glamorous event-ready party look.',
     rating: 4.8,
     reviews: 164,
-    duration: 120,
+    duration: 90,
     price: 2499,
     originalPrice: 3999,
     discountPercent: 29,
-    image: '/images/category-bridal.jpg',
+    image: '/images/service-face.png',
   },
 ];
 
