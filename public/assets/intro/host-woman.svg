@@ -1,4 +1,4 @@
-<svg class="person w" viewBox="0 0 200 500" aria-hidden="true">
+<svg xmlns="http://www.w3.org/2000/svg" class="person w" viewBox="0 0 200 500" aria-hidden="true">
         <defs>
           <pattern id="pais" width="16" height="20" patternUnits="userSpaceOnUse"><path d="M8 3Q13 9 8 16Q3 9 8 3Z" fill="#e0bb6c" opacity=".9"/></pattern>
           <g id="wArm">
