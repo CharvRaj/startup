@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/context/ThemeContext';
+import { AmbientFireflies } from '@/components/common/AmbientFireflies';
+import { VelvetCurtainReveal } from '@/components/common/VelvetCurtainReveal';
 
 interface BridalPackage {
   id: string;
@@ -386,7 +388,7 @@ const FAQS = [
   },
   {
     q: 'Can Satguru artists travel to our wedding venue or hotel?',
-    a: 'Yes, absolutely! We provide on-location bridal vanity services across Jaipur, Singhana, Jhunjhunu, Khetri, Sikar, and destination venues throughout Rajasthan and Haryana. Travel charges apply based on distance.',
+    a: 'Yes, absolutely! We provide on-location bridal vanity services across  Singhana, Jhunjhunu, Khetri, Sikar, and destination venues throughout Rajasthan and Haryana. Travel charges apply based on distance.',
   },
   {
     q: 'Is the bridal makeup trial included in the package?',
@@ -424,7 +426,7 @@ export function GetReady() {
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#0f0b0d] text-[#fdf8f4]' : 'bg-[#fffdfa] text-[#2d1b22]'}`}>
-      
+
       {/* Inline Keyframes & Animations */}
       <style>{`
         @keyframes bridalPetalFloat {
@@ -499,15 +501,18 @@ export function GetReady() {
           </span>
         ))}
 
+        {/* Ambient Golden Palace Fireflies & Diyas */}
+        <AmbientFireflies count={26} enableLanterns={true} />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            
+
             {/* Left Column: Royal Headline & CTAs */}
             <div className="lg:col-span-7 text-center lg:text-left space-y-6">
-              
+
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b8863b]/40 bg-[#b8863b]/10 backdrop-blur-sm text-[#b8863b] text-xs md:text-sm font-medium tracking-widest uppercase">
                 <Crown className="w-4 h-4 text-[#b8863b]" />
-                Satguru Bridals • Singhana & Jaipur
+                Satguru Bridals • Singhana
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-balance leading-[1.15]">
@@ -574,7 +579,7 @@ export function GetReady() {
             {/* Right Column: Arched Royal Bridal Frame */}
             <div className="lg:col-span-5 flex justify-center">
               <div className="relative group w-full max-w-sm sm:max-w-md">
-                
+
                 {/* Glowing Outer Aura */}
                 <div className="absolute -inset-2 bg-gradient-to-tr from-[#b8863b]/30 via-[#d4af37]/20 to-[#7c1724]/30 rounded-t-[14rem] rounded-b-2xl blur-lg group-hover:blur-xl transition-all duration-500 opacity-70" />
 
@@ -685,7 +690,7 @@ export function GetReady() {
       {/* 3. SIGNATURE BRIDAL PACKAGES */}
       <section id="bridal-packages" className="py-20 md:py-28 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase text-[#b8863b] bg-[#b8863b]/10 border border-[#b8863b]/30">
               <Sparkles className="w-3.5 h-3.5" /> Curated Bridal Tiers
@@ -702,11 +707,10 @@ export function GetReady() {
             {BRIDAL_PACKAGES.map((pkg) => (
               <div
                 key={pkg.id}
-                className={`relative rounded-3xl flex flex-col justify-between overflow-hidden transition-all duration-300 border ${
-                  pkg.popular
+                className={`relative rounded-3xl flex flex-col justify-between overflow-hidden transition-all duration-300 border ${pkg.popular
                     ? 'border-[#b8863b] shadow-2xl shadow-[#b8863b]/20 bg-gradient-to-b from-[#b8863b]/10 via-card to-card lg:-translate-y-4'
                     : 'border-border/60 hover:border-[#b8863b]/40 bg-card shadow-lg hover:shadow-xl'
-                }`}
+                  }`}
               >
                 {/* Popular Ribbon */}
                 {pkg.badge && (
@@ -726,7 +730,7 @@ export function GetReady() {
                       className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
-                    
+
                     <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
                       <span className="text-xs px-2.5 py-1 rounded-full bg-black/60 text-white backdrop-blur-md flex items-center gap-1">
                         <Clock className="w-3 h-3 text-[#b8863b]" /> {pkg.duration}
@@ -768,11 +772,10 @@ export function GetReady() {
                 <div className="p-6 sm:p-8 pt-0">
                   <Button
                     onClick={() => openWhatsApp(pkg.whatsAppText)}
-                    className={`w-full py-6 rounded-2xl font-medium transition-all ${
-                      pkg.popular
+                    className={`w-full py-6 rounded-2xl font-medium transition-all ${pkg.popular
                         ? 'bg-gradient-to-r from-[#b8863b] to-[#9C7228] text-white hover:opacity-95 shadow-md shadow-[#b8863b]/25'
                         : 'bg-primary/10 text-primary hover:bg-[#b8863b] hover:text-white border border-[#b8863b]/30'
-                    }`}
+                      }`}
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
                     Book This Package
@@ -789,7 +792,7 @@ export function GetReady() {
       {/* 4. PACKAGE COMPARISON TABLE */}
       <section className="py-16 bg-[#b8863b]/5 border-y border-[#b8863b]/20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h3 className="text-2xl sm:text-3xl font-serif font-bold">Compare Packages Side-by-Side</h3>
             <p className="text-sm text-muted-foreground mt-2">Find the exact match for your wedding week rituals and entourage.</p>
@@ -800,9 +803,9 @@ export function GetReady() {
               <thead>
                 <tr className="border-b border-border/80 bg-muted/40">
                   <th className="p-4 sm:p-5 font-serif font-bold text-base">Features & Treatments</th>
-                  <th className="p-4 sm:p-5 font-serif font-bold text-base text-center">Classic<br/><span className="text-xs font-normal text-muted-foreground">₹15,000</span></th>
-                  <th className="p-4 sm:p-5 font-serif font-bold text-base text-center text-[#b8863b]">Signature ⭐<br/><span className="text-xs font-normal text-[#b8863b]">₹25,000</span></th>
-                  <th className="p-4 sm:p-5 font-serif font-bold text-base text-center">Royal Empress<br/><span className="text-xs font-normal text-muted-foreground">₹40,000</span></th>
+                  <th className="p-4 sm:p-5 font-serif font-bold text-base text-center">Classic<br /><span className="text-xs font-normal text-muted-foreground">₹15,000</span></th>
+                  <th className="p-4 sm:p-5 font-serif font-bold text-base text-center text-[#b8863b]">Signature ⭐<br /><span className="text-xs font-normal text-[#b8863b]">₹25,000</span></th>
+                  <th className="p-4 sm:p-5 font-serif font-bold text-base text-center">Royal Empress<br /><span className="text-xs font-normal text-muted-foreground">₹40,000</span></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/40">
@@ -824,7 +827,7 @@ export function GetReady() {
       {/* 5. PRE-BRIDAL SKINCARE & GLOW TIMELINE */}
       <section className="py-20 md:py-28 relative">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase text-[#b8863b] bg-[#b8863b]/10 border border-[#b8863b]/30">
               <Sparkles className="w-3.5 h-3.5" /> Scientific Glow Plan
@@ -844,7 +847,7 @@ export function GetReady() {
                 className="relative rounded-3xl border border-border/70 bg-card p-6 sm:p-8 hover:border-[#b8863b]/50 transition-all duration-300 shadow-md hover:shadow-xl"
               >
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                  
+
                   {/* Step Num & Timeframe */}
                   <div className="md:col-span-3 flex md:flex-col items-center md:items-start justify-between gap-2 border-b md:border-b-0 md:border-r border-border/60 pb-4 md:pb-0 md:pr-4">
                     <div className="flex items-center gap-3">
@@ -890,7 +893,7 @@ export function GetReady() {
       {/* 6. ADD-ON SERVICES FOR THE WHOLE CELEBRATION */}
       <section className="py-20 bg-muted/30 border-y border-border/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase text-[#b8863b] bg-[#b8863b]/10 border border-[#b8863b]/30">
               <Crown className="w-3.5 h-3.5" /> Full Entourage Care
@@ -937,10 +940,13 @@ export function GetReady() {
         </div>
       </section>
 
-      {/* 7. BRIDAL LOOKS WE LOVE (FILTERABLE HIGH-RES GALLERY) */}
-      <section className="py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+      {/* 7. BRIDAL LOOKS WE LOVE (FILTERABLE HIGH-RES GALLERY WITH JHAROKHA FRAMES) */}
+      <section className="py-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-transparent via-[#140803]/40 to-transparent">
+        {/* Ambient Golden Sparks among Jharokhas */}
+        <AmbientFireflies count={18} />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase text-[#b8863b] bg-[#b8863b]/10 border border-[#b8863b]/30">
               <Eye className="w-3.5 h-3.5" /> Real Satguru Brides
@@ -965,11 +971,10 @@ export function GetReady() {
                 <button
                   key={chip.id}
                   onClick={() => setActiveCategory(chip.id)}
-                  className={`text-xs px-4 py-2 rounded-full font-medium transition-all ${
-                    activeCategory === chip.id
+                  className={`text-xs px-4 py-2 rounded-full font-medium transition-all ${activeCategory === chip.id
                       ? 'bg-gradient-to-r from-[#b8863b] to-[#9C7228] text-white shadow-md'
                       : 'bg-muted/50 hover:bg-muted text-muted-foreground border border-border/50'
-                  }`}
+                    }`}
                 >
                   {chip.label}
                 </button>
@@ -977,36 +982,51 @@ export function GetReady() {
             </div>
           </div>
 
-          {/* Gallery Grid */}
+          {/* Editorial Bridal Showcase Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredLooks.map((look) => (
               <div
                 key={look.id}
                 onClick={() => setSelectedImage(look)}
-                className="group relative cursor-pointer overflow-hidden rounded-2xl border border-border/60 bg-card shadow-md hover:shadow-2xl transition-all duration-300"
+                className="group relative cursor-pointer overflow-hidden rounded-2xl border border-border/70 bg-card shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
               >
-                <div className="aspect-[3/4] w-full overflow-hidden bg-muted/20">
+                {/* 3:4 High-Resolution Portrait Photo */}
+                <div className="aspect-[3/4] w-full overflow-hidden bg-muted/20 relative">
                   <img
                     src={look.src}
                     alt={look.title}
-                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-106"
                     loading="lazy"
                   />
-                </div>
 
-                {/* Overlay Card Details */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5 text-white">
-                  <span className="text-[10px] font-semibold tracking-wider uppercase text-[#e3c487] mb-1">
-                    {look.outfit}
-                  </span>
-                  <h4 className="text-lg font-serif font-bold">{look.title}</h4>
-                  <p className="text-xs text-white/80 line-clamp-2 mt-1 font-light">{look.details}</p>
-                  
-                  <div className="pt-3 flex items-center justify-between text-xs text-[#e3c487]">
-                    <span className="flex items-center gap-1 font-medium">
-                      <Sparkles className="w-3.5 h-3.5" /> View Look
+                  {/* Clean Category Pill Badge */}
+                  <div className="absolute top-3 left-3 z-10">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-black/60 backdrop-blur-md text-[#f7e4c0] border border-white/15 shadow-sm">
+                      {look.category === 'poshak' ? 'Rajputi Poshak' : look.category === 'velvet' ? 'Royal Velvet' : look.category === 'regal' ? 'Heritage Scarlet' : 'Signature Bride'}
                     </span>
-                    <span className="text-white/60 text-[10px]">Tap to inspect</span>
+                  </div>
+
+                  {/* Subtle Elegant Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-85 group-hover:opacity-95 transition-opacity" />
+
+                  {/* Bottom Information */}
+                  <div className="absolute bottom-0 inset-x-0 p-5 flex flex-col justify-end text-white z-10">
+                    <span className="text-[10px] font-medium tracking-wider uppercase text-[#e3c487] mb-0.5">
+                      {look.outfit}
+                    </span>
+                    <h4 className="text-lg font-serif font-bold group-hover:text-[#ffd700] transition-colors leading-snug">
+                      {look.title}
+                    </h4>
+                    <p className="text-xs text-white/75 line-clamp-2 mt-1 font-light leading-relaxed">
+                      {look.details}
+                    </p>
+
+                    <div className="pt-3 mt-1 border-t border-white/10 flex items-center justify-between text-xs text-[#e3c487]">
+                      <span className="flex items-center gap-1.5 font-medium">
+                        <Sparkles className="w-3.5 h-3.5" /> View Look Details
+                      </span>
+                      <span className="text-white/50 text-[10px]">Tap to inspect</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1019,7 +1039,7 @@ export function GetReady() {
       {/* 8. FOUR EASY STEPS BOOKING PROCESS */}
       <section className="py-20 bg-[#b8863b]/5 border-y border-[#b8863b]/20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="text-center max-w-2xl mx-auto space-y-3 mb-16">
             <h3 className="text-3xl font-serif font-bold">Four Easy Steps To Lock Your Date</h3>
             <p className="text-sm text-muted-foreground">Smooth, stress-free consultation from your first message to the final touch-up.</p>
@@ -1046,7 +1066,7 @@ export function GetReady() {
       {/* 9. FAQ ACCORDION */}
       <section className="py-20 md:py-28">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="text-center space-y-4 mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase text-[#b8863b] bg-[#b8863b]/10 border border-[#b8863b]/30">
               <ShieldCheck className="w-3.5 h-3.5" /> Clarity & Transparency
@@ -1067,9 +1087,8 @@ export function GetReady() {
                 >
                   <span>{faq.q}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-[#b8863b] shrink-0 transition-transform duration-300 ${
-                      activeFaq === idx ? 'rotate-180' : ''
-                    }`}
+                    className={`w-5 h-5 text-[#b8863b] shrink-0 transition-transform duration-300 ${activeFaq === idx ? 'rotate-180' : ''
+                      }`}
                   />
                 </button>
                 {activeFaq === idx && (

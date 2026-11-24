@@ -48,6 +48,8 @@ import { FloatingWhatsApp } from '@/components/FloatingWhatsApp';
 import { FloatingCoupon } from '@/components/FloatingCoupon';
 import { SplashScreen } from '@/components/SplashScreen';
 import { FloatingHelpButton } from '@/components/FloatingHelpButton';
+import { GoldenStardustCursor } from '@/components/common/GoldenStardustCursor';
+import { RoyalSoundscape } from '@/components/common/RoyalSoundscape';
 import { ThemeProvider } from '@/context/ThemeContext';
 
 const HIDE_HEADER_FOOTER_PATHS = [
@@ -70,6 +72,8 @@ function AppContent() {
 
   return (
     <div className="page-transition min-h-screen bg-background text-foreground transition-colors duration-300">
+      <GoldenStardustCursor />
+      <RoyalSoundscape />
       <SplashScreen />
       {!hideHeaderFooter && <Header />}
       <Routes>
